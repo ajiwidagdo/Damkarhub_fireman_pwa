@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#dc2626" id="meta-theme">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <!-- ===================== PWA META ===================== -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -9,12 +15,6 @@
 <meta name="application-name" content="DAMKARHUB Fireman">
 <meta name="description" content="Pantang Pulang Sebelum Api Padam - Aplikasi Pelaporan Petugas Damkar">
 <meta name="msapplication-TileColor" content="#dc2626">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#dc2626" id="meta-theme">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <title>DAMKARHUB Fireman</title>
 <!-- CDN:START — dipakai bila index.html dibuka langsung tanpa build. `npm run build` mengganti blok ini dengan aset lokal (folder dist/) -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -1502,11 +1502,12 @@ const UI = {
       </div>`;
     }).join('');
   },
-  formatComparison(delta) {
+  formatComparison(delta, invert = false) {
     if (delta === null || delta === undefined) return '';
     const isUp = delta > 0;
     const isFlat = delta === 0;
-    const color = isFlat ? 'text-gray-400 dark:text-gray-500' : isUp ? 'text-emerald-500' : 'text-red-500';
+    const good = invert ? !isUp : isUp;
+    const color = isFlat ? 'text-gray-400 dark:text-gray-500' : good ? 'text-emerald-500' : 'text-red-500';
     const icon = isFlat ? 'fa-minus' : isUp ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
     const sign = isUp ? '+' : '';
     return `<span class="inline-flex items-center gap-0.5 text-[10px] font-bold ml-2 ${color}"><i class="fa-solid ${icon} text-[8px]"></i>${sign}${delta}%</span>`;
@@ -2303,7 +2304,7 @@ Mod.k = new ReportModule({
     const rataRT = s.cntRT ? Math.round(s.totalRT/s.cntRT) : 0;
     const prevRataRT = s.prev ? s.prev.rataRT : 0;
     const rtDelta = s.prev ? Helpers.calcDelta(rataRT, prevRataRT) : null;
-    document.getElementById('k_dash_responsetime').innerHTML = rataRT + ' <span class="text-xs">Mnt</span>' + (period !== 'all' && s.prev ? UI.formatComparison(rtDelta) : '');
+    document.getElementById('k_dash_responsetime').innerHTML = rataRT + ' <span class="text-xs">Mnt</span>' + (period !== 'all' && s.prev ? UI.formatComparison(rtDelta, true) : '');
     document.getElementById('k_dash_air').innerHTML = s.air.toFixed(1).replace(/\.0$/,'') + ' <span class="text-xs">T</span>';
     document.getElementById('k_dash_jarak').innerHTML = s.jarak.toFixed(1).replace(/\.0$/,'') + ' <span class="text-xs">Km</span>';
     const totK = s.korban['LUKA RINGAN'] + s.korban['LUKA BERAT'] + s.korban['MENINGGAL'];
@@ -2885,6 +2886,7 @@ Mod.sos = new ReportModule({
     const reguStr = d.regu ? d.regu.split('\n').filter(r => r.trim()).join(', ') : '-';
     const addressee = S.pimpinan ? `Yth.\n${S.pimpinan}\n\n` : '';
     const tglSelesaiStr = d.tglSelesai ? `• Selesai : ${Helpers.formatDate(d.tglSelesai)} ${d.jamSelesai || '-'} WIB\n` : `• Selesai : ${d.jamSelesai || '-'} WIB\n`;
+    const kategoriStr = d.kategori ? d.kategori.split('\n').filter(k=>k.trim()).map(Helpers.plainKategori).join(', ') : '-';
     return ` *LAPORAN SOSIALISASI*
 _${S.instansi || ''}_ — _${S.daerah || ''}_
 ━━━━━━━━━━━━━━━━━━━
@@ -2895,6 +2897,7 @@ ${addressee} Mohon izin melaporkan kegiatan *Sosialisasi* sebagai berikut :
 • Hari/Tgl : ${hari}, ${tglIndo}
 • Pukul : ${d.pukul || '-'} WIB
 ${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit
+• Sasaran Edukasi : ${kategoriStr}
 
  *B. TEMPAT*
 ${d.tempat || '-'}
