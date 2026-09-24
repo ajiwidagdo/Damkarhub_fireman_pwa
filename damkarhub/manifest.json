@@ -1,0 +1,42 @@
+{
+  "name": "DAMKARHUB Fireman",
+  "short_name": "DAMKARHUB",
+  "description": "Pantang Pulang Sebelum Api Padam - Aplikasi Pelaporan Petugas Damkar",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#dc2626",
+  "theme_color": "#dc2626",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buat Laporan Kebakaran",
+      "short_name": "Kebakaran",
+      "description": "Input laporan kebakaran baru",
+      "url": "./index.html?action=new-k",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Buat Laporan Penyelamatan",
+      "short_name": "Penyelamatan",
+      "description": "Input laporan penyelamatan baru",
+      "url": "./index.html?action=new-nk",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Riwayat Laporan",
+      "short_name": "Riwayat",
+      "description": "Lihat semua laporan",
+      "url": "./index.html?action=riwayat",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
