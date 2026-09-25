@@ -438,43 +438,58 @@
           <div><label class="field-label">Pukul</label><input type="time" id="k_pukul" required></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
-          <div>
-            <label class="field-label text-blue-800 dark:text-blue-400">TGL LAPOR DITERIMA</label>
-            <div class="flex gap-1.5">
-              <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-              <button type="button" onclick="Helpers.recordDate('k_tglTerima')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-blue-800 dark:text-blue-400">JAM LAPOR DITERIMA</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('k_jamTerima')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-blue-800 dark:text-blue-400">JAM TIBA DI LOKASI</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="k_jamTiba" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('k_jamTiba')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">TGL SELESAI <span class="text-[9px] font-normal">(kalau beda hari)</span></label>
-            <div class="flex gap-1.5">
-              <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-              <button type="button" onclick="Helpers.recordDate('k_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">JAM SELESAI</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('k_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-            </div>
-          </div>
-        </div>
-        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Klik tombol ⏰ / 📅 untuk rekam waktu sekarang. Tgl Selesai hanya jika penanganan lintas hari.</p>
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">TGL LAPOR DITERIMA</label>
+    <div class="flex gap-1.5">
+      <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordDate('k_tglTerima')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">JAM LAPOR DITERIMA</label>
+    <div class="flex gap-1.5">
+      <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('k_jamTerima')" class="btn-time" title="Rekam jam sekarang">⏰</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">JAM TIBA DI LOKASI</label>
+    <div class="flex gap-1.5">
+      <input type="time" id="k_jamTiba" onchange="Helpers.autoFillMulai('k'); Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('k_jamTiba')" class="btn-time" title="Rekam jam sekarang">⏰</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">JAM PENANGANAN DIMULAI <span class="text-[9px] font-normal">(auto +2,5 mnt)</span></label>
+    <div class="flex gap-1.5">
+      <input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('k_jamMulai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">TGL SELESAI <span class="text-[9px] font-normal">(kalau beda hari)</span></label>
+    <div class="flex gap-1.5">
+      <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordDate('k_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">JAM SELESAI</label>
+    <div class="flex gap-1.5">
+      <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('k_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
+    </div>
+  </div>
+</div>
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
+
+<div class="mb-3">
+  <label class="field-label text-emerald-700 dark:text-emerald-400">RESPON TIME (Otomatis)</label>
+  <div class="flex gap-1.5 items-center">
+    <input type="text" id="k_responTime" readonly placeholder="Otomatis dari Jam Lapor Diterima → Jam Penanganan Dimulai" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
+  </div>
+</div>
         <div>
           <label class="field-label">Jenis Kejadian</label>
           <select id="k_jenisKebakaran" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
@@ -606,53 +621,39 @@
       <section class="border-b border-gray-100 dark:border-gray-700 pb-6">
         <h3 class="section-title text-amber-600 dark:text-amber-400">1. Waktu & Jenis Kegiatan</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
-          <div><label class="field-label">Tgl Kejadian</label><input type="date" id="nk_tanggal" required></div>
-          <div><label class="field-label">Pukul</label><input type="time" id="nk_pukul" required></div>
+          <div><label class="field-label">Tgl Laporan Diterima</label><input type="date" id="nk_tanggal" required></div>
+          <div><label class="field-label">Jam Laporan Diterima</label><input type="time" id="nk_pukul" required></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-3 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
-          <div>
-            <label class="field-label text-blue-800 dark:text-blue-400">TGL LAPOR DITERIMA</label>
-            <div class="flex gap-1.5">
-              <input type="date" id="nk_tglTerima" class="flex-1">
-              <button type="button" onclick="Helpers.recordDate('nk_tglTerima')" class="btn-time" title="">📅</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-blue-800 dark:text-blue-400">JAM LAPOR DITERIMA</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="nk_jamTerima" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('nk_jamTerima')" class="btn-time" title="">⏰</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">TGL MULAI OPERASI</label>
-            <div class="flex gap-1.5">
-              <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-              <button type="button" onclick="Helpers.recordDate('nk_tglMulai')" class="btn-time" title="">📅</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">JAM MULAI OPERASI</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('nk_jamMulai')" class="btn-time" title="">⏰</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">TGL SELESAI <span class="text-[9px] font-normal">(kalau beda hari)</span></label>
-            <div class="flex gap-1.5">
-              <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-              <button type="button" onclick="Helpers.recordDate('nk_tglSelesai')" class="btn-time" title="">📅</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label text-emerald-700 dark:text-emerald-400">JAM SELESAI</label>
-            <div class="flex gap-1.5">
-              <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-              <button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="">⏰</button>
-            </div>
-          </div>
-        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">TGL PENANGANAN DIMULAI</label>
+    <div class="flex gap-1.5">
+      <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
+      <button type="button" onclick="Helpers.recordDate('nk_tglMulai')" class="btn-time" title="">📅</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-blue-800 dark:text-blue-400">JAM PENANGANAN DIMULAI</label>
+    <div class="flex gap-1.5">
+      <input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('nk_jamMulai')" class="btn-time" title="">⏰</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">TGL PENANGANAN SELESAI</label>
+    <div class="flex gap-1.5">
+      <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
+      <button type="button" onclick="Helpers.recordDate('nk_tglSelesai')" class="btn-time" title="">📅</button>
+    </div>
+  </div>
+  <div>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">JAM PENANGANAN SELESAI</label>
+    <div class="flex gap-1.5">
+      <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
+      <button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="">⏰</button>
+    </div>
+  </div>
+</div>
         <div>
           <label class="field-label">Jenis Kegiatan</label>
           <select id="nk_jenis" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
@@ -877,13 +878,6 @@
       <button type="button" onclick="Sync.logout()" class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98]"><i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
   </div>
-
-  <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-5">
-  <h3 class="text-sm font-bold mb-3"><i class="fa-solid fa-flask mr-2 text-purple-500"></i> Diagnostik</h3>
-  <button type="button" onclick="alert('Test UUID v4:\n\n' + Helpers.newId() + '\n\n' + Helpers.newId() + '\n\n' + Helpers.newId())" class="w-full bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-bold py-3 rounded-xl border border-purple-200 dark:border-purple-800 active:scale-[.98]">
-    <i class="fa-solid fa-vial mr-2"></i> Test UUID Generator
-  </button>
-</div>
 
   <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
     <h3 class="text-sm font-bold mb-2"><i class="fa-solid fa-network-wired mr-2 text-blue-500"></i> Backup & Restore</h3>
@@ -1554,21 +1548,25 @@ const Helpers = {
   autoFillDurasi(prefix) {
     let startDate = '', startTime = '', endDate = '', endTime = '';
     if (prefix === 'k') {
-      startDate = document.getElementById('k_tglTerima').value || document.getElementById('k_tanggal').value;
-      startTime = document.getElementById('k_jamTiba').value || document.getElementById('k_jamTerima').value;
-      endDate = document.getElementById('k_tglSelesai').value;
-      endTime = document.getElementById('k_jamSelesai').value;
-    } else if (prefix === 'nk') {
-      const tglMulaiEl = document.getElementById('nk_tglMulai');
-      const jamMulaiEl = document.getElementById('nk_jamMulai');
-      const tglTerimaEl = document.getElementById('nk_tglTerima');
-      const tglHariEl = document.getElementById('nk_tanggal');
-      const tglSelesaiEl = document.getElementById('nk_tglSelesai');
-      startDate = (tglMulaiEl?.value) || (tglTerimaEl?.value) || (tglHariEl?.value) || '';
-      startTime = (jamMulaiEl?.value) || '';
-      endDate = (tglSelesaiEl?.value) || startDate;
-      endTime = document.getElementById('nk_jamSelesai')?.value || '';
-    } else if (prefix === 'sos') {
+  startDate = document.getElementById('k_tglTerima').value || document.getElementById('k_tanggal').value;
+  startTime = document.getElementById('k_jamMulai')?.value || document.getElementById('k_jamTiba')?.value || document.getElementById('k_jamTerima')?.value || '';
+  endDate = document.getElementById('k_tglSelesai').value;
+  endTime = document.getElementById('k_jamSelesai').value;
+  const rtStart = document.getElementById('k_jamTerima')?.value;
+  const rtEnd = document.getElementById('k_jamMulai')?.value || document.getElementById('k_jamTiba')?.value;
+  const rt = Helpers.calcRT(rtStart, rtEnd);
+  const rtField = document.getElementById('k_responTime');
+  if (rtField) rtField.value = rt > 0 ? rt : '';
+} else if (prefix === 'nk') {
+  const tglMulaiEl = document.getElementById('nk_tglMulai');
+  const jamMulaiEl = document.getElementById('nk_jamMulai');
+  const tglHariEl = document.getElementById('nk_tanggal');
+  const tglSelesaiEl = document.getElementById('nk_tglSelesai');
+  startDate = (tglMulaiEl?.value) || (tglHariEl?.value) || '';
+  startTime = (jamMulaiEl?.value) || '';
+  endDate = (tglSelesaiEl?.value) || startDate;
+  endTime = document.getElementById('nk_jamSelesai')?.value || '';
+} else if (prefix === 'sos') {
       startDate = document.getElementById('sos_tanggal').value;
       startTime = document.getElementById('sos_pukul').value;
       endDate = document.getElementById('sos_tglSelesai').value;
@@ -1617,6 +1615,17 @@ const Helpers = {
     const r = (Math.random() * 16) | 0;
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
+},
+  autoFillMulai(prefix) {
+  if (prefix !== 'k') return;
+  const jamTibaEl = document.getElementById('k_jamTiba');
+  const jamMulaiEl = document.getElementById('k_jamMulai');
+  if (!jamTibaEl?.value || !jamMulaiEl) return;
+  const [h, m] = jamTibaEl.value.split(':').map(Number);
+  const total = h * 60 + m + 2.5;
+  const newH = Math.floor(total / 60) % 24;
+  const newM = Math.floor(total % 60);
+  jamMulaiEl.value = String(newH).padStart(2, '0') + ':' + String(newM).padStart(2, '0');
 },
   recordTime(fieldId) {
     const el = document.getElementById(fieldId);
@@ -2276,7 +2285,7 @@ Mod.k = new ReportModule({
       s.asetSelamat += parseFloat(d.asetSelamat) || 0;
       s.air += parseFloat(d.air) || 0;
       s.jarak += parseFloat(d.jarak) || 0;
-      const rt = Helpers.calcRT(d.jamTerima, d.jamTiba);
+      const rt = Helpers.calcRT(d.jamTerima, d.jamMulai || d.jamTiba);
       if (rt > 0 && rt < 300) { s.totalRT += rt; s.cntRT++; }
       const up = v => (v || 'Tanpa Keterangan').toUpperCase();
       s.jenis[up(d.jenis)] = (s.jenis[up(d.jenis)] || 0) + 1;
@@ -2296,7 +2305,7 @@ Mod.k = new ReportModule({
     if (prevFiltered) {
       let prevTotalRT = 0, prevCntRT = 0;
       prevFiltered.forEach(d => {
-        const rt = Helpers.calcRT(d.jamTerima, d.jamTiba);
+        const rt = Helpers.calcRT(d.jamTerima, d.jamMulai || d.jamTiba);
         if (rt > 0 && rt < 300) { prevTotalRT += rt; prevCntRT++; }
       });
       s.prev = { total: prevFiltered.length, rataRT: prevCntRT ? Math.round(prevTotalRT/prevCntRT) : 0 };
@@ -2384,7 +2393,7 @@ Mod.k = new ReportModule({
       dusun:c.querySelector('.k_kDusun').value, rtrw:c.querySelector('.k_kRtrw').value, kel:c.querySelector('.k_kKel').value, kec:c.querySelector('.k_kKec').value, kabkota:c.querySelector('.k_kKabkota').value
     }));
     const gv = id => document.getElementById(id).value;
-    return { id, tanggal:gv('k_tanggal'), pukul:gv('k_pukul'), tglTerima:gv('k_tglTerima'), jamTerima:gv('k_jamTerima'), jamTiba:gv('k_jamTiba'), tglSelesai:gv('k_tglSelesai'), jamSelesai:gv('k_jamSelesai'),
+    return { id, tanggal:gv('k_tanggal'), pukul:gv('k_pukul'), tglTerima:gv('k_tglTerima'), jamTerima:gv('k_jamTerima'), jamTiba:gv('k_jamTiba'), jamMulai:gv('k_jamMulai'), tglSelesai:gv('k_tglSelesai'), jamSelesai:gv('k_jamSelesai'),
       jenis, lokasiDetail:gv('k_lokasiDetail'), dusun:gv('k_dusun'), rtrw:gv('k_rtrw'), kel:gv('k_kel'), kec:gv('k_kec'), kabkota:gv('k_kabkota'), koordinat:gv('k_koordinat'),
       korbanList, pNama:gv('k_pNama'), pHP:gv('k_pHP'),
       penyebab, objekTerbakar:objek, luasArea:gv('k_luasArea'),
@@ -2397,7 +2406,7 @@ Mod.k = new ReportModule({
   },
   fillForm(d) {
     const sv = (id,v) => document.getElementById(id).value = v ?? '';
-    sv('k_tanggal',d.tanggal); sv('k_pukul',d.pukul); sv('k_tglTerima',d.tglTerima || d.tanggal); sv('k_jamTerima',d.jamTerima); sv('k_jamTiba',d.jamTiba); sv('k_tglSelesai',d.tglSelesai); sv('k_jamSelesai',d.jamSelesai);
+    sv('k_tanggal',d.tanggal); sv('k_pukul',d.pukul); sv('k_tglTerima',d.tglTerima || d.tanggal); sv('k_jamTerima',d.jamTerima); sv('k_jamTiba',d.jamTiba); sv('k_jamMulai',d.jamMulai); sv('k_tglSelesai',d.tglSelesai); sv('k_jamSelesai',d.jamSelesai);
     setSelectOrOther('k_jenisKebakaran','k_jenis_lainnya', d.jenis);
     sv('k_lokasiDetail',d.lokasiDetail); sv('k_dusun',d.dusun); sv('k_rtrw',d.rtrw); sv('k_kel',d.kel); sv('k_kec',d.kec); sv('k_kabkota',d.kabkota); sv('k_koordinat',d.koordinat);
     document.getElementById('k_korbanListContainer').innerHTML = '';
@@ -2428,7 +2437,7 @@ Mod.k = new ReportModule({
     const hari = Helpers.dayName(d.tanggal);
     const tglIndo = Helpers.formatDate(d.tanggal);
     const tglTerimaIndo = d.tglTerima ? Helpers.formatDate(d.tglTerima) : tglIndo;
-    const rt = Helpers.calcRT(d.jamTerima, d.jamTiba);
+    const rt = Helpers.calcRT(d.jamTerima, d.jamMulai || d.jamTiba);
     const alamat = Helpers.formatAddress(d.dusun, d.rtrw, d.kel, d.kec, d.kabkota);
     const kerugian = 'Rp ' + (parseFloat(d.kerugian)||0).toLocaleString('id-ID');
     const reguStr = d.regu ? d.regu.split('\n').filter(r=>r.trim()).join(', ') : '-';
@@ -2447,7 +2456,7 @@ Mod.k = new ReportModule({
       P.section('A. Identitas Laporan', 'fa-file-lines',
         P.row('Hari/Tgl', `${hari}, ${tglIndo}`) + P.row('Pukul', `${d.pukul || '-'} WIB`) + P.row('Jenis', d.jenis || '-'), 'text-red-600') +
       P.section('B. Waktu Respon', 'fa-stopwatch',
-        P.row('Diterima', `${tglTerimaIndo} ${d.jamTerima || '-'} WIB`) + P.row('Tiba', `${d.jamTiba || '-'} WIB`) +
+        P.row('Diterima', `${tglTerimaIndo} ${d.jamTerima || '-'} WIB`) + P.row('Tiba', `${d.jamTiba || '-'} WIB`) + P.row('Mulai', `${d.jamMulai || d.jamTiba || '-'} WIB`) +
         P.row('Selesai', d.tglSelesai ? `${Helpers.formatDate(d.tglSelesai)} ${d.jamSelesai || '-'} WIB` : `${d.jamSelesai || '-'} WIB`) +
         P.row('Respon', `${rt > 0 ? rt + ' Menit' : '-'}`) + P.row('Durasi', `${d.durasi || 0} Menit`), 'text-red-600') +
       P.section('C. Lokasi Kejadian', 'fa-location-dot',
@@ -2474,7 +2483,7 @@ Mod.k = new ReportModule({
     const tglIndo = Helpers.formatDate(d.tanggal);
     const tglTerimaIndo = d.tglTerima ? Helpers.formatDate(d.tglTerima) : tglIndo;
     const jamTerimaStr = d.jamTerima ? `Pukul ${d.jamTerima} WIB` : '';
-    const rt = Helpers.calcRT(d.jamTerima, d.jamTiba);
+    const rt = Helpers.calcRT(d.jamTerima, d.jamMulai || d.jamTiba);
     const rtStr = rt > 0 ? rt + ' Menit' : '-';
     const alamat = Helpers.formatAddress(d.dusun, d.rtrw, d.kel, d.kec, d.kabkota);
     let korban = '\n  -';
@@ -2504,8 +2513,9 @@ ${addressee} Mohon izin melaporkan kejadian *${d.jenis || '-'}* sebagai berikut 
 • Pukul : ${d.pukul || '-'} WIB
 
  *B. WAKTU RESPON*
-• Diterima : ${tglTerimaIndo} ${d.jamTerima || '-'} WIB
-• Dimulai : ${d.jamTiba || '-'} WIB
+• Laporan Diterima : ${tglTerimaIndo} ${d.jamTerima || '-'} WIB
+• Tiba di Lokasi : ${d.jamTiba || '-'} WIB
+• Mulai Penanganan : ${d.jamMulai || d.jamTiba || '-'} WIB
 ${tglSelesaiStr}• Respon Time : *${rtStr}*
 • Durasi : ${d.durasi || 0} Menit
 • Jarak : ${d.jarak || 0} Km
@@ -2548,7 +2558,8 @@ ${personil}
 ${unsur}
 
 ━━━━━━━━━━━━━━━━━━━
- Demikian yang dapat kami laporkan. Terima kasih.
+ Demikian yang dapat kami laporkan. 
+ Terima kasih.
 _Dikirim melalui DAMKARHUB_ 🔥`;
   }
 });
@@ -2602,7 +2613,7 @@ Mod.nk = new ReportModule({
   collectForm(id) {
     const jenis = document.getElementById('nk_jenis').value === 'Lainnya' ? document.getElementById('nk_jenis_lainnya').value : document.getElementById('nk_jenis').value;
     const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
-    return { id, tanggal: gv('nk_tanggal'), pukul: gv('nk_pukul'), tglTerima: gv('nk_tglTerima'), jamTerima: gv('nk_jamTerima'), tglMulai: gv('nk_tglMulai'), jamMulai: gv('nk_jamMulai'), tglSelesai: gv('nk_tglSelesai'), jamSelesai: gv('nk_jamSelesai'),
+    return { id, tanggal: gv('nk_tanggal'), pukul: gv('nk_pukul'), tglTerima: gv('nk_tanggal'), jamTerima: gv('nk_pukul'), tglMulai: gv('nk_tglMulai'), jamMulai: gv('nk_jamMulai'), tglSelesai: gv('nk_tglSelesai'), jamSelesai: gv('nk_jamSelesai'),
       jenis, lokasiDetail:gv('nk_lokasiDetail'), dusun:gv('nk_dusun'), rtrw:gv('nk_rtrw'), kel:gv('nk_kel'), kec:gv('nk_kec'), kabkota:gv('nk_kabkota'), koordinat:gv('nk_koordinat'),
       idNama:gv('nk_idNama'), idUsia:gv('nk_idUsia'), idJK:gv('nk_idJK'), pHP:gv('nk_pHP'),
       idDusun:gv('nk_idDusun'), idRtrw:gv('nk_idRtrw'), idKel:gv('nk_idKel'), idKec:gv('nk_idKec'), idKabkota:gv('nk_idKabkota'),
@@ -2615,7 +2626,7 @@ Mod.nk = new ReportModule({
   },
   fillForm(d) {
     const sv = (id,v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
-    sv('nk_tanggal',d.tanggal); sv('nk_pukul',d.pukul); sv('nk_tglTerima',d.tglTerima || d.tanggal); sv('nk_jamTerima',d.jamTerima); sv('nk_tglMulai',d.tglMulai || d.tglTerima || d.tanggal); sv('nk_jamMulai',d.jamMulai); sv('nk_tglSelesai',d.tglSelesai); sv('nk_jamSelesai',d.jamSelesai);
+    sv('nk_tanggal',d.tanggal || d.tglTerima); sv('nk_pukul',d.pukul || d.jamTerima); sv('nk_tglMulai',d.tglMulai || d.tglTerima || d.tanggal); sv('nk_jamMulai',d.jamMulai); sv('nk_tglSelesai',d.tglSelesai); sv('nk_jamSelesai',d.jamSelesai);
     setSelectOrOther('nk_jenis','nk_jenis_lainnya', d.jenis);
     sv('nk_lokasiDetail',d.lokasiDetail); sv('nk_dusun',d.dusun); sv('nk_rtrw',d.rtrw); sv('nk_kel',d.kel); sv('nk_kec',d.kec); sv('nk_kabkota',d.kabkota); sv('nk_koordinat',d.koordinat);
     sv('nk_idNama',d.idNama); sv('nk_idUsia',d.idUsia); sv('nk_idJK',d.idJK || '-'); sv('nk_pHP',d.pHP);
@@ -2647,13 +2658,13 @@ Mod.nk = new ReportModule({
     const reguStr = d.regu ? d.regu.split('\n').filter(r=>r.trim()).join(', ') : '-';
     const personilList = d.personil ? d.personil.split('\n').filter(p=>p.trim()) : [];
     const koorRow = d.koordinat ? P.row('Koordinat', `${d.koordinat} <button onclick="Helpers.openMaps('${String(d.koordinat).replace(/'/g,"\\'")}')" class="ml-1 text-blue-500 text-[10px] font-bold underline">Buka Maps</button>`) : '';
-    const mulaiStr = d.jamMulai ? `${d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo} ${d.jamMulai} WIB` : '-';
+    const mulaiStr = d.jamMulai ? `${d.tglMulai ? Helpers.formatDate(d.tglMulai) : (d.tglTerima ? Helpers.formatDate(d.tglTerima) : tglIndo)} ${d.jamMulai} WIB` : '-';
     const selesaiStr = d.jamSelesai ? `${d.tglSelesai ? Helpers.formatDate(d.tglSelesai) : (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo)} ${d.jamSelesai} WIB` : '-';
     return P.header('LAPORAN PENYELAMATAN', '🆘', 'from-amber-500 to-orange-600 shadow-amber-500/20') +
       P.section('A. Identitas Laporan', 'fa-file-lines',
         P.row('Hari/Tgl', `${hari}, ${tglIndo}`) + P.row('Pukul', `${d.pukul || '-'} WIB`) + P.row('Jenis', d.jenis || '-'), 'text-amber-600') +
       P.section('B. Waktu Penanganan', 'fa-stopwatch',
-        P.row('Lapor', `${tglTerimaIndo} ${d.jamTerima || '-'} WIB`) +
+        P.row('Lapor Diterima', `${tglTerimaIndo} ${d.jamTerima || '-'} WIB`) +
         P.row('Mulai', mulaiStr) + P.row('Selesai', selesaiStr) + P.row('Durasi', `${d.durasi || 0} Menit`), 'text-amber-600') +
       P.section('C. Lokasi', 'fa-location-dot',
         P.row('Patokan', d.lokasiDetail || '-') + P.row('Alamat', alamatLokasi) + koorRow, 'text-amber-600') +
@@ -2690,49 +2701,54 @@ _${S.instansi || ''}_ — _${S.daerah || ''}_
 
 ${addressee}Mohon izin melaporkan kegiatan *${d.jenis || '-'}* sebagai berikut :
 
- *A. WAKTU KEJADIAN*
-• Hari/Tgl : ${hari}, ${tglIndo}
+ *A. WAKTU TERIMA LAPORAN*
+• Hari/Tgl : ${hari}, ${tglTerimaIndo}
 • Pukul : ${d.pukul || '-'} WIB
 
- *B. WAKTU RESPON*
-• Diterima : ${tglTerimaIndo} ${jamTerimaStr}
+  *B. WAKTU PENANGANAN*
+• Lapor Diterima : ${tglTerimaIndo} ${jamTerimaStr}
+• Mulai Penanganan : ${d.jamMulai ? (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo) + ' ' + d.jamMulai : '-'} WIB
 ${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
 • Jarak : ${d.jarak || 0} Km
 
- *C. LOKASI*
+ *B. LOKASI*
 • Nama Tempat : ${d.lokasiDetail || '-'}${koor}
 
- *D. KRONOLOGI*
+ *C. KRONOLOGI*
 ${d.kronologi || '-'}
 
- *E. IDENTITAS PELAPOR*
+ *D. PELAPOR*
 • Nama : ${d.idNama || '-'}
 • Usia : ${d.idUsia ? d.idUsia + ' Tahun' : '-'}
 • J. Kel. : ${d.idJK || '-'}
 • Kontak : ${d.pHP || '-'}
 • Alamat : ${alamat}
 
- *F. DETAIL PENANGANAN*
+ *E. DETAIL PENANGANAN*
 • Objek : ${d.objek || '-'}
 • Lokasi : ${d.lokasiOp || d.lokasiDetail || '-'}
 • Ukuran : ${d.ukuran || '-'}
+• Mulai Penanganan : ${d.jamMulai ? (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo) + ' ' + d.jamMulai : '-'} WIB
+${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
+• Jarak : ${d.jarak || 0} Km  
 • Armada : ${d.armada || '-'}
 • Tindakan : ${d.tindakan || '-'}
 • Kendala : ${d.kendala || 'Nihil'}
 
- *G. KORBAN JIWA*
+ *F. KORBAN JIWA*
 • Luka Ringan : ${d.lRingan || 0} orang
 • Luka Berat : ${d.lBerat || 0} orang
 • Meninggal : ${d.mnggal || 0} orang
 
- *H. REGU BERTUGAS*
+ *G. REGU BERTUGAS*
 ${reguStr}
 
- *I. NAMA PETUGAS*
+ *H. NAMA PETUGAS*
 ${personil}
 
 ━━━━━━━━━━━━━━━━━━━
-Demikian yang dapat kami laporkan. Terima kasih.
+Demikian yang dapat kami laporkan. 
+Terima kasih.
 _Dikirim via DAMKARHUB_ 🔥`;
   }
 });
@@ -2905,7 +2921,6 @@ ${addressee} Mohon izin melaporkan kegiatan *Sosialisasi* sebagai berikut :
 • Hari/Tgl : ${hari}, ${tglIndo}
 • Pukul : ${d.pukul || '-'} WIB
 ${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit
-• Sasaran Edukasi : ${kategoriStr}
 
  *B. TEMPAT*
 ${d.tempat || '-'}
@@ -2913,7 +2928,8 @@ ${d.tempat || '-'}
  *C. RANGKAIAN KEGIATAN*
 ${rangkaianList}
 
- *D. JUMLAH PESERTA*
+ *D. SASARAN EDULASI*
+${kategoriStr}
 ${totalPeserta} Orang
 
  *E. DATA PESERTA*${peserta}
@@ -2930,7 +2946,8 @@ ${reguStr}
 ${personil}
 
 ━━━━━━━━━━━━━━━━━━━
-Demikian yang dapat kami laporkan. Terima kasih.
+Demikian yang dapat kami laporkan. 
+Terima kasih.
 _Dikirim via DAMKARHUB_ 🔥`;
   }
 });
@@ -3003,7 +3020,7 @@ const Export = {
             case 'Data Korban': r.push(k?.nama || '-'); break;
             case 'NIK Korban': r.push(k?.nik || '-'); break;
             case 'Alamat Korban': r.push(k ? Helpers.formatAddress(k.dusun, k.rtrw, k.kel, k.kec, k.kabkota) : '-'); break;
-            case 'Respon Time': r.push(first ? Helpers.calcRT(d.jamTerima, d.jamTiba) : ''); break;
+            case 'Respon Time': r.push(first ? Helpers.calcRT(d.jamTerima, d.jamMulai || d.jamTiba) : ''); break;
             case 'Jarak Tempuh': r.push(first ? (d.jarak || '0') : ''); break;
             case 'Armada & Air': first ? r.push(d.armada || '-', d.air || '0') : r.push('',''); break;
             case 'Regu': r.push(first ? (d.regu ? d.regu.split('\n').join(', ') : '-') : ''); break;
@@ -3791,7 +3808,7 @@ const App = {
 
       <div class="bg-gray-50 dark:bg-white/5 p-3.5 rounded-xl text-xs border border-gray-100 dark:border-white/10">
         <p class="font-bold text-gray-700 dark:text-gray-200 mb-1"><i class="fa-solid fa-user-gear mr-1"></i> Pengembang</p>
-        <p class="text-gray-600 dark:text-gray-300">Yudha Brama Jaya</p>
+        <p class="text-gray-600 dark:text-gray-300">AJI WIDAGDO</p>
         <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">ajiwidagdo7@gmail.com</a>
       </div>
 
