@@ -1738,8 +1738,6 @@ const Helpers = {
     const textarea = document.getElementById(textareaId);
     if (!textarea) return;
     const initialValue = textarea.value;
-    let finalText = '';
-    let lastFinalIndex = -1;
 
     rec.onstart = () => {
       this.speechState = { rec, btn, textareaId };
@@ -1751,24 +1749,21 @@ const Helpers = {
       Helpers.haptic(20);
     };
     rec.onresult = (event) => {
-      let interim = '';
-      for (let i = 0; i < event.results.length; i++) {
-        const result = event.results[i];
-        const t = result[0].transcript;
-        if (result.isFinal) {
-          if (i > lastFinalIndex) {
-            finalText += (finalText && !finalText.endsWith(' ') ? ' ' : '') + t.trim();
-            lastFinalIndex = i;
-          }
-        } else {
-          interim += t;
-        }
-      }
-      const composed = initialValue
-        ? initialValue + ' ' + finalText + (interim ? ' ' + interim : '')
-        : finalText + (interim ? (finalText ? ' ' : '') + interim : '');
-      textarea.value = composed;
-    };
+  // Android Chrome: event.results bertambah incremental (bukan replace).
+  // Setiap result berisi transcript yang makin lengkap.
+  // Solusi: ambil yang PALING PANJANG = transcript paling lengkap.
+  let best = '';
+  for (let i = 0; i < event.results.length; i++) {
+    const t = (event.results[i][0].transcript || '').trim();
+    if (t.length > best.length) best = t;
+  }
+  if (!best) return;
+  const cleaned = best.replace(/\s+/g, ' ');
+  const composed = initialValue
+    ? initialValue + (initialValue.endsWith(' ') ? '' : ' ') + cleaned
+    : cleaned;
+  textarea.value = composed;
+};
     rec.onerror = (event) => {
       let msg = 'Gagal merekam suara.';
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') msg = 'Izin mikrofon ditolak.';
