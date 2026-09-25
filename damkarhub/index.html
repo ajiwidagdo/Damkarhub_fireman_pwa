@@ -66,10 +66,96 @@
   /* ---------- Header ---------- */
   .app-header { background:rgba(255,255,255,.84); backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4); border-bottom:1px solid var(--line); }
   .dark .app-header { background:rgba(21,11,13,.8); }
-  .brand-mark { width:40px; height:40px; flex-shrink:0; border-radius:.9rem; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(150deg,#3a0a0e 0%,#7f1d1d 55%,#b91c1c 100%);
-    box-shadow:0 8px 18px -8px rgba(220,38,38,.65), inset 0 0 0 1px rgba(255,255,255,.14); }
-  .brand-mark svg { width:23px; height:23px; filter:drop-shadow(0 0 6px rgba(255,140,40,.55)); }
+  /* ===== Brand Mark (Logo Toggle Dark Mode) ===== */
+.brand-mark { 
+  width:40px; height:40px; flex-shrink:0; border-radius:.9rem; 
+  display:flex; align-items:center; justify-content:center;
+  position: relative;
+  background:linear-gradient(150deg,#3a0a0e 0%,#7f1d1d 55%,#b91c1c 100%);
+  box-shadow:0 8px 18px -8px rgba(220,38,38,.65), inset 0 0 0 1px rgba(255,255,255,.14);
+  transition: background .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
+}
+.brand-mark svg { 
+  width:23px; height:23px; 
+  position: absolute; top: 50%; left: 50%; 
+  margin: -11.5px 0 0 -11.5px;
+  transition: opacity .4s ease, transform .5s cubic-bezier(.34,1.56,.64,1), filter .4s ease;
+}
+
+/* ===== DARK MODE — Api Menyala ===== */
+html.dark .brand-mark {
+  background: linear-gradient(150deg,#3a0a0e 0%,#7f1d1d 55%,#b91c1c 100%);
+  box-shadow: 0 8px 18px -8px rgba(220,38,38,.75), inset 0 0 0 1px rgba(255,255,255,.14);
+}
+html.dark .brand-mark .bm-flame {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  filter: drop-shadow(0 0 6px rgba(255,140,40,.55));
+  animation: flameFlicker 2.8s ease-in-out infinite;
+}
+html.dark .brand-mark .bm-smoke {
+  opacity: 0;
+  transform: scale(.5) translateY(6px);
+}
+
+/* ===== LIGHT MODE — Api Padam + Asap ===== */
+html:not(.dark) .brand-mark {
+  background: linear-gradient(150deg,#fef3f3 0%,#fee2e2 55%,#fecaca 100%);
+  box-shadow: 0 8px 18px -8px rgba(120,120,120,.25), inset 0 0 0 1px rgba(0,0,0,.06);
+}
+html:not(.dark) .brand-mark .bm-flame {
+  opacity: 0;
+  transform: scale(.5) translateY(-6px);
+}
+html:not(.dark) .brand-mark .bm-smoke {
+  color: #9ca3af;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  animation: smokeDrift 4.5s ease-in-out infinite;
+}
+
+/* ===== Tombol brand-toggle (bisa diklik) ===== */
+.brand-toggle {
+  background: none; border: none; padding: 0;
+  cursor: pointer; border-radius: .9rem;
+  transition: transform .15s ease;
+  font: inherit; color: inherit;
+}
+.brand-toggle:active { transform: scale(.96); }
+.brand-toggle.rotating .brand-mark {
+  transform: rotate(180deg) scale(1.12);
+}
+
+/* ===== Badge indikator mode di sudut logo ===== */
+.theme-badge {
+  position: absolute; bottom: -3px; right: -3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; color: #111;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  border: 1.5px solid rgba(0,0,0,.08);
+  transition: all .3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+html.dark .theme-badge {
+  background: #1f2937; color: #fbbf24;
+  border-color: rgba(255,255,255,.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* ===== ANIMASI ===== */
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1);      filter: drop-shadow(0 0 6px rgba(255,140,40,.55)); }
+  25%      { transform: scale(1.06);   filter: drop-shadow(0 0 11px rgba(255,160,50,.9)); }
+  50%      { transform: scale(0.96);   filter: drop-shadow(0 0 4px rgba(255,120,30,.6)); }
+  75%      { transform: scale(1.03);   filter: drop-shadow(0 0 9px rgba(255,150,45,.8)); }
+}
+@keyframes smokeDrift {
+  0%, 100% { transform: translateY(0)    scale(1);    opacity: .85; }
+  50%      { transform: translateY(-3px) scale(1.03); opacity: 1; }
+}
   .brand-name { font-weight:900; letter-spacing:-.025em; color:var(--ink); white-space:nowrap; }
   .brand-name .fm { color:var(--red); font-style:italic; font-weight:800; margin-left:.3rem; letter-spacing:-.01em; }
   .dark .brand-name .fm { color:#ff4d4d; }
@@ -234,6 +320,14 @@
       <path fill="url(#gFlame)" d="M25.2 1.5c.9 6.4-2.4 10.1-6 14.6-3.6 4.5-7.2 8.9-7.2 15.2C12 39.6 17.4 46.5 24.6 46.5S37.5 40 37.5 32.4c0-4.6-2-8.1-4.5-10.9-.2 3.4-1.7 5.5-3.7 6.6 1.3-6.9.3-17.2-4.1-26.6z"/>
       <path fill="#fff1b8" opacity=".95" d="M24.6 46.5c-4.4 0-7.5-3.2-7.5-7.7 0-3.3 2-5.5 3.7-7.8.4 2.2 1.7 3.6 3 3.9 1.3-2.4 1.1-5.7-.3-9 4.3 3.3 8.5 7.4 8.5 12.9 0 4.6-3.2 7.7-7.4 7.7z"/>
     </symbol>
+    <symbol id="ic-smoke" viewBox="0 0 48 48">
+  <path d="M24 6 C19 11, 29 14, 24 19 C19 24, 29 27, 24 32 C20 36, 26 39, 24 42" 
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" opacity=".85"/>
+  <path d="M16 14 C12 18, 18 21, 14 25 C11 28, 15 30, 13 33" 
+        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".55"/>
+  <path d="M32 16 C28 20, 34 23, 30 27 C27 30, 31 32, 29 35" 
+        stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".55"/>
+</symbol>
   </defs>
 </svg>
 
@@ -259,7 +353,7 @@
   </div>
 
   <p class="splash-motto">PANTANG PULANG SEBELUM API PADAM</p>
-  <p class="splash-ver">v1.0 · UJI COBA</p>
+  <p class="splash-ver">Yudha Brama Jaya</p>
 </div>
 
 <style>
@@ -290,15 +384,24 @@
 
 <header class="app-header sticky top-0 z-30 safe-top">
   <div class="px-4 py-2.5 flex justify-between items-center gap-3">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
-      <div class="leading-tight min-w-0">
-        <h1 class="brand-name text-[19px]">DAMKARHUB<span class="fm">Fireman</span><span class="brand-trial">Uji Coba</span></h1>
-      </div>
-    </div>
-    <button onclick="UI.toggleDark()" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Ganti tema">
-      <i id="theme-icon" class="fa-solid fa-moon"></i>
-    </button>
+    <button onclick="UI.toggleDark()" class="brand-toggle flex items-center gap-3 min-w-0 text-left" aria-label="Ganti tema">
+  <div class="brand-mark">
+    <svg class="bm-flame" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg>
+    <svg class="bm-smoke" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-smoke"/></svg>
+    <span id="theme-badge" class="theme-badge">🌙</span>
+  </div>
+  <div class="leading-tight min-w-0">
+    <h1 class="brand-name text-[19px]">DAMKARHUB<span class="fm">Fireman</span></h1>
+  </div>
+</button>
+<div class="flex items-center gap-1.5">
+  <button onclick="UI.showComingSoon('Notifikasi Dispatch')" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Notifikasi">
+    <i class="fa-solid fa-bell"></i>
+  </button>
+  <button onclick="UI.showComingSoon('Profil Petugas')" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Akun">
+    <i class="fa-solid fa-user"></i>
+  </button>
+</div>
   </div>
 </header>
 
@@ -912,7 +1015,12 @@
 <div id="sheetBackdrop" class="sheet-backdrop hidden" onclick="UI.closeSheet()"></div>
 <div id="sheetPanel" class="sheet-panel hidden">
   <div class="sheet-handle"></div>
-  <div id="sheetTitle" class="px-5 pb-2 text-xs font-bold uppercase text-gray-400 tracking-widest"></div>
+  <div class="px-5 pb-2 flex justify-between items-center gap-3">
+    <div id="sheetTitle" class="text-xs font-bold uppercase text-gray-400 tracking-widest"></div>
+    <button onclick="UI.closeSheet()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center active:scale-90 transition flex-shrink-0" aria-label="Tutup">
+      <i class="fa-solid fa-times text-gray-500 dark:text-gray-300 text-sm"></i>
+    </button>
+  </div>
   <div id="sheetContent" class="pb-4"></div>
 </div>
 
@@ -1329,10 +1437,26 @@ const Sync = {
 
 const UI = {
   toggleDark() {
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    this.updateThemeIcon(); Helpers.haptic(5);
-  },
+  document.documentElement.classList.toggle('dark');
+  const isDark = document.documentElement.classList.contains('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  
+  // Animasi rotate pada logo
+  const btn = document.querySelector('.brand-toggle');
+  if (btn) {
+    btn.classList.add('rotating');
+    setTimeout(() => btn.classList.remove('rotating'), 500);
+  }
+  
+  // Haptic feedback
+  Helpers.haptic(isDark ? [15, 30, 15] : 10);
+  
+  // Update badge
+  const badge = document.getElementById('theme-badge');
+  if (badge) badge.textContent = isDark ? '🌙' : '☀️';
+  
+  this.updateThemeIcon();
+},
   initTheme() {
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && matchMedia('(prefers-color-scheme: dark)').matches))
       document.documentElement.classList.add('dark');
@@ -1340,9 +1464,14 @@ const UI = {
     this.updateThemeIcon();
   },
   updateThemeIcon() {
-    const i = document.getElementById('theme-icon');
-    i.className = document.documentElement.classList.contains('dark') ? 'fa-solid fa-sun text-yellow-400' : 'fa-solid fa-moon text-gray-500';
-  },
+  const isDark = document.documentElement.classList.contains('dark');
+  const badge = document.getElementById('theme-badge');
+  if (badge) badge.textContent = isDark ? '🌙' : '☀️';
+},
+showComingSoon(feature) {
+  Helpers.haptic(10);
+  UI.toast(`✨ ${feature} — Segera Hadir`, 'info');
+},
   updateStatusBar(view, mod) {
     const color = (mod && Config.THEME_COLORS[mod]) || Config.THEME_COLORS[view] || '#dc2626';
     document.getElementById('meta-theme').setAttribute('content', color);
@@ -3809,7 +3938,7 @@ const App = {
       <div class="bg-gray-50 dark:bg-white/5 p-3.5 rounded-xl text-xs border border-gray-100 dark:border-white/10">
         <p class="font-bold text-gray-700 dark:text-gray-200 mb-1"><i class="fa-solid fa-user-gear mr-1"></i> Pengembang</p>
         <p class="text-gray-600 dark:text-gray-300">AJI WIDAGDO</p>
-        <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">ajiwidagdo7@gmail.com</a>
+        <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a>
       </div>
 
       <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam 🔥</p>
