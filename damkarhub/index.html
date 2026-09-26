@@ -3344,7 +3344,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
-      Sync.init();
+      // Sync hanya jalan kalau mode = auth (via Mode.check)
+      Mode.check();
     } catch (err) {
       console.error('Boot error:', err);
       UI.toast('Gagal memuat aplikasi: ' + (err?.message || err), 'error');
@@ -4099,6 +4100,52 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+/* ===================== MODE SELECTION (ANON / AUTH) ===================== */
+const Mode = {
+  KEY: 'damkarhub_mode',
+
+  get() { return localStorage.getItem(this.KEY) || null; },
+  set(m) { localStorage.setItem(this.KEY, m); },
+  clear() { localStorage.removeItem(this.KEY); },
+
+  check() {
+    const el = document.getElementById('mode-screen');
+    if (!el) return false;
+    const m = this.get();
+    if (!m) {
+      el.classList.remove('hidden');
+      return false;
+    }
+    el.classList.add('hidden');
+    if (m === 'auth') Sync.init();
+    return true;
+  },
+
+  selectAnon() {
+    this.set('anon');
+    document.getElementById('mode-screen').classList.add('hidden');
+    if (Sync.updateUI) Sync.updateUI();
+    if (window.UI && UI.toast) UI.toast('Mode Tanpa Akun aktif', 'info');
+  },
+
+  selectAuth() {
+    this.set('auth');
+    document.getElementById('mode-screen').classList.add('hidden');
+    Sync.init();
+    const s = Sync._session && Sync._session();
+    if (!s) {
+      if (App.switchView) App.switchView('sistem');
+      if (window.UI && UI.toast) UI.toast('Silakan login untuk sinkronisasi', 'info');
+    }
+  },
+
+  reset() {
+    if (!confirm('Reset mode? Aplikasi akan kembali ke layar pilihan mode.')) return;
+    this.clear();
+    location.reload();
+  }
+};
+
 // Handle PWA shortcut actions (dari long-press icon di home screen)
 (function handleShortcut() {
   const params = new URLSearchParams(location.search);
@@ -4112,5 +4159,58 @@ if ('serviceWorker' in navigator) {
   }, 1600);
 })();
 </script>
+
+<!-- ===== MODE SELECTION OVERLAY ===== -->
+<div id="mode-screen" class="fixed inset-0 z-[9999] hidden bg-gradient-to-b from-red-700 via-red-800 to-gray-900 dark:from-red-950 dark:via-gray-900 dark:to-black">
+  <div class="h-full w-full flex flex-col items-center justify-center px-6 overflow-y-auto py-10">
+
+    <!-- Logo + Judul -->
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl">🔥</div>
+      <div>
+        <div class="text-white font-black text-2xl tracking-tight">DAMKARHUB</div>
+        <div class="text-red-200 text-xs font-bold tracking-widest">FIREMAN</div>
+      </div>
+    </div>
+
+    <p class="text-red-100 text-sm mb-8 mt-4 text-center">Pilih mode penggunaan aplikasi</p>
+
+    <!-- Card Tanpa Akun -->
+    <button type="button" onclick="Mode.selectAnon()"
+      class="w-full max-w-md bg-white/95 dark:bg-gray-800/95 backdrop-blur rounded-3xl p-5 mb-4 text-left shadow-2xl active:scale-[.98] transition border border-white/30 dark:border-gray-700">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl shrink-0">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-black text-gray-900 dark:text-white text-base mb-0.5">Tanpa Akun</div>
+          <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-2">Langsung pakai. Data tersimpan lokal di perangkat ini.</div>
+          <div class="text-emerald-600 dark:text-emerald-400 text-xs font-bold">Mulai →</div>
+        </div>
+      </div>
+    </button>
+
+    <!-- Card Dengan Akun -->
+    <button type="button" onclick="Mode.selectAuth()"
+      class="w-full max-w-md bg-white/95 dark:bg-gray-800/95 backdrop-blur rounded-3xl p-5 text-left shadow-2xl active:scale-[.98] transition border border-white/30 dark:border-gray-700">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl shrink-0">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-black text-gray-900 dark:text-white text-base mb-0.5">Dengan Akun</div>
+          <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-2">Sinkron ke server pusat. Bisa multi-device.</div>
+          <div class="text-blue-600 dark:text-blue-400 text-xs font-bold">Login →</div>
+        </div>
+      </div>
+    </button>
+
+    <p class="text-red-200/70 text-[11px] text-center mt-8 max-w-xs leading-relaxed">
+      💡 Mode bisa diubah kapan saja dari menu <b>Sistem</b>
+    </p>
+  </div>
+</div>
+<!-- ===== /MODE SELECTION OVERLAY ===== -->
+
 </body>
 </html>
