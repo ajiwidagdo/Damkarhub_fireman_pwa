@@ -604,7 +604,7 @@ html.dark .theme-badge {
       <section class="border-b border-gray-100 dark:border-gray-700 pb-6">
         <h3 class="section-title text-red-600 dark:text-red-400">2. Lokasi Kejadian</h3>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" id="k_lokasiDetail" placeholder="Cth: di Komplek Perum Pepabri" required></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Lingkungan/Dusun</label><input type="text" id="k_dusun"></div>
           <div><label class="field-label">RT/RW</label><input type="text" id="k_rtrw" placeholder="Cth: 003/09"></div>
         </div>
@@ -1072,6 +1072,22 @@ html.dark .theme-badge {
 <script>
 const Config = {
   DB_NAME: 'DamkarHubDB',
+  PROVINSI: [
+    'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi', 'Sumatera Selatan',
+    'Bengkulu', 'Lampung', 'Kepulauan Bangka Belitung', 'Kepulauan Riau',
+    'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'DI Yogyakarta', 'Jawa Timur', 'Banten',
+    'Bali', 'Nusa Tenggara Barat', 'Nusa Tenggara Timur',
+    'Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Kalimantan Timur', 'Kalimantan Utara',
+    'Sulawesi Utara', 'Sulawesi Tengah', 'Sulawesi Selatan', 'Sulawesi Tenggara',
+    'Gorontalo', 'Sulawesi Barat',
+    'Maluku', 'Maluku Utara',
+    'Papua', 'Papua Barat', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya'
+  ],
+  DEFAULT_EXPORT_COLS: {
+    k:   ['Tanggal','Jenis Kejadian','Penyebab','Objek','Kerugian','Alamat Korban','Data Korban','Respon Time','Jarak Tempuh','Keterangan'],
+    nk:  ['Tanggal','Jenis Giat','Data Pelapor','Alamat Pelapor','Objek','Durasi & Jarak','Keterangan'],
+    sos: ['Tanggal','Sasaran Edukasi','Nama Instansi','Alamat Instansi','Jumlah Peserta','Keterangan']
+  },
   DB_VERSION: 3,
   STORES: { k:'kebakaran', nk:'non_kebakaran', sos:'sosialisasi', settings:'settings', personil:'personil', regu:'regu', sync:'sync_queue' },
   MONTHS: ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],
@@ -2129,7 +2145,10 @@ const Builders = {
     </div>`;
   },
   exportPanel(prefix, columns) {
-    const colChecks = columns.map(c => `<label class="flex items-center text-xs dark:text-gray-300 py-1"><input type="checkbox" value="${c}" checked class="mr-2 cb-custom"> ${c}</label>`).join('');
+    const saved = (() => { try { return JSON.parse(localStorage.getItem('export_cols_' + prefix) || 'null'); } catch { return null; } })();
+    const defaults = (Config.DEFAULT_EXPORT_COLS && Config.DEFAULT_EXPORT_COLS[prefix]) || columns;
+    const isChecked = (c) => saved ? saved.includes(c) : defaults.includes(c);
+    const colChecks = columns.map(c => `<label class="flex items-center text-xs dark:text-gray-300 py-1"><input type="checkbox" value="${c}" ${isChecked(c) ? 'checked' : ''} class="mr-2 cb-custom export-col-cb" data-prefix="${prefix}" onchange="App.saveExportCols('${prefix}')"> ${c}</label>`).join('');
     const monthOpts = Config.MONTHS.map((m,i) => `<option value="${i}">${m}</option>`).join('');
     return `<div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
       <h3 class="text-sm font-bold mb-3">1. Pilih Periode</h3>
@@ -2138,7 +2157,13 @@ const Builders = {
         <select id="${prefix}_ex_month" class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 text-xs bg-gray-50 dark:bg-gray-700 font-bold">${monthOpts}</select>
         <select id="${prefix}_ex_year" class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 text-xs bg-gray-50 dark:bg-gray-700 font-bold"></select>
       </div>
-      <h3 class="text-sm font-bold mb-3 border-t border-gray-100 dark:border-gray-700 pt-4">2. Pilih Kolom Data</h3>
+      <div class="flex items-center justify-between mb-3 border-t border-gray-100 dark:border-gray-700 pt-4">
+        <h3 class="text-sm font-bold">2. Pilih Kolom Data</h3>
+        <div class="flex gap-1.5">
+          <button type="button" onclick="App.toggleAllExportCols('${prefix}', true)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 active:scale-95">✓ Semua</button>
+          <button type="button" onclick="App.toggleAllExportCols('${prefix}', false)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 active:scale-95">✕ Hapus</button>
+        </div>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5" id="${prefix}_col_checks">${colChecks}</div>
       <div class="flex flex-col gap-2 border-t border-gray-100 dark:border-gray-700 pt-4">
         <button onclick="Export.generate('${prefix}','excel')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-file-excel mr-2"></i> Unduh Excel (CSV)</button>
@@ -2163,7 +2188,7 @@ const Builders = {
         </div>
       </div>
     </div>`;
-  }
+  },
 };
 
 function renderLayouts() {
@@ -2672,24 +2697,23 @@ ${addressee} Mohon izin melaporkan kejadian *${d.jenis || '-'}* sebagai berikut 
 • Tiba di Lokasi : ${d.jamTiba || '-'} WIB
 • Mulai Penanganan : ${d.jamMulai || d.jamTiba || '-'} WIB
 ${tglSelesaiStr}• Respon Time : *${rtStr}*
-• Durasi : ${d.durasi || 0} Menit
-• Jarak : ${d.jarak || 0} Km
+• Durasi penanganan : ${d.durasi || 0} Menit
+• Jarak ke lokasi : ${d.jarak || 0} Km
 
  *C. LOKASI KEJADIAN*
 • Nama Tempat : ${d.lokasiDetail || '-'}${koor}
 
- *D. PENYEBAB & DAMPAK*
+ *D. KRONOLOGI*
+${d.kronologi || '-'}
+
+ *E. PENYEBAB & DAMPAK*
 • ${penyebabLine}
 • Objek Terbakar : ${d.objekTerbakar || '-'}
 • Luas Area : ${d.luasArea || '-'}
 • Taksiran Kerugian : *Rp ${(parseFloat(d.kerugian)||0).toLocaleString('id-ID')}*
 • Nilai Aset : Rp ${(parseFloat(d.nilaiAset)||0).toLocaleString('id-ID')}
 • Aset Terselamatkan : Rp ${(parseFloat(d.asetSelamat)||0).toLocaleString('id-ID')}
-
- *E. KORBAN JIWA*
-• Luka Ringan : ${d.lRingan || 0} orang
-• Luka Berat : ${d.lBerat || 0} orang
-• Meninggal : ${d.mnggal || 0} orang
+• Korban Jiwa : LR ${d.lRingan || 0}, LB ${d.lBerat || 0}, MD ${d.mnggal || 0}
 
  *F. PEMILIK ASET / KORBAN*${korban}
 
@@ -2697,19 +2721,17 @@ ${tglSelesaiStr}• Respon Time : *${rtStr}*
 • Nama : ${d.pNama || '-'}
 • Kontak : ${d.pHP || '+62'}
 
- *H. OPERASIONAL*
+ *H. DETAIL PENANGANAN*
 • Armada : ${d.armada || '-'}
 • Suplai Air : ${d.air || 0} Tangki
 • Tindakan : ${d.tindakan || '-'}
 • Kendala : ${d.kendala || 'Nihil'}
 
- *I. REGU BERTUGAS*
+ *I. PERSONIL YANG BERTUGAS*
 ${reguStr}
-
- *J. NAMA PETUGAS*
 ${personil}
 
- *K. UNSUR TERLIBAT*
+ *J. UNSUR TERLIBAT*
 ${unsur}
 
 ━━━━━━━━━━━━━━━━━━━
@@ -2860,12 +2882,6 @@ ${addressee}Mohon izin melaporkan kegiatan *${d.jenis || '-'}* sebagai berikut :
 • Hari/Tgl : ${hari}, ${tglTerimaIndo}
 • Pukul : ${d.pukul || '-'} WIB
 
-  *B. WAKTU PENANGANAN*
-• Lapor Diterima : ${tglTerimaIndo} ${jamTerimaStr}
-• Mulai Penanganan : ${d.jamMulai ? (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo) + ' ' + d.jamMulai : '-'} WIB
-${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
-• Jarak : ${d.jarak || 0} Km
-
  *B. LOKASI*
 • Nama Tempat : ${d.lokasiDetail || '-'}${koor}
 
@@ -2881,24 +2897,18 @@ ${d.kronologi || '-'}
 
  *E. DETAIL PENANGANAN*
 • Objek : ${d.objek || '-'}
-• Lokasi : ${d.lokasiOp || d.lokasiDetail || '-'}
-• Ukuran : ${d.ukuran || '-'}
+• Lokasi objek : ${d.lokasiOp || d.lokasiDetail || '-'}
+• Ukuran/keterangan lain : ${d.ukuran || '-'}
 • Mulai Penanganan : ${d.jamMulai ? (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo) + ' ' + d.jamMulai : '-'} WIB
 ${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
-• Jarak : ${d.jarak || 0} Km  
+• Jarak ke lokasi : ${d.jarak || 0} Km  
 • Armada : ${d.armada || '-'}
 • Tindakan : ${d.tindakan || '-'}
 • Kendala : ${d.kendala || 'Nihil'}
+• Korban Jiwa : LR ${d.lRingan || 0}, LB ${d.lBerat || 0}, MD ${d.mnggal || 0}
 
- *F. KORBAN JIWA*
-• Luka Ringan : ${d.lRingan || 0} orang
-• Luka Berat : ${d.lBerat || 0} orang
-• Meninggal : ${d.mnggal || 0} orang
-
- *G. REGU BERTUGAS*
+ *F. PERSONIL YANG BERTUGAS*
 ${reguStr}
-
- *H. NAMA PETUGAS*
 ${personil}
 
 ━━━━━━━━━━━━━━━━━━━
@@ -3082,6 +3092,7 @@ ${d.tempat || '-'}
 
  *C. RANGKAIAN KEGIATAN*
 ${rangkaianList}
+Kendala : ${d.kendala || 'Nihil'}
 
  *D. SASARAN EDULASI*
 ${kategoriStr}
@@ -3089,15 +3100,8 @@ ${totalPeserta} Orang
 
  *E. DATA PESERTA*${peserta}
 
- *F. OPERASIONAL*
-• Armada : ${d.armada || '-'}
-• Suplai Air : ${d.air || 0} Tangki
-• Kendala : ${d.kendala || 'Nihil'}
-
- *G. REGU BERTUGAS*
+ *F. PERSONIL YANG BERTUGAS*
 ${reguStr}
-
- *H. NAMA PETUGAS*
 ${personil}
 
 ━━━━━━━━━━━━━━━━━━━
@@ -3329,7 +3333,6 @@ const App = {
 
       UI.initTheme();
       renderLayouts();
-      this._populateDates();
       this._loadSettingsToForm();
       Mod.k.addKorban();
       Mod.sos.addPeserta();
@@ -3517,6 +3520,19 @@ const App = {
     if (mod === 'nk') tab.classList.add('nk-active');
     if (mod === 'sos') tab.classList.add('sos-active');
     Helpers.haptic(6);
+  },
+
+  saveExportCols(prefix) {
+    const cbs = document.querySelectorAll(`.export-col-cb[data-prefix="${prefix}"]`);
+    const checked = Array.from(cbs).filter(cb => cb.checked).map(cb => cb.value);
+    try { localStorage.setItem('export_cols_' + prefix, JSON.stringify(checked)); } catch {}
+  },
+
+  toggleAllExportCols(prefix, checkAll) {
+    const cbs = document.querySelectorAll(`.export-col-cb[data-prefix="${prefix}"]`);
+    cbs.forEach(cb => cb.checked = checkAll);
+    this.saveExportCols(prefix);
+    Helpers.haptic(10);
   },
 
   updateExFilters(prefix) {
