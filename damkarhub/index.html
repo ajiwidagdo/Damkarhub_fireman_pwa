@@ -1168,10 +1168,11 @@ const DB = {
 /* Offline-first: laporan selalu disimpan lokal dulu, lalu dikirim ke server saat ada sinyal.
    Isi URL & ANON_KEY dari Supabase (Project Settings → API). Kosong = fitur nonaktif, aplikasi tetap lokal. */
 const SyncConfig = {
-  URL: '',        // contoh: 'https://abcdefgh.supabase.co'
-  ANON_KEY: '',   // "anon public key" (aman di klien, data dilindungi RLS di server)
-  PAGE: 100,      // jumlah baris per tarikan
-  CHUNK: 10,      // jumlah laporan per kiriman
+  URL: 'https://wanrxqxobsgbaflfmrhe.supabase.co',
+  ANON_KEY: 'sb_publishable_4EDl3A9Kuv3Q9aOzKCQHoQ_aeUAPD-Q',
+  DEFAULT_TENANT_CODE: 'DAMKARHUB.BANJAR113',
+  PAGE: 100,
+  CHUNK: 10,
   INTERVAL_MS: 120000
 };
 
@@ -1212,6 +1213,25 @@ const Sync = {
       uid: j.user?.id || old.uid || ''
     }));
   },
+    async joinTenant(code) {
+    if (!this.enabled() || !code) return null;
+    try {
+      const res = await this._req('POST', 'rpc/join_tenant', {
+        body: { p_code: code }
+      });
+      if (!res.ok) {
+        const msg = await this._errMsg(res);
+        console.warn('Join tenant gagal:', msg);
+        return null;
+      }
+      const tenantId = await res.json();
+      console.log('✅ Auto-join tenant:', tenantId);
+      return tenantId;
+    } catch (e) {
+      console.warn('Join tenant error:', e);
+      return null;
+    }
+  },
   async login() {
     if (!this.enabled()) return;
     const email = (document.getElementById('sync_email')?.value || '').trim();
@@ -1227,9 +1247,15 @@ const Sync = {
         UI.toast(res.status === 400 ? 'Email atau password salah.' : 'Login gagal: ' + (j.msg || j.error_description || res.status), 'error');
         return;
       }
-      this._storeSession(j, email);
+            this._storeSession(j, email);
       const pw = document.getElementById('sync_password'); if (pw) pw.value = '';
       Helpers.haptic([20, 50, 20]);
+      
+      // Auto-join tenant (Fase 1 single-tenant)
+      if (SyncConfig.DEFAULT_TENANT_CODE) {
+        await this.joinTenant(SyncConfig.DEFAULT_TENANT_CODE);
+      }
+      
       await this._seed();
       this.updateUI();
       this.run({ manual: true });
