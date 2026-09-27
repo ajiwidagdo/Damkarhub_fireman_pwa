@@ -593,6 +593,8 @@ html.dark .theme-badge {
     <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
   </div>
 </div>
+<!-- Reposisi: Durasi + Jarak + Koordinat -->
+<div id="k_waktu_inputs" class="mt-4"></div>
         <div>
           <label class="field-label">Jenis Kejadian</label>
           <select id="k_jenisKebakaran" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
@@ -613,13 +615,7 @@ html.dark .theme-badge {
           <div><label class="field-label">Kecamatan</label><input type="text" id="k_kec" required></div>
           <div><label class="field-label">Kab/Kota</label><input type="text" id="k_kabkota"></div>
         </div>
-        <div class="mb-3">
-          <label class="field-label">Koordinat Gmaps</label>
-          <div class="flex gap-2">
-            <input type="text" id="k_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('k')">
-            <button type="button" onclick="Helpers.getLoc('k')" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
-          </div>
-        </div>
+
       </section>
       <section class="border-b border-gray-100 dark:border-gray-700 pb-6">
         <div class="flex justify-between items-center mb-4">
@@ -756,6 +752,8 @@ html.dark .theme-badge {
       <button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="">⏰</button>
     </div>
   </div>
+  <!-- Reposisi: Durasi + Jarak + Koordinat -->
+  <div id="nk_waktu_inputs" class="col-span-full mt-3"></div>
 </div>
         <div>
           <label class="field-label">Jenis Kegiatan</label>
@@ -777,13 +775,7 @@ html.dark .theme-badge {
           <div><label class="field-label">Kecamatan</label><input type="text" id="nk_kec" required></div>
           <div><label class="field-label">Kab/Kota</label><input type="text" id="nk_kabkota"></div>
         </div>
-        <div class="mb-3">
-          <label class="field-label">Koordinat Gmaps</label>
-          <div class="flex gap-2">
-            <input type="text" id="nk_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('nk')">
-            <button type="button" onclick="Helpers.getLoc('nk')" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
-          </div>
-        </div>
+
       </section>
       <section class="border-b border-gray-100 dark:border-gray-700 pb-6">
         <div class="flex justify-between items-center mb-4">
@@ -862,6 +854,8 @@ html.dark .theme-badge {
           <div><label class="field-label">Tgl Selesai</label><input type="date" id="sos_tglSelesai" onchange="Helpers.autoFillDurasi('sos')"></div>
           <div><label class="field-label">Jam Selesai</label><input type="time" id="sos_jamSelesai" onchange="Helpers.autoFillDurasi('sos')"></div>
         </div>
+        <!-- Reposisi: Durasi saja -->
+        <div id="sos_waktu_inputs" class="mt-3"></div>
         <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" id="sos_tempat" required></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
@@ -2317,18 +2311,20 @@ function renderLayouts() {
   document.getElementById('k_casualty_inputs').innerHTML = Builders.casualtyInputs('k');
   document.getElementById('k_regu_inputs').innerHTML = Builders.reguInputs('k');
   document.getElementById('k_photo_inputs').innerHTML = Builders.photoInputs('k', 'Foto Api (1)', 'Foto Selesai (2)');
+  document.getElementById('k_waktu_inputs').innerHTML = Builders.koordinatInputs('k') + Builders.durasiJarakInputs('k');
 
   document.getElementById('nk_operasional_inputs').innerHTML = Builders.operasionalInputs('nk', { armadaRequired:false });
   document.getElementById('nk_casualty_inputs').innerHTML = Builders.casualtyInputs('nk');
   document.getElementById('nk_regu_inputs').innerHTML = Builders.reguInputs('nk');
   document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk', 'Foto Proses (1)', 'Foto Selesai (2)');
+  document.getElementById('nk_waktu_inputs').innerHTML = Builders.koordinatInputs('nk') + Builders.durasiJarakInputs('nk');
 
-  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
     ${Builders.inputText('sos_armada', 'Armada', '2 Unit Pancar')}
     <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="sos_air" value="0"></div>
-    ${Builders.inputNum('sos_durasi', 'Durasi (Mnt)', '', 'required')}
     <div><label class="field-label">Kendala</label><textarea id="sos_kendala" rows="1">Nihil</textarea></div>
   </div>`;
+  document.getElementById('sos_waktu_inputs').innerHTML = Builders.durasiJarakInputs('sos', { includeJarak: false });
   document.getElementById('sos_regu_inputs').innerHTML = Builders.reguInputs('sos');
   document.getElementById('sos_photo_inputs').innerHTML = Builders.photoInputs('sos', 'Foto Proses (1)', 'Foto Bersama (2)');
 
