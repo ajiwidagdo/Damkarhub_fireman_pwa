@@ -2110,14 +2110,30 @@ const Builders = {
   },
   inputNum(id, label, value, attrs='') { return `<div><label class="field-label">${label}</label><input type="number" id="${id}" value="${value}" ${attrs}></div>`; },
   inputText(id, label, ph='', attrs='') { return `<div><label class="field-label">${label}</label><input type="text" id="${id}" placeholder="${ph}" ${attrs}></div>`; },
-  operasionalInputs(prefix, { durasiRequired=true, armadaRequired=true, includeJarak=true, includeAir=true } = {}) {
-    return `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+  operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
       ${this.inputText(`${prefix}_armada`, 'Armada', '1 Unit Pancar', armadaRequired ? 'required' : '')}
-      ${this.inputNum(`${prefix}_durasi`, 'Durasi (Mnt)', '', durasiRequired ? 'required' : '')}
-      ${includeJarak ? `<div><label class="field-label">Jarak (Km)</label><input type="number" step="0.1" id="${prefix}_jarak"></div>` : ''}
       ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="${prefix}_air"></div>` : ''}
     </div>`;
   },
+
+  durasiJarakInputs(prefix, { includeJarak=true, durasiRequired=true } = {}) {
+    return `<div class="grid grid-cols-1 ${includeJarak ? 'sm:grid-cols-2' : ''} gap-3 mb-3">
+      ${this.inputNum(`${prefix}_durasi`, 'Durasi (Mnt)', '', durasiRequired ? 'required' : '')}
+      ${includeJarak ? `<div><label class="field-label">Jarak (Km)</label><input type="number" step="0.1" id="${prefix}_jarak"></div>` : ''}
+    </div>`;
+  },
+
+  koordinatInputs(prefix) {
+    return `<div class="mb-3">
+      <label class="field-label">Koordinat Gmaps</label>
+      <div class="flex gap-2">
+        <input type="text" id="${prefix}_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('${prefix}')">
+        <button type="button" onclick="Helpers.getLoc('${prefix}')" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
+      </div>
+    </div>`;
+  },
+
   casualtyInputs(prefix) {
     return `<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg flex flex-col sm:flex-row gap-2">
       ${this.inputNum(`${prefix}_lRingan`, 'LUKA RINGAN', 0)}
