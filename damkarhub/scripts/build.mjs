@@ -33,6 +33,10 @@ cpSync(path.join(root, 'manifest.json'), out('manifest.json'));
 cpSync(path.join(root, 'icons'), out('icons'), { recursive: true });
 if (existsSync(path.join(root, 'assets'))) cpSync(path.join(root, 'assets'), out('assets'), { recursive: true });
 
+console.log('→ Menyalin src/ (modul ES: builders.js, dll)');
+if (existsSync(path.join(root, 'src'))) cpSync(path.join(root, 'src'), out('src'), { recursive: true });
+else { console.error('✗ Folder src/ tidak ada — index.html memuat src/ui/builders.js'); process.exit(1); }
+
 console.log('→ Kompilasi Tailwind');
 const tw = need(nm('tailwindcss', 'lib', 'cli.js'), 'Jalankan `npm install` dulu.');
 execFileSync(process.execPath, [tw, '-c', 'tailwind.config.js', '-i', 'scripts/tailwind-input.css', '-o', 'dist/tailwind.css', '--minify'], { cwd: root, stdio: 'inherit' });

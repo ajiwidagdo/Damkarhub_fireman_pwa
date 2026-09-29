@@ -8,6 +8,7 @@ const CORE_ASSETS = [
   './index.html',
   './manifest.json',
   './tailwind.css',
+  './src/ui/builders.js',
   './vendor/fontawesome/css/all.min.css',
   './vendor/fontawesome/webfonts/fa-solid-900.woff2',
   './vendor/fontawesome/webfonts/fa-brands-400.woff2',
