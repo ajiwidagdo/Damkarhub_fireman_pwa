@@ -14,6 +14,7 @@ const CORE_ASSETS = [
   './src/services/sync-config.js',
   './src/services/sync.js',
   './src/modules/mod-k.js',
+  './src/modules/mod-nk.js',
   './vendor/fontawesome/css/all.min.css',
   './vendor/fontawesome/webfonts/fa-solid-900.woff2',
   './vendor/fontawesome/webfonts/fa-brands-400.woff2',
