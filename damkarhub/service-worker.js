@@ -10,6 +10,7 @@ const CORE_ASSETS = [
   './tailwind.css',
   './src/ui/builders.js',
   './src/lib/helpers.js',
+  './src/lib/db.js',
   './vendor/fontawesome/css/all.min.css',
   './vendor/fontawesome/webfonts/fa-solid-900.woff2',
   './vendor/fontawesome/webfonts/fa-brands-400.woff2',
