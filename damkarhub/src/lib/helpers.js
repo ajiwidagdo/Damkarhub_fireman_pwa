@@ -288,6 +288,35 @@ export const Helpers = {
     };
     try { rec.start(); } catch(e) { console.error(e); UI.toast('Gagal memulai mikrofon.', 'error'); }
   },
+  /* Suntik tombol mic (speech-to-text) ke semua text input & textarea di form
+     laporan K/NK/SOS. Exclude: number/tel/date/time/email/password (via selector),
+     readonly, id *_koordinat/*_durasi/*_jarak/*_responTime, dan field yang sudah
+     punya tombol mic. Idempoten: aman dipanggil ulang. */
+  injectMicButtons() {
+    const BTN_CLS = 'text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95 shrink-0';
+    const EXCLUDE_ID = /_(koordinat|durasi|jarak|responTime)$/;
+    ['k_form', 'nk_form', 'sos_form'].forEach(fid => {
+      const form = document.getElementById(fid);
+      if (!form) return;
+      form.querySelectorAll('input[type="text"], textarea').forEach(el => {
+        if (!el.id || el.readOnly || EXCLUDE_ID.test(el.id)) return;
+        const wrap = el.parentElement;
+        if (!wrap || wrap.querySelector('button[onclick*="startSpeech"]')) return; // sudah ada mic
+        const btn = `<button type="button" onclick="Helpers.startSpeech('${el.id}', this)" class="${BTN_CLS}"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>`;
+        const label = [...wrap.children].find(c => c.tagName === 'LABEL');
+        if (label) {
+          const header = document.createElement('div');
+          header.className = 'flex justify-between items-center mb-1';
+          label.classList.add('mb-0');
+          wrap.insertBefore(header, el);
+          header.appendChild(label);
+          header.insertAdjacentHTML('beforeend', btn);
+        } else {
+          el.insertAdjacentHTML('afterend', ' ' + btn);
+        }
+      });
+    });
+  },
   dayName(s) { if (!s) return '-'; const d = new Date(s + 'T00:00:00'); return isNaN(d.getTime()) ? '-' : Config.DAYS[d.getDay()]; },
   formatDate(s) {
     if (!s) return '-';

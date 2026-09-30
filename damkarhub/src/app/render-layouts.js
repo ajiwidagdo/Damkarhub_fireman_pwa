@@ -114,6 +114,9 @@ export function renderLayouts() {
   document.getElementById('k_export_panel').innerHTML = Builders.exportPanel('k', ['Tanggal','Jam Mulai','Tgl Selesai','Jam Selesai','Jenis Kejadian','Lokasi Detail','Penyebab','Objek','Nilai Aset','Taksiran Kerugian','Aset Terselamatkan','Korban Jiwa','Data Korban','NIK Korban','Alamat Korban','Respon Time','Jarak Tempuh','Armada & Air','Regu','Keterangan']);
   document.getElementById('nk_export_panel').innerHTML = Builders.exportPanel('nk', ['Tanggal','Jam Mulai','Tgl Selesai','Jam Selesai','Jenis Giat','Lokasi Detail','Data Pelapor','Alamat Pelapor','Objek','Durasi & Jarak','Armada & Air','Korban','Regu','Keterangan']);
   document.getElementById('sos_export_panel').innerHTML = Builders.exportPanel('sos', ['Tanggal','Jam Mulai','Tgl Selesai','Jam Selesai','Tempat','Sasaran Edukasi','Nama Instansi','Alamat Instansi','Jumlah Peserta','Durasi','Armada & Air','Regu','Keterangan']);
+
+  // Suntik tombol mic ke text input/textarea form laporan (idempoten)
+  Helpers.injectMicButtons();
 }
 
 globalThis.renderLayouts = renderLayouts;
