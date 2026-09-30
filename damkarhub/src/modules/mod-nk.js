@@ -61,7 +61,7 @@ export const ModNkcfg = {
       kronologi:gv('nk_kronologi'), tindakan:gv('nk_tindakan'), kendala:gv('nk_kendala'),
       lRingan:gv('nk_lRingan') || 0, lBerat:gv('nk_lBerat') || 0, mnggal:gv('nk_mnggal') || 0,
       regu:gv('nk_regu'), personil:gv('nk_personil'),
-      foto1:gv('nk_foto1_b64'), foto2:gv('nk_foto2_b64') };
+      foto1:gv('nk_foto1_b64'), foto2:gv('nk_foto2_b64'), keterangan:gv('nk_keterangan') };
   },
   fillForm(d) {
     const sv = (id,v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
@@ -72,7 +72,7 @@ export const ModNkcfg = {
     sv('nk_idDusun',d.idDusun); sv('nk_idRtrw',d.idRtrw); sv('nk_idKel',d.idKel); sv('nk_idKec',d.idKec); sv('nk_idKabkota',d.idKabkota);
     sv('nk_objek',d.objek); sv('nk_lokasiOp',d.lokasiOp); sv('nk_ukuran',d.ukuran);
     sv('nk_durasi',d.durasi); sv('nk_armada',d.armada); sv('nk_jarak',d.jarak); sv('nk_air',d.air);
-    sv('nk_kronologi',d.kronologi); sv('nk_tindakan',d.tindakan); sv('nk_kendala',d.kendala || 'Nihil');
+    sv('nk_kronologi',d.kronologi); sv('nk_tindakan',d.tindakan); sv('nk_kendala',d.kendala || 'Nihil'); sv('nk_keterangan',d.keterangan);
     sv('nk_lRingan',d.lRingan); sv('nk_lBerat',d.lBerat); sv('nk_mnggal',d.mnggal);
     sv('nk_regu',d.regu || ''); sv('nk_personil',d.personil);
     document.getElementById('nk_foto1_b64').value = d.foto1 || '';
@@ -134,7 +134,7 @@ export const ModNkcfg = {
     const koor = d.koordinat ? `\n• Koord : ${d.koordinat}\n• Maps : https://maps.google.com/?q=${d.koordinat.replace(/\s/g,'')}` : '';
     const addressee = S.pimpinan ? `Yth.\n${S.pimpinan}\n\n` : '';
     const tglSelesaiStr = d.tglSelesai ? `• Selesai : ${Helpers.formatDate(d.tglSelesai)} ${d.jamSelesai || '-'} WIB\n` : `• Selesai : ${d.jamSelesai || '-'} WIB\n`;
-    return ` *LAPORAN NON KEBAKARAN*
+    let wa = ` *LAPORAN NON KEBAKARAN*
 _${S.instansi || ''}_ — _${S.daerah || ''}_
 ━━━━━━━━━━━━━━━━━━━
 
@@ -177,6 +177,8 @@ ${personil}
 Demikian yang dapat kami laporkan. 
 Terima kasih.
 `;
+    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
+    return wa;
   }
 };
 

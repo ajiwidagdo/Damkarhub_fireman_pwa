@@ -69,7 +69,7 @@ export const Export = {
             case 'Jarak Tempuh': r.push(first ? (d.jarak || '0') : ''); break;
             case 'Armada & Air': first ? r.push(d.armada || '-', d.air || '0') : r.push('',''); break;
             case 'Regu': r.push(first ? (d.regu ? d.regu.split('\n').join(', ') : '-') : ''); break;
-            case 'Keterangan': r.push(''); break;
+            case 'Keterangan': r.push(d.keterangan || ''); break;
           }
         });
         rows.push(r);
@@ -103,7 +103,7 @@ export const Export = {
           case 'Armada & Air': r.push(d.armada || '-', d.air || '0'); break;
           case 'Korban': r.push(d.lRingan || '0', d.lBerat || '0', d.mnggal || '0'); break;
           case 'Regu': r.push(d.regu ? d.regu.split('\n').join(', ') : '-'); break;
-          case 'Keterangan': r.push(''); break;
+          case 'Keterangan': r.push(d.keterangan || ''); break;
         }
       });
       rows.push(r);
@@ -138,7 +138,7 @@ export const Export = {
             case 'Durasi': r.push(first ? (d.durasi || '0') : ''); break;
             case 'Armada & Air': first ? r.push(d.armada || '-', d.air || '0') : r.push('',''); break;
             case 'Regu': r.push(first ? (d.regu ? d.regu.split('\n').join(', ') : '-') : ''); break;
-            case 'Keterangan': r.push(''); break;
+            case 'Keterangan': r.push(d.keterangan || ''); break;
           }
         });
         rows.push(r);
