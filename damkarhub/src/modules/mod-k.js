@@ -131,7 +131,7 @@ const ModKcfg = {
       armada:gv('k_armada'), durasi:gv('k_durasi'), jarak:gv('k_jarak'), air:gv('k_air'),
       kronologi:gv('k_kronologi'), tindakan:gv('k_tindakan'), kendala:gv('k_kendala'), unsur:gv('k_unsur'),
       regu:gv('k_regu'), personil:gv('k_personil'),
-      foto1:gv('k_foto1_b64'), foto2:gv('k_foto2_b64') };
+      foto1:gv('k_foto1_b64'), foto2:gv('k_foto2_b64'), keterangan:gv('k_keterangan') };
   },
   fillForm(d) {
     const sv = (id,v) => document.getElementById(id).value = v ?? '';
@@ -145,7 +145,7 @@ const ModKcfg = {
     setSelectOrOther('k_objekTerbakar','k_objek_lainnya', d.objekTerbakar);
     sv('k_luasArea',d.luasArea); sv('k_nilaiAset',d.nilaiAset); sv('k_kerugian',d.kerugian); sv('k_asetSelamat',d.asetSelamat); sv('k_lRingan',d.lRingan); sv('k_lBerat',d.lBerat); sv('k_mnggal',d.mnggal);
     sv('k_armada',d.armada); sv('k_durasi',d.durasi); sv('k_jarak',d.jarak); sv('k_air',d.air);
-    sv('k_kronologi',d.kronologi); sv('k_tindakan',d.tindakan); sv('k_kendala',d.kendala || 'Nihil'); sv('k_unsur',d.unsur);
+    sv('k_kronologi',d.kronologi); sv('k_tindakan',d.tindakan); sv('k_kendala',d.kendala || 'Nihil'); sv('k_unsur',d.unsur); sv('k_keterangan',d.keterangan);
     sv('k_regu',d.regu || ''); sv('k_personil',d.personil);
     document.getElementById('k_foto1_b64').value = d.foto1 || '';
     document.getElementById('k_foto2_b64').value = d.foto2 || '';
@@ -231,7 +231,7 @@ const ModKcfg = {
     const tglMulaiStr = d.jamMulai ? `Mulai    : ${d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo} ${d.jamMulai} WIB\n` : '';
     const tglSelesaiStr = d.jamSelesai ? `• Selesai : ${d.tglSelesai ? Helpers.formatDate(d.tglSelesai) : (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo)} ${d.jamSelesai} WIB\n` : '';
     const penyebabLine = (d.penyebab === 'Belum Diketahui') ? `Penyebab : ${d.penyebab}` : `Penyebab : Dugaan sementara karena ${d.penyebab || '-'}`;
-    return ` *LAPORAN KEBAKARAN*
+    let wa = ` *LAPORAN KEBAKARAN*
 _${S.instansi || ''}_ — _${S.daerah || ''}_
 ━━━━━━━━━━━━━━━━━━━
 
@@ -286,7 +286,9 @@ ${unsur}
 ━━━━━━━━━━━━━━━━━━━
  Demikian yang dapat kami laporkan. 
  Terima kasih.
-_Dikirim melalui DAMKARHUB_ 🔥`;
+`;
+    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
+    return wa;
   }
 };
 

@@ -79,11 +79,11 @@ export const ModSoscfg = {
       kategori, pesertaList,
       armada:gv('sos_armada'), air:gv('sos_air'), durasi:gv('sos_durasi'), kendala:gv('sos_kendala'),
       regu:gv('sos_regu'), personil:gv('sos_personil'),
-      foto1:gv('sos_foto1_b64'), foto2:gv('sos_foto2_b64') };
+      foto1:gv('sos_foto1_b64'), foto2:gv('sos_foto2_b64'), keterangan:gv('sos_keterangan') };
   },
   fillForm(d) {
     const sv = (id,v) => document.getElementById(id).value = v ?? '';
-    sv('sos_tanggal',d.tanggal); sv('sos_pukul',d.pukul); sv('sos_tglSelesai',d.tglSelesai); sv('sos_jamSelesai',d.jamSelesai); sv('sos_tempat',d.tempat); sv('sos_rangkaian',d.rangkaian);
+    sv('sos_tanggal',d.tanggal); sv('sos_pukul',d.pukul); sv('sos_tglSelesai',d.tglSelesai); sv('sos_jamSelesai',d.jamSelesai); sv('sos_tempat',d.tempat); sv('sos_rangkaian',d.rangkaian); sv('sos_keterangan',d.keterangan);
     sv('sos_kategori',d.kategori || '');
     document.getElementById('sos_pesertaListContainer').innerHTML = '';
     (d.pesertaList?.length ? d.pesertaList : [null]).forEach(p => Mod.sos.addPeserta(p));
@@ -161,7 +161,7 @@ export const ModSoscfg = {
     const addressee = S.pimpinan ? `Yth.\n${S.pimpinan}\n\n` : '';
     const tglSelesaiStr = d.tglSelesai ? `• Selesai : ${Helpers.formatDate(d.tglSelesai)} ${d.jamSelesai || '-'} WIB\n` : `• Selesai : ${d.jamSelesai || '-'} WIB\n`;
     const kategoriStr = d.kategori ? d.kategori.split('\n').filter(k=>k.trim()).map(Helpers.plainKategori).join(', ') : '-';
-    return ` *LAPORAN SOSIALISASI*
+    let wa = ` *LAPORAN SOSIALISASI*
 _${S.instansi || ''}_ — _${S.daerah || ''}_
 ━━━━━━━━━━━━━━━━━━━
 
@@ -192,7 +192,9 @@ ${personil}
 ━━━━━━━━━━━━━━━━━━━
 Demikian yang dapat kami laporkan. 
 Terima kasih.
-_Dikirim via DAMKARHUB_ 🔥`;
+`;
+    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
+    return wa;
   }
 };
 
