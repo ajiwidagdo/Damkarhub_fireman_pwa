@@ -12,6 +12,7 @@ const CORE_ASSETS = [
   './src/ui/preview-builder.js',
   './src/lib/helpers.js',
   './src/lib/db.js',
+  './src/lib/mode.js',
   './src/services/sync-config.js',
   './src/services/sync.js',
   './src/modules/mod-k.js',
