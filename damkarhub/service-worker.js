@@ -9,6 +9,7 @@ const CORE_ASSETS = [
   './manifest.json',
   './tailwind.css',
   './src/ui/builders.js',
+  './src/lib/config.js',
   './src/ui/preview-builder.js',
   './src/lib/helpers.js',
   './src/lib/db.js',
