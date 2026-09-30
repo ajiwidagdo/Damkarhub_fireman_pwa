@@ -1,7 +1,7 @@
 /* ===================== APP — KONTROLER UTAMA =====================
    Di-extract dari index.html (blok const App + boot + PWA + shortcut).
    Logic 100% identik — hanya dipindah. Mengakses global: Config, DB,
-   UI, Helpers, Sync, Mode, Export, Mod, renderLayouts, PreviewBuilder.
+   UI, Helpers, Sync, Mode, Mod, renderLayouts.
    ========================================================================= */
 
 const App = {
