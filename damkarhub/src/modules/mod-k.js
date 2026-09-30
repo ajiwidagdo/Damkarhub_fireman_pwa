@@ -274,7 +274,7 @@ ${d.kronologi || '-'}
 • Armada : ${d.armada || '-'}
 • Suplai Air : ${d.air || 0} Tangki
 • Tindakan : ${d.tindakan || '-'}
-• Kendala : ${d.kendala || 'Nihil'}
+• Kendala : ${d.kendala || 'Nihil'}${d.keterangan ? `\n• Catatan : ${d.keterangan}` : ''}
 
  *I. PERSONIL YANG BERTUGAS*
 ${reguStr}
@@ -287,7 +287,6 @@ ${unsur}
  Demikian yang dapat kami laporkan. 
  Terima kasih.
 `;
-    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
     return wa;
   }
 };

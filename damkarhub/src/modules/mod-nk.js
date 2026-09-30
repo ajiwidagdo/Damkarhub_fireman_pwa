@@ -166,7 +166,7 @@ ${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
 • Jarak ke lokasi : ${d.jarak || 0} Km  
 • Armada : ${d.armada || '-'}
 • Tindakan : ${d.tindakan || '-'}
-• Kendala : ${d.kendala || 'Nihil'}
+• Kendala : ${d.kendala || 'Nihil'}${d.keterangan ? `\n• Catatan : ${d.keterangan}` : ''}
 • Korban Jiwa : LR ${d.lRingan || 0}, LB ${d.lBerat || 0}, MD ${d.mnggal || 0}
 
  *F. PERSONIL YANG BERTUGAS*
@@ -177,7 +177,6 @@ ${personil}
 Demikian yang dapat kami laporkan. 
 Terima kasih.
 `;
-    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
     return wa;
   }
 };
