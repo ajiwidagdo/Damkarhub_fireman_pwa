@@ -67,10 +67,26 @@ export const Helpers = {
       }
     }
   },
+  /* Parse koordinat dari 2 format:
+       A: "-7.1234, 108.4567" (raw, dari tombol GPS)
+       B: URL Google Maps — "?q=lat,lng" atau "@lat,lng[,zoom]"
+     Return {lat, lng} (string) atau null. */
+  parseKoordinat(str) {
+    const s = (str || '').trim();
+    if (!s) return null;
+    let m = s.match(/^(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)$/);
+    if (m) return { lat: m[1], lng: m[2] };
+    m = s.match(/[?@]q?=?(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/);
+    if (m) return { lat: m[1], lng: m[2] };
+    return null;
+  },
   autoFillJarak(prefix) {
-    const koor = document.getElementById(`${prefix}_koordinat`)?.value?.trim();
-    if (!koor || !App.settings.kantor) return;
-    if (!/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(koor)) return;
+    const input = document.getElementById(`${prefix}_koordinat`);
+    const parsed = Helpers.parseKoordinat(input?.value);
+    if (!parsed) { UI.toast('Format koordinat tidak dikenali', 'error'); return; }
+    const koor = `${parsed.lat}, ${parsed.lng}`;
+    if (input && input.value.trim() !== koor) input.value = koor; // normalize "lat, lng"
+    if (!App.settings.kantor) return;
     const dist = Helpers.calcDist(App.settings.kantor, koor);
     if (dist !== null) {
       const jarakField = document.getElementById(`${prefix}_jarak`);
