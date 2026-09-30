@@ -358,3 +358,13 @@ export const Helpers = {
 };
 
 globalThis.Helpers = Helpers;
+
+/* ---------- setSelectOrOther → di-extract dari index.html ---------- */
+export function setSelectOrOther(selId, inputId, value) {
+  const sel = document.getElementById(selId), inp = document.getElementById(inputId);
+  if (!sel) return;
+  if (Array.from(sel.options).some(o => o.value === value)) { sel.value = value; if (inp) { inp.classList.add('hidden'); inp.value = ''; } }
+  else { sel.value = 'Lainnya'; if (inp) { inp.value = value || ''; inp.classList.remove('hidden'); } }
+}
+
+globalThis.setSelectOrOther = setSelectOrOther;

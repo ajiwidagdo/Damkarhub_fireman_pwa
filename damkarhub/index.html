@@ -1627,12 +1627,7 @@ globalThis.Mod = Mod;
 
 /* ---------- SOS: Mod.sos → di-extract ke src/modules/mod-sos.js ---------- */
 
-function setSelectOrOther(selId, inputId, value) {
-  const sel = document.getElementById(selId), inp = document.getElementById(inputId);
-  if (!sel) return;
-  if (Array.from(sel.options).some(o => o.value === value)) { sel.value = value; if (inp) { inp.classList.add('hidden'); inp.value = ''; } }
-  else { sel.value = 'Lainnya'; if (inp) { inp.value = value || ''; inp.classList.remove('hidden'); } }
-}
+/* ---------- setSelectOrOther → di-extract ke src/lib/helpers.js ---------- */
 
 const Export = {
   generate(module, type) {
