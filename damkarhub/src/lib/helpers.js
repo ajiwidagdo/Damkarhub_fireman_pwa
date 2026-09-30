@@ -87,6 +87,14 @@ export const Helpers = {
     if (typeof v === 'string') { const s = v.trim(); return (!s || s === 'Nihil') ? [] : [s]; }
     return [];
   },
+  /* Nilai efektif catatan SOS (konsolidasi 1 field): catatanEvaluasi -> keterangan lama
+     -> kendala lama (selain 'Nihil'). Data lama tidak dimutasi; fallback hanya saat dibaca. */
+  sosCatatan(d) {
+    if (!d) return '';
+    if (d.catatanEvaluasi && String(d.catatanEvaluasi).trim()) return d.catatanEvaluasi;
+    if (d.keterangan && String(d.keterangan).trim()) return d.keterangan;
+    return Helpers.kendalaList(d.kendala).join(', ');
+  },
   autoFillJarak(prefix) {
     const input = document.getElementById(`${prefix}_koordinat`);
     const parsed = Helpers.parseKoordinat(input?.value);

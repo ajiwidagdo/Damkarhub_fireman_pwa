@@ -140,7 +140,7 @@ export const Export = {
             case 'Durasi': r.push(first ? (d.durasi || '0') : ''); break;
             case 'Armada & Air': first ? r.push(d.armada || '-', d.air || '0') : r.push('',''); break;
             case 'Regu': r.push(first ? (d.regu ? d.regu.split('\n').join(', ') : '-') : ''); break;
-            case 'Keterangan': r.push(d.keterangan || ''); break;
+            case 'Keterangan': r.push(Helpers.sosCatatan(d)); break;
           }
         });
         rows.push(r);

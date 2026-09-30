@@ -77,17 +77,17 @@ export const ModSoscfg = {
     const gv = id => document.getElementById(id).value;
     return { id, tanggal:gv('sos_tanggal'), pukul:gv('sos_pukul'), tglSelesai:gv('sos_tglSelesai'), jamSelesai:gv('sos_jamSelesai'), tempat:gv('sos_tempat'), rangkaian:gv('sos_rangkaian'),
       kategori, pesertaList,
-      armada:gv('sos_armada'), air:gv('sos_air'), durasi:gv('sos_durasi'), kendala:gv('sos_kendala'),
+      armada:gv('sos_armada'), air:gv('sos_air'), durasi:gv('sos_durasi'), catatanEvaluasi:gv('sos_catatanEvaluasi'),
       regu:gv('sos_regu'), personil:gv('sos_personil'),
-      foto1:gv('sos_foto1_b64'), foto2:gv('sos_foto2_b64'), keterangan:gv('sos_keterangan') };
+      foto1:gv('sos_foto1_b64'), foto2:gv('sos_foto2_b64') };
   },
   fillForm(d) {
     const sv = (id,v) => document.getElementById(id).value = v ?? '';
-    sv('sos_tanggal',d.tanggal); sv('sos_pukul',d.pukul); sv('sos_tglSelesai',d.tglSelesai); sv('sos_jamSelesai',d.jamSelesai); sv('sos_tempat',d.tempat); sv('sos_rangkaian',d.rangkaian); sv('sos_keterangan',d.keterangan);
+    sv('sos_tanggal',d.tanggal); sv('sos_pukul',d.pukul); sv('sos_tglSelesai',d.tglSelesai); sv('sos_jamSelesai',d.jamSelesai); sv('sos_tempat',d.tempat); sv('sos_rangkaian',d.rangkaian); sv('sos_catatanEvaluasi', Helpers.sosCatatan(d));
     sv('sos_kategori',d.kategori || '');
     document.getElementById('sos_pesertaListContainer').innerHTML = '';
     (d.pesertaList?.length ? d.pesertaList : [null]).forEach(p => Mod.sos.addPeserta(p));
-    sv('sos_armada',d.armada); sv('sos_air',d.air); sv('sos_durasi',d.durasi); sv('sos_kendala',d.kendala || 'Nihil');
+    sv('sos_armada',d.armada); sv('sos_air',d.air); sv('sos_durasi',d.durasi);
     sv('sos_regu',d.regu || ''); sv('sos_personil',d.personil);
     document.getElementById('sos_foto1_b64').value = d.foto1 || '';
     document.getElementById('sos_foto2_b64').value = d.foto2 || '';
@@ -131,14 +131,14 @@ export const ModSoscfg = {
         P.row('Selesai', selesaiStr) + P.row('Durasi', `${d.durasi || 0} Menit`) + P.row('Sasaran Edukasi', kategoriStr), 'text-emerald-600') +
       P.section('B. Tempat', 'fa-location-dot', P.row('Lokasi', d.tempat || '-'), 'text-emerald-600') +
       P.section('C. Rangkaian Kegiatan', 'fa-list-check',
-        rangkaianList.length ? `<ol class="text-sm text-gray-800 dark:text-gray-200 space-y-1">${rangkaianList.map(r => `<li class="flex gap-2"><span class="text-emerald-500 font-bold">•</span><span>${r.replace(/^-\s*/, '')}</span></li>`).join('')}</ol>` : '<p class="text-xs text-gray-400 italic">-</p>', 'text-emerald-600') +
+        (rangkaianList.length ? `<ol class="text-sm text-gray-800 dark:text-gray-200 space-y-1">${rangkaianList.map(r => `<li class="flex gap-2"><span class="text-emerald-500 font-bold">•</span><span>${r.replace(/^-\s*/, '')}</span></li>`).join('')}</ol>` : '<p class="text-xs text-gray-400 italic">-</p>') + (Helpers.sosCatatan(d) ? P.row('Catatan Evaluasi', Helpers.sosCatatan(d)) : ''), 'text-emerald-600') +
       P.section('D. Data Peserta', 'fa-users',
         `<div class="flex gap-2 mb-2">
           <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-lg">${jumlahInstansi} Instansi</span>
           <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2.5 py-1 rounded-lg">${totalPeserta} Total Orang</span>
         </div>${pesertaHtml}`, 'text-emerald-600') +
       P.section('E. Operasional', 'fa-truck-medical',
-        P.row('Armada', d.armada || '-') + P.row('Air', `${d.air || 0} Tangki`) + P.row('Kendala', d.kendala || 'Nihil'), 'text-emerald-600') +
+        P.row('Armada', d.armada || '-') + P.row('Air', `${d.air || 0} Tangki`), 'text-emerald-600') +
       P.section('F. Personil Bertugas', 'fa-people-group',
         P.row('Regu', reguStr) + (personilList.length ? `<div class="mt-2 flex flex-wrap gap-1">${personilList.map(p => `<span class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-1 rounded-md">${p}</span>`).join('')}</div>` : ''), 'text-emerald-600');
   },
@@ -176,8 +176,7 @@ ${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit
 ${d.tempat || '-'}
 
  *C. RANGKAIAN KEGIATAN*
-${rangkaianList}
-Kendala : ${d.kendala || 'Nihil'}
+${rangkaianList}${Helpers.sosCatatan(d) ? `\nCatatan Evaluasi : ${Helpers.sosCatatan(d)}` : ''}
 
  *D. SASARAN EDULASI*
 ${kategoriStr}
@@ -193,7 +192,6 @@ ${personil}
 Demikian yang dapat kami laporkan. 
 Terima kasih.
 `;
-    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
     return wa;
   }
 };
