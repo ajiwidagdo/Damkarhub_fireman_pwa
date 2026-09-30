@@ -39,7 +39,7 @@ export const Export = {
   _buildK(filtered, cols) {
     const head = ['No'];
     cols.forEach(c => {
-      const map = { 'Tanggal':'Tanggal','Jam Mulai':'Jam Mulai','Tgl Selesai':'Tgl Selesai','Jam Selesai':'Jam Selesai','Jenis Kejadian':'Jenis Kejadian','Lokasi Detail':['Lokasi','Kel/Desa','Kecamatan'],'Penyebab':'Penyebab','Objek':['Objek','Luas Area'],'Nilai Aset':'Nilai Aset','Taksiran Kerugian':'Taksiran Kerugian','Aset Terselamatkan':'Aset Terselamatkan','Korban Jiwa':['L.Ringan','L.Berat','Meninggal'],'Data Korban':'Nama Pemilik/Korban','NIK Korban':'NIK','Alamat Korban':'Alamat','Respon Time':'Respon (Mnt)','Jarak Tempuh':'Jarak (Km)','Armada & Air':['Armada','Air (T)'],'Regu':'Regu','Keterangan':'Keterangan' }[c];
+      const map = { 'Tanggal':'Tanggal','Jam Mulai':'Jam Mulai','Tgl Selesai':'Tgl Selesai','Jam Selesai':'Jam Selesai','Jenis Kejadian':'Jenis Kejadian','Lokasi Detail':['Lokasi','Kel/Desa','Kecamatan'],'Penyebab':'Penyebab','Objek':['Objek','Luas Area'],'Nilai Aset':'Nilai Aset','Taksiran Kerugian':'Taksiran Kerugian','Aset Terselamatkan':'Aset Terselamatkan','Korban Jiwa':['L.Ringan','L.Berat','Meninggal'],'Data Korban':'Nama Pemilik/Korban','NIK Korban':'NIK','Alamat Korban':'Alamat','Respon Time':'Respon (Mnt)','Jarak Tempuh':'Jarak (Km)','Armada & Air':['Armada','Air (T)'],'Regu':'Regu','Kendala':'Kendala','Keterangan':'Keterangan' }[c];
       head.push(...(Array.isArray(map) ? map : [map]));
     });
     const rows = []; let idx = 1;
@@ -69,6 +69,7 @@ export const Export = {
             case 'Jarak Tempuh': r.push(first ? (d.jarak || '0') : ''); break;
             case 'Armada & Air': first ? r.push(d.armada || '-', d.air || '0') : r.push('',''); break;
             case 'Regu': r.push(first ? (d.regu ? d.regu.split('\n').join(', ') : '-') : ''); break;
+            case 'Kendala': r.push(first ? (Helpers.kendalaList(d.kendala).join(', ') || 'Nihil') : ''); break;
             case 'Keterangan': r.push(d.keterangan || ''); break;
           }
         });
@@ -81,7 +82,7 @@ export const Export = {
   _buildNK(filtered, cols) {
     const head = ['No'];
     cols.forEach(c => {
-      const map = { 'Tanggal':'Tanggal','Jam Mulai':'Jam Mulai','Tgl Selesai':'Tgl Selesai','Jam Selesai':'Jam Selesai','Jenis Giat':'Jenis Kegiatan','Lokasi Detail':['Lokasi','Kel/Desa','Kecamatan'],'Data Pelapor':'Nama Pelapor','Alamat Pelapor':'Alamat','Objek':'Objek','Durasi & Jarak':['Durasi (Mnt)','Jarak (Km)'],'Armada & Air':['Armada','Air (T)'],'Korban':['L.Ringan','L.Berat','Meninggal'],'Regu':'Regu','Keterangan':'Keterangan' }[c];
+      const map = { 'Tanggal':'Tanggal','Jam Mulai':'Jam Mulai','Tgl Selesai':'Tgl Selesai','Jam Selesai':'Jam Selesai','Jenis Giat':'Jenis Kegiatan','Lokasi Detail':['Lokasi','Kel/Desa','Kecamatan'],'Data Pelapor':'Nama Pelapor','Alamat Pelapor':'Alamat','Objek':'Objek','Durasi & Jarak':['Durasi (Mnt)','Jarak (Km)'],'Armada & Air':['Armada','Air (T)'],'Korban':['L.Ringan','L.Berat','Meninggal'],'Regu':'Regu','Kendala':'Kendala','Keterangan':'Keterangan' }[c];
       head.push(...(Array.isArray(map) ? map : [map]));
     });
     const rows = []; let idx = 1;
@@ -103,6 +104,7 @@ export const Export = {
           case 'Armada & Air': r.push(d.armada || '-', d.air || '0'); break;
           case 'Korban': r.push(d.lRingan || '0', d.lBerat || '0', d.mnggal || '0'); break;
           case 'Regu': r.push(d.regu ? d.regu.split('\n').join(', ') : '-'); break;
+          case 'Kendala': r.push(Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'); break;
           case 'Keterangan': r.push(d.keterangan || ''); break;
         }
       });

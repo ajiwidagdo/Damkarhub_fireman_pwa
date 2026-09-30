@@ -52,6 +52,7 @@ const App = {
       App.renderReguChips('nk'); App.renderPersonnelChips('nk');
       App.renderReguChips('sos'); App.renderPersonnelChips('sos');
       App.renderKategoriChips();
+      App.renderKendalaChips('k'); App.renderKendalaChips('nk');
       this._attachFormValidation();
       this._setupBackButton();
       this.switchView('beranda');
@@ -649,6 +650,66 @@ renderSistem() {
     const names = el.value.split('\n').filter(x=>x.trim());
     el.value = names.filter(n => n !== name).join('\n');
     this.renderKategoriChips();
+  },
+
+  openKendalaSelector(prefix) {
+    const selected = (document.getElementById(`${prefix}_kendala`).value || '').split('\n').filter(x=>x.trim());
+    const lainnyaEntry = selected.find(x => x.startsWith('Lainnya:'));
+    const lainnyaText = lainnyaEntry ? lainnyaEntry.slice('Lainnya:'.length).trim().replace(/"/g, '&quot;') : '';
+    const listHtml = Config.KENDALA_OPTIONS.map(k => {
+      const isChecked = k === 'Lainnya' ? (selected.includes('Lainnya') || !!lainnyaEntry) : selected.includes(k);
+      const onchange = k === 'Lainnya' ? ` onchange="document.getElementById('kendala_lainnya_text').disabled = !this.checked"` : '';
+      return `<label class="flex items-center p-3 border-b border-gray-100 dark:border-gray-700 last:border-0 active:bg-gray-50 dark:active:bg-gray-700 transition">
+          <input type="checkbox" class="kendala-cb cb-custom mr-3" value="${k}" ${isChecked?'checked':''}${onchange}>
+          <div class="flex-1"><p class="text-sm font-bold text-gray-800 dark:text-gray-200">${k}</p></div>
+       </label>`;
+    }).join('');
+    const content = `<div class="p-4 space-y-2">
+       <p class="text-xs text-gray-500 mb-2">Centang kendala yang ditemui di lapangan. Bisa pilih lebih dari satu.</p>
+       <div class="max-h-[50vh] overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-xl">${listHtml}</div>
+       <div>
+          <label class="field-label">Kendala Lainnya (isi bila memilih "Lainnya")</label>
+          <input type="text" id="kendala_lainnya_text" placeholder="Tulis kendala lain..." value="${lainnyaText}" ${lainnyaEntry || selected.includes('Lainnya') ? '' : 'disabled'}>
+       </div>
+       <div class="flex gap-2 pt-2">
+          <button onclick="UI.closeSheet()" class="flex-1 bg-gray-100 dark:bg-gray-700 font-bold py-3 rounded-xl">Batal</button>
+          <button onclick="App.applyKendalaSelection('${prefix}')" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl">Terapkan</button>
+       </div></div>`;
+    UI.openSheet('Pilih Kendala', content);
+  },
+
+  applyKendalaSelection(prefix) {
+    const cbs = document.querySelectorAll('.kendala-cb:checked');
+    const names = Array.from(cbs).map(cb => cb.value);
+    const li = names.indexOf('Lainnya');
+    if (li > -1) {
+      const t = (document.getElementById('kendala_lainnya_text')?.value || '').trim();
+      if (t) names[li] = `Lainnya: ${t}`;
+    }
+    document.getElementById(`${prefix}_kendala`).value = names.join('\n');
+    this.renderKendalaChips(prefix);
+    UI.closeSheet(); Helpers.haptic(15);
+  },
+
+  renderKendalaChips(prefix) {
+    const el = document.getElementById(`${prefix}_kendala_chips`);
+    if (!el) return;
+    const val = document.getElementById(`${prefix}_kendala`)?.value || '';
+    const names = val ? val.split('\n').filter(x=>x.trim()) : [];
+    if (!names.length) { el.innerHTML = '<span class="text-[10px] text-gray-400 italic">Tidak ada kendala (Nihil)</span>'; return; }
+    el.innerHTML = names.map((name, i) => `
+       <span class="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-1 rounded-md">
+          ${name}
+          <button type="button" onclick="App.removeKendalaChip('${prefix}', ${i})" class="text-indigo-400 hover:text-indigo-600"><i class="fa-solid fa-times"></i></button>
+       </span>`).join('');
+  },
+
+  removeKendalaChip(prefix, idx) {
+    const el = document.getElementById(`${prefix}_kendala`);
+    const names = el.value.split('\n').filter(x=>x.trim());
+    names.splice(idx, 1);
+    el.value = names.join('\n');
+    this.renderKendalaChips(prefix);
   },
 
   refreshReguSelects() {},

@@ -19,8 +19,8 @@ const Config = {
     'Papua', 'Papua Barat', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya'
   ],
   DEFAULT_EXPORT_COLS: {
-    k:   ['Tanggal','Jenis Kejadian','Penyebab','Objek','Kerugian','Alamat Korban','Data Korban','Respon Time','Jarak Tempuh','Keterangan'],
-    nk:  ['Tanggal','Jenis Giat','Data Pelapor','Alamat Pelapor','Objek','Durasi & Jarak','Keterangan'],
+    k:   ['Tanggal','Jenis Kejadian','Penyebab','Objek','Kerugian','Alamat Korban','Data Korban','Respon Time','Jarak Tempuh','Kendala','Keterangan'],
+    nk:  ['Tanggal','Jenis Giat','Data Pelapor','Alamat Pelapor','Objek','Durasi & Jarak','Kendala','Keterangan'],
     sos: ['Tanggal','Sasaran Edukasi','Nama Instansi','Alamat Instansi','Jumlah Peserta','Keterangan']
   },
   DB_VERSION: 3,
@@ -45,6 +45,14 @@ const Config = {
     'FASUM - Fasilitas Umum (Mal, Pasar, Transportasi)',
     'REL - Relawan (Organisasi / Komunitas Tanggap Bencana)',
     'LLN - Lainnya'
+  ],
+  KENDALA_OPTIONS: [
+    'Akses Jalan Sempit',
+    'Sumber Air Terbatas',
+    'Keterlambatan Informasi',
+    'Cuaca / Angin Kencang',
+    'Peralatan Terbatas',
+    'Lainnya'
   ],
   DEFAULT_SETTINGS: {
     id: 'global',

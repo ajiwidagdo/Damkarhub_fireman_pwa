@@ -80,6 +80,13 @@ export const Helpers = {
     if (m) return { lat: m[1], lng: m[2] };
     return null;
   },
+  /* Normalisasi field kendala (K/NK) ke array.
+     Data baru: array. Data lama: string ('Nihil'/kosong -> [], teks bebas -> [teks]). */
+  kendalaList(v) {
+    if (Array.isArray(v)) return v.map(x => String(x).trim()).filter(Boolean);
+    if (typeof v === 'string') { const s = v.trim(); return (!s || s === 'Nihil') ? [] : [s]; }
+    return [];
+  },
   autoFillJarak(prefix) {
     const input = document.getElementById(`${prefix}_koordinat`);
     const parsed = Helpers.parseKoordinat(input?.value);

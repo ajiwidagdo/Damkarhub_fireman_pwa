@@ -58,7 +58,7 @@ export const ModNkcfg = {
       idDusun:gv('nk_idDusun'), idRtrw:gv('nk_idRtrw'), idKel:gv('nk_idKel'), idKec:gv('nk_idKec'), idKabkota:gv('nk_idKabkota'),
       objek:gv('nk_objek'), lokasiOp:gv('nk_lokasiOp'), ukuran:gv('nk_ukuran'),
       durasi:gv('nk_durasi'), armada:gv('nk_armada'), jarak:gv('nk_jarak'), air:gv('nk_air'),
-      kronologi:gv('nk_kronologi'), tindakan:gv('nk_tindakan'), kendala:gv('nk_kendala'),
+      kronologi:gv('nk_kronologi'), tindakan:gv('nk_tindakan'), kendala:(gv('nk_kendala') || '').split('\n').map(s => s.trim()).filter(Boolean),
       lRingan:gv('nk_lRingan') || 0, lBerat:gv('nk_lBerat') || 0, mnggal:gv('nk_mnggal') || 0,
       regu:gv('nk_regu'), personil:gv('nk_personil'),
       foto1:gv('nk_foto1_b64'), foto2:gv('nk_foto2_b64'), keterangan:gv('nk_keterangan') };
@@ -72,13 +72,14 @@ export const ModNkcfg = {
     sv('nk_idDusun',d.idDusun); sv('nk_idRtrw',d.idRtrw); sv('nk_idKel',d.idKel); sv('nk_idKec',d.idKec); sv('nk_idKabkota',d.idKabkota);
     sv('nk_objek',d.objek); sv('nk_lokasiOp',d.lokasiOp); sv('nk_ukuran',d.ukuran);
     sv('nk_durasi',d.durasi); sv('nk_armada',d.armada); sv('nk_jarak',d.jarak); sv('nk_air',d.air);
-    sv('nk_kronologi',d.kronologi); sv('nk_tindakan',d.tindakan); sv('nk_kendala',d.kendala || 'Nihil'); sv('nk_keterangan',d.keterangan);
+    sv('nk_kronologi',d.kronologi); sv('nk_tindakan',d.tindakan); sv('nk_kendala', Helpers.kendalaList(d.kendala).join('\n')); sv('nk_keterangan',d.keterangan);
     sv('nk_lRingan',d.lRingan); sv('nk_lBerat',d.lBerat); sv('nk_mnggal',d.mnggal);
     sv('nk_regu',d.regu || ''); sv('nk_personil',d.personil);
     document.getElementById('nk_foto1_b64').value = d.foto1 || '';
     document.getElementById('nk_foto2_b64').value = d.foto2 || '';
     App.renderReguChips('nk');
     App.renderPersonnelChips('nk');
+    App.renderKendalaChips('nk');
   },
   onResetForm() {
     document.getElementById('nk_jenis_lainnya').classList.add('hidden');
@@ -86,6 +87,7 @@ export const ModNkcfg = {
     document.getElementById('nk_foto2_b64').value = '';
     App.renderReguChips('nk');
     App.renderPersonnelChips('nk');
+    App.renderKendalaChips('nk');
   },
   buildPreviewHTML(d) {
     const P = PreviewBuilder;
@@ -116,7 +118,7 @@ export const ModNkcfg = {
         P.row('Objek', d.objek || '-') + P.row('Lokasi', d.lokasiOp || d.lokasiDetail || '-') + P.row('Ukuran', d.ukuran || '-'), 'text-amber-600') +
       P.section('G. Operasional', 'fa-truck-medical',
         P.row('Armada', d.armada || '-') + P.row('Air', `${d.air || 0} Tangki`) + P.row('Jarak', `${d.jarak || 0} Km`) +
-        P.row('Tindakan', d.tindakan || '-') + P.row('Kendala', d.kendala || 'Nihil'), 'text-amber-600') +
+        P.row('Tindakan', d.tindakan || '-') + P.row('Kendala', Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'), 'text-amber-600') +
       P.section('H. Korban Jiwa', 'fa-heart-pulse',
         P.row('Luka Ringan', `${d.lRingan || 0} orang`) + P.row('Luka Berat', `${d.lBerat || 0} orang`) + P.row('Meninggal', `${d.mnggal || 0} orang`), 'text-amber-600') +
       P.section('I. Personil Bertugas', 'fa-people-group',
@@ -166,7 +168,7 @@ ${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
 • Jarak ke lokasi : ${d.jarak || 0} Km  
 • Armada : ${d.armada || '-'}
 • Tindakan : ${d.tindakan || '-'}
-• Kendala : ${d.kendala || 'Nihil'}${d.keterangan ? `\n• Catatan : ${d.keterangan}` : ''}
+• Kendala : ${Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'}${d.keterangan ? `\n• Catatan : ${d.keterangan}` : ''}
 • Korban Jiwa : LR ${d.lRingan || 0}, LB ${d.lBerat || 0}, MD ${d.mnggal || 0}
 
  *F. PERSONIL YANG BERTUGAS*
