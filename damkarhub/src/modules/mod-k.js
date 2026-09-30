@@ -286,7 +286,7 @@ ${unsur}
 ━━━━━━━━━━━━━━━━━━━
  Demikian yang dapat kami laporkan. 
  Terima kasih.
-_Dikirim melalui DAMKARHUB_ 🔥`;
+`;
   }
 };
 

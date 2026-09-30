@@ -192,7 +192,7 @@ ${personil}
 ━━━━━━━━━━━━━━━━━━━
 Demikian yang dapat kami laporkan. 
 Terima kasih.
-_Dikirim via DAMKARHUB_ 🔥`;
+`;
   }
 };
 
