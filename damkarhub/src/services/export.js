@@ -125,7 +125,7 @@ export const Export = {
       pList.forEach((p, i) => {
         const r = [i === 0 ? idx : ''];
         const first = i === 0;
-        const kategoriStr = d.kategori ? d.kategori.split('\n').filter(k=>k.trim()).map(Helpers.plainKategori).join(', ') : '-';
+        const kategoriStr = d.kategori ? d.kategori.split('\n').filter(k=>k.trim()).map(Helpers.shortKategori).join(', ') : '-';
         cols.forEach(c => {
           switch (c) {
             case 'Tanggal': r.push(first ? Helpers.formatDate(d.tanggal) : ''); break;
