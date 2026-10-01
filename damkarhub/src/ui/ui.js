@@ -149,6 +149,49 @@ showComingSoon(feature) {
       onFallback();
     }
   },
+  openPicker(selId, title) {
+    const sel = document.getElementById(selId); if (!sel) return;
+    this.syncPickers();
+    const rows = Array.from(sel.options).map((o, i) => {
+      const active = i === (sel.selectedIndex >= 0 ? sel.selectedIndex : 0);
+      return `<button type="button" onclick="UI.pickOption('${selId}', ${i})" class="picker-opt ${active ? 'picker-opt-active' : ''}"><span class="picker-radio ${active ? 'picker-radio-on' : ''}"></span><span class="flex-1">${(o.textContent || '').trim()}</span>${active ? '<i class="fa-solid fa-check text-emerald-500"></i>' : ''}</button>`;
+    }).join('');
+    this.openSheet(title, rows);
+  },
+  pickOption(selId, idx) {
+    const sel = document.getElementById(selId); if (!sel) return;
+    sel.selectedIndex = idx;
+    sel.setAttribute('data-picked', '1');
+    const Evt = (sel.ownerDocument && sel.ownerDocument.defaultView && sel.ownerDocument.defaultView.Event) || Event;
+    sel.dispatchEvent(new Evt('change', { bubbles: true }));
+    this.closeSheet();
+    this.syncPickers();
+  },
+  toggleDisclosure(btn) {
+    const d = btn.closest('[data-disclosure]'); if (!d) return;
+    d.classList.toggle('open');
+    const body = d.querySelector('.disclosure-body');
+    if (body) body.classList.toggle('hidden', !d.classList.contains('open'));
+  },
+  syncDisclosures(root) {
+    (root || document).querySelectorAll('[data-disclosure]').forEach(d => {
+      const body = d.querySelector('.disclosure-body'); if (!body) return;
+      const has = Array.from(body.querySelectorAll('input, textarea, select')).some(el => {
+        if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
+        return (el.value || '').trim() !== '';
+      });
+      d.classList.toggle('open', has);
+      body.classList.toggle('hidden', !has);
+    });
+  },
+  syncPickers(root) {
+    (root || document).querySelectorAll('select.picker-native').forEach(sel => {
+      const wrap = sel.closest('.picker-wrap'); if (!wrap) return;
+      const val = wrap.querySelector('.picker-value');
+      const idx = sel.selectedIndex >= 0 ? sel.selectedIndex : 0;
+      if (val) val.textContent = sel.options[idx] ? (sel.options[idx].textContent || '').trim() : '';
+    });
+  },
   checkLainnya(selId, inpId) {
     const sel = document.getElementById(selId), inp = document.getElementById(inpId);
     if (sel.value === 'Lainnya') { inp.classList.remove('hidden'); inp.required = true; inp.focus(); }

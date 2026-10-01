@@ -83,12 +83,18 @@ export const Builders = {
         </label>
         <input type="hidden" id="${prefix}_foto1_b64">
       </div>
-      <div><label class="field-label">${label2}</label>
-        <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">
-          <i class="fa-solid fa-camera mr-1"></i> Ambil Foto
-          <input type="file" accept="image/*" class="hidden" onchange="Helpers.compressImage(this, '${prefix}_foto2_b64')">
-        </label>
-        <input type="hidden" id="${prefix}_foto2_b64">
+      <div>
+        <div data-disclosure class="disclosure">
+          <button type="button" class="disclosure-head disc-tile" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> ${label2}</button>
+          <div class="disclosure-body hidden">
+            <label class="field-label">${label2}</label>
+            <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">
+              <i class="fa-solid fa-camera mr-1"></i> Ambil Foto
+              <input type="file" accept="image/*" class="hidden" onchange="Helpers.compressImage(this, '${prefix}_foto2_b64')">
+            </label>
+            <input type="hidden" id="${prefix}_foto2_b64">
+          </div>
+        </div>
       </div>
     </div>`;
   },
