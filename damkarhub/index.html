@@ -226,6 +226,8 @@ html.dark .theme-badge {
   .field-label { display:block; font-size:.625rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-bottom:.2rem; color:#8a7a7b; }
   .dark .field-label { color:#b9a7a8; }
   .field-hint { font-size:10px; color:#9a8a8b; margin-top:.25rem; line-height:1.35; }
+  .input-prefix { position:absolute; left:.7rem; top:50%; transform:translateY(-50%); font-size:.8rem; font-weight:700; color:#9a8a8b; pointer-events:none; }
+  input.has-prefix { padding-left:2.3rem; }
   .dark .field-hint { color:#a89394; }
   input, select, textarea { width:100%; border:1px solid var(--line-strong); border-radius:.75rem; padding:.55rem .75rem; font-size:16px; background:#fbf8f7; color:var(--ink); transition:border-color .15s, box-shadow .15s, background .15s; }
   select { appearance:none; -webkit-appearance:none; padding:.55rem .5rem; padding-right:1.7rem; letter-spacing:-.01em; text-overflow:ellipsis; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a7a7b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .55rem center; background-size:12px; }
@@ -618,9 +620,7 @@ html.dark .theme-badge {
             <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
             <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
           </div>
-          <p class="field-hint">Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai</p>
         </div>
-        <p class="field-hint mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
         <div class="mb-3">
           <label class="field-label">Jenis Kejadian</label>
           <div class="picker-wrap"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
@@ -638,7 +638,7 @@ html.dark .theme-badge {
         </div>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
               <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="k_dusun"></div>
+          <div><label class="field-label">Dusun</label><input type="text" enterkeyhint="next" id="k_dusun"></div>
           <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -692,16 +692,16 @@ html.dark .theme-badge {
   <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-3"><i class="fa-solid fa-coins mr-1"></i> Nilai Ekonomi</p>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
     <div>
-      <label class="field-label text-red-500 dark:text-red-400">Nilai Aset Keseluruhan (Rp)</label>
-      <input type="number" id="k_nilaiAset" placeholder="Total nilai aset lokasi" class="border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 font-bold" oninput="Mod.k.calcAsetTerselamatkan()">
+      <label class="field-label text-red-500 dark:text-red-400">Nilai Aset</label>
+      <div class="relative"><span class="input-prefix">Rp</span><input type="number" id="k_nilaiAset" placeholder="Total nilai aset lokasi" class="has-prefix border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 font-bold" oninput="Mod.k.calcAsetTerselamatkan()"></div>
     </div>
     <div>
-      <label class="field-label text-red-500 dark:text-red-400">Taksiran Kerugian (Rp)</label>
-      <input type="number" id="k_kerugian" placeholder="Taksiran kerugian" class="border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 font-bold" oninput="Mod.k.calcAsetTerselamatkan()">
+      <label class="field-label text-red-500 dark:text-red-400">Kerugian</label>
+      <div class="relative"><span class="input-prefix">Rp</span><input type="number" id="k_kerugian" placeholder="Taksiran kerugian" class="has-prefix border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 font-bold" oninput="Mod.k.calcAsetTerselamatkan()"></div>
     </div>
     <div>
-      <label class="field-label text-emerald-600 dark:text-emerald-400">Aset Terselamatkan (Rp)</label>
-      <input type="number" id="k_asetSelamat" placeholder="Otomatis dihitung" readonly class="border-emerald-200 dark:border-emerald-800 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+      <label class="field-label text-emerald-600 dark:text-emerald-400">Aset Selamat</label>
+      <div class="relative"><span class="input-prefix">Rp</span><input type="number" id="k_asetSelamat" placeholder="Otomatis dihitung" readonly class="has-prefix border-emerald-200 dark:border-emerald-800 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed"></div>
     </div>
   </div>
   <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-2 italic"><i class="fa-solid fa-info-circle mr-1"></i>Aset Terselamatkan otomatis = Nilai Aset − Taksiran Kerugian</p>
@@ -716,7 +716,7 @@ html.dark .theme-badge {
         <div id="k_operasional_inputs"></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Kronologi Singkat</label>
+            <label class="field-label mb-0">Kronologi</label>
             <button type="button" onclick="Helpers.startSpeech('k_kronologi', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_kronologi" rows="2" required></textarea>
@@ -734,11 +734,10 @@ html.dark .theme-badge {
           <div class="disclosure-body hidden">
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Unsur yang Terlibat</label>
+            <label class="field-label mb-0">Unsur Terlibat</label>
             <button type="button" onclick="Helpers.startSpeech('k_unsur', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_unsur" rows="2"></textarea>
-          <p class="field-hint">Pisahkan tiap unsur dengan Enter</p>
         </div>
           </div>
         </div>
@@ -778,7 +777,6 @@ html.dark .theme-badge {
           <div>
             <div class="flex items-center justify-between"><label class="field-label mb-0">Tgl Mulai</label><button type="button" class="btn-record" onclick="Helpers.recordDate('nk_tglMulai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button></div>
             <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Tanggal mulai ditangani" onclick="if(this.showPicker)this.showPicker()">
-            <p class="field-hint">Tanggal mulai ditangani</p>
           </div>
           <div>
             <div class="flex items-center justify-between"><label class="field-label mb-0">Jam Mulai</label><button type="button" class="btn-record" onclick="Helpers.recordTime('nk_jamMulai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button></div>
@@ -787,7 +785,6 @@ html.dark .theme-badge {
           <div>
             <div class="flex items-center justify-between"><label class="field-label mb-0">Tgl Selesai</label><button type="button" class="btn-record" onclick="Helpers.recordDate('nk_tglSelesai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button></div>
             <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Tanggal selesai ditangani" onclick="if(this.showPicker)this.showPicker()">
-            <p class="field-hint">Tanggal selesai ditangani</p>
           </div>
           <div>
             <div class="flex items-center justify-between"><label class="field-label mb-0">Jam Selesai</label><button type="button" class="btn-record" onclick="Helpers.recordTime('nk_jamSelesai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button></div>
@@ -810,7 +807,7 @@ html.dark .theme-badge {
         </div>
         <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="nk_dusun"></div>
+          <div><label class="field-label">Dusun</label><input type="text" enterkeyhint="next" id="nk_dusun"></div>
           <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="nk_rtrw"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -855,12 +852,12 @@ html.dark .theme-badge {
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
           <div><label class="field-label">Objek / Satwa</label><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
           <div><label class="field-label">Detail Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
-          <div><label class="field-label">Ukuran / Spesifikasi</label><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
+          <div><label class="field-label">Ukuran</label><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
         </div>
         <div id="nk_operasional_inputs"></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Kronologi Singkat</label>
+            <label class="field-label mb-0">Kronologi</label>
             <button type="button" onclick="Helpers.startSpeech('nk_kronologi', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="nk_kronologi" rows="2" required></textarea>
@@ -915,11 +912,10 @@ html.dark .theme-badge {
         <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" enterkeyhint="next" id="sos_tempat" required></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Rangkaian Kegiatan</label>
+            <label class="field-label mb-0">Kegiatan</label>
             <button type="button" onclick="Helpers.startSpeech('sos_rangkaian', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="sos_rangkaian" rows="3" required></textarea>
-          <p class="field-hint">Satu kegiatan per baris (tekan Enter)</p>
         </div>
       </section>
       <section id="sos-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
@@ -994,15 +990,15 @@ html.dark .theme-badge {
       <p class="text-xs text-blue-700 dark:text-blue-300 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Digunakan sebagai penerima laporan WhatsApp.</p>
     </div>
     <div><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" id="set_instansi" placeholder="UPTD DAMKAR" required></div>
-    <div><label class="field-label">Wilayah / Daerah</label><input type="text" enterkeyhint="next" id="set_daerah" placeholder="Kota Banjar" required></div>
+    <div><label class="field-label">Wilayah/Daerah</label><input type="text" enterkeyhint="next" id="set_daerah" placeholder="Kota Banjar" required></div>
     <div>
-      <label class="field-label">Koordinat Kantor (Lat, Lng)</label>
+      <label class="field-label">Koordinat</label>
       <div class="flex gap-2">
         <input type="text" enterkeyhint="next" id="set_kantor" required placeholder="-7.xxxx, 108.xxxx">
         <button type="button" onclick="Helpers.getLocKantor()" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
       </div>
     </div>
-    <div><label class="field-label">Tujuan Laporan WA (Pimpinan)</label><textarea id="set_pimpinan" rows="5" required></textarea></div>
+    <div><label class="field-label">Tujuan WA</label><textarea id="set_pimpinan" rows="5" required></textarea></div>
     <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl active:scale-[.98]">Simpan Pengaturan</button>
   </form>
 

@@ -53,7 +53,7 @@ export const ModSoscfg = {
     div.innerHTML = `
       <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90"><i class="fa-solid fa-times"></i></button>
       <div class="grid grid-cols-3 gap-3 mb-2">
-        <div class="col-span-2"><label class="field-label">Nama Instansi / Sekolah</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
+        <div class="col-span-2"><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
         <div><label class="field-label">Jml. Peserta</label><input type="number" class="sos_pJumlah" value="${data?.jumlah || ''}" required></div>
       </div>
       <label class="field-label mt-2">Alamat Lengkap</label>

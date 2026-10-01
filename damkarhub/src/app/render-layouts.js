@@ -94,14 +94,14 @@ export function renderLayouts() {
   document.getElementById('k_kendala_inputs').innerHTML = Builders.kendalaInputs('k');
   document.getElementById('k_casualty_inputs').innerHTML = Builders.casualtyInputs('k');
   document.getElementById('k_regu_inputs').innerHTML = Builders.reguInputs('k');
-  document.getElementById('k_photo_inputs').innerHTML = Builders.photoInputs('k', 'Foto Api (1)', 'Foto Selesai (2)');
+  document.getElementById('k_photo_inputs').innerHTML = Builders.photoInputs('k', 'Foto Api (1)', 'Foto Akhir (2)');
   document.getElementById('k_waktu_inputs').innerHTML = Builders.koordinatInputs('k') + Builders.durasiJarakInputs('k');
 
   document.getElementById('nk_operasional_inputs').innerHTML = Builders.operasionalInputs('nk', { armadaRequired:false });
   document.getElementById('nk_kendala_inputs').innerHTML = Builders.kendalaInputs('nk');
   document.getElementById('nk_casualty_inputs').innerHTML = Builders.casualtyInputs('nk');
   document.getElementById('nk_regu_inputs').innerHTML = Builders.reguInputs('nk');
-  document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk', 'Foto Proses (1)', 'Foto Selesai (2)');
+  document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk', 'Foto Proses (1)', 'Foto Akhir (2)');
   document.getElementById('nk_waktu_inputs').innerHTML = Builders.koordinatInputs('nk') + Builders.durasiJarakInputs('nk');
 
   document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-2 gap-3 mb-3">
@@ -110,7 +110,7 @@ export function renderLayouts() {
   </div>`;
   document.getElementById('sos_waktu_inputs').innerHTML = Builders.durasiJarakInputs('sos', { includeJarak: false });
   document.getElementById('sos_regu_inputs').innerHTML = Builders.reguInputs('sos');
-  document.getElementById('sos_photo_inputs').innerHTML = Builders.photoInputs('sos', 'Foto Proses (1)', 'Foto Bersama (2)');
+  document.getElementById('sos_photo_inputs').innerHTML = Builders.photoInputs('sos', 'Foto Proses (1)', 'Foto Grup (2)');
 
   document.getElementById('k_export_panel').innerHTML = Builders.exportPanel('k', ['Tanggal','Jam Mulai','Tgl Selesai','Jam Selesai','Jenis Kejadian','Lokasi Detail','Penyebab','Objek','Nilai Aset','Taksiran Kerugian','Aset Terselamatkan','Korban Jiwa','Data Korban','NIK Korban','Alamat Korban','Respon Time','Jarak Tempuh','Armada & Air','Regu','Kendala','Keterangan']);
   document.getElementById('nk_export_panel').innerHTML = Builders.exportPanel('nk', ['Tanggal','Jam Mulai','Tgl Selesai','Jam Selesai','Jenis Giat','Lokasi Detail','Data Pelapor','Alamat Pelapor','Objek','Durasi','Jarak','Armada','Air','Korban','Kendala','Regu','Keterangan']);

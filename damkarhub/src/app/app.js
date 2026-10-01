@@ -669,7 +669,7 @@ renderSistem() {
        <p class="text-xs text-gray-500 mb-2">Centang kendala yang ditemui di lapangan. Bisa pilih lebih dari satu.</p>
        <div class="max-h-[50vh] overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-xl">${listHtml}</div>
        <div>
-          <label class="field-label">Kendala Lainnya (isi bila memilih "Lainnya")</label>
+          <label class="field-label">Kendala Lainnya</label>
           <input type="text" id="kendala_lainnya_text" placeholder="Tulis kendala lain..." value="${lainnyaText}" ${lainnyaEntry || selected.includes('Lainnya') ? '' : 'disabled'}>
        </div>
        <div class="flex gap-2 pt-2">

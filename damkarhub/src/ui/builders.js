@@ -56,7 +56,7 @@ export const Builders = {
       </div>
       <div>
         <div class="flex justify-between items-center mb-1">
-          <label class="field-label mb-0">Personil Bertugas</label>
+          <label class="field-label mb-0">Personil</label>
           <button type="button" onclick="App.openPersonnelSelector('${prefix}')" class="text-[10px] bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded font-bold border border-indigo-200 dark:border-indigo-800 active:scale-95"><i class="fa-solid fa-user-plus mr-1"></i>Pilih</button>
         </div>
         <div id="${prefix}_personil_chips" class="flex flex-wrap gap-1.5 min-h-[42px] p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"></div>
@@ -74,7 +74,7 @@ export const Builders = {
       <input type="hidden" id="${prefix}_kendala">
     </div>`;
   },
-  photoInputs(prefix, label1='Foto Proses (1)', label2='Foto Selesai (2)') {
+  photoInputs(prefix, label1='Foto Proses (1)', label2='Foto Akhir (2)') {
     return `<div class="grid grid-cols-2 gap-3">
       <div><label class="field-label">${label1}</label>
         <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">

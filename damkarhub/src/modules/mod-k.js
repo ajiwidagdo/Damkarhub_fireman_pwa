@@ -75,7 +75,7 @@ const ModKcfg = {
         <button type="button" onclick="Mod.k._copyLokasiToKorban(this)" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600 active:scale-95">Samakan Lokasi</button>
       </div>
       <div class="grid grid-cols-2 gap-3 mb-2">
-        <div><label class="field-label">Nama (Kosongkan bila belum diketahui)</label><input type="text" enterkeyhint="next" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>
+        <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>
         <div><label class="field-label">NIK (Opsional)</label><input type="text" enterkeyhint="next" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric"></div>
       </div>
       <div data-disclosure class="disclosure">
@@ -88,7 +88,7 @@ const ModKcfg = {
           <select class="k_kJK"><option value="-" ${data?.jk==='-'?'selected':''}>-</option><option ${data?.jk==='Pria'?'selected':''}>Pria</option><option ${data?.jk==='Wanita'?'selected':''}>Wanita</option></select>
         </div>
       </div>
-      <label class="field-label mt-2">Alamat Lengkap Korban</label>
+      <label class="field-label mt-2">Alamat Korban</label>
       <div class="grid grid-cols-2 gap-2 mb-2">
         <input type="text" enterkeyhint="next" class="k_kDusun" placeholder="Lingk/Dusun" value="${data?.dusun || ''}">
         <input type="text" enterkeyhint="next" class="k_kRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}">
