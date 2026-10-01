@@ -104,7 +104,7 @@ export function renderLayouts() {
   document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk', 'Foto Proses (1)', 'Foto Selesai (2)');
   document.getElementById('nk_waktu_inputs').innerHTML = Builders.koordinatInputs('nk') + Builders.durasiJarakInputs('nk');
 
-  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-2 gap-3 mb-3">
     ${Builders.inputText('sos_armada', 'Armada', '2 Unit Pancar')}
     <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="sos_air" value="0"></div>
   </div>`;
