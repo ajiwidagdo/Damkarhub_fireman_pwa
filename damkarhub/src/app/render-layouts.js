@@ -106,7 +106,7 @@ export function renderLayouts() {
 
   document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-2 gap-3 mb-3">
     ${Builders.inputText('sos_armada', 'Armada', '2 Unit Pancar')}
-    <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="sos_air" value="0"></div>
+    <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="sos_air" value="0" class="num-compact"></div></div>
   </div>`;
   document.getElementById('sos_waktu_inputs').innerHTML = Builders.durasiJarakInputs('sos', { includeJarak: false });
   document.getElementById('sos_regu_inputs').innerHTML = Builders.reguInputs('sos');
