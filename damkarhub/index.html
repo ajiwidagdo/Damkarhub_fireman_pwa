@@ -334,7 +334,6 @@ html.dark .theme-badge {
   main { padding-bottom: 24rem; position: relative; }
   input, select, textarea { scroll-margin-top: 120px; scroll-margin-bottom: 180px; }
   .kpi-compact h3 > span.inline-flex { display:flex; margin-left:0; margin-top:2px; }
-  .mic-active { background:#ef4444 !important; color:white !important; animation: pulseSoft 1.2s ease-in-out infinite; }
   /* Field tanggal/jam: overlay "Tekan di sini" + ikon rekam di luar box */
   .dt-wrap { position:relative; display:flex; align-items:stretch; gap:.5rem; }
   .dt-wrap input { flex:1; min-width:0; }
@@ -346,6 +345,12 @@ html.dark .theme-badge {
   .dt-record { flex:0 0 36px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:#2563eb; font-size:1.05rem; cursor:pointer; padding:0; }
   .dt-record:active { transform:scale(.9); }
   .dark .dt-record { color:#7db3ff; }
+  /* Tombol Suara: ikon ghost (btn-mic) — satu bahasa visual dengan .dt-record */
+  .btn-mic, button[onclick*="startSpeech"] { background:transparent !important; border:none !important; box-shadow:none !important; width:36px; height:28px; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; color:#2563eb; font-size:0; line-height:0; border-radius:9999px; cursor:pointer; flex:0 0 auto; }
+  .btn-mic i, button[onclick*="startSpeech"] i { font-size:15px; margin:0 !important; }
+  .dark .btn-mic, .dark button[onclick*="startSpeech"] { color:#7db3ff; }
+  .btn-mic:active, button[onclick*="startSpeech"]:active { transform:scale(.9); }
+  .mic-active, button[onclick*="startSpeech"].mic-active, .btn-mic.mic-active { background:rgba(239,68,68,.14) !important; color:#ef4444 !important; animation:pulseSoft 1.2s ease-in-out infinite; }
   /* Angka pendek: box ringkas + suffix satuan di luar box */
   .num-compact { width:84px; flex:0 0 84px; }
   .unit-suffix { font-size:.8rem; font-weight:700; color:#8a7a7b; }
@@ -785,14 +790,14 @@ html.dark .theme-badge {
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Kronologi</label>
-            <button type="button" onclick="Helpers.startSpeech('k_kronologi', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('k_kronologi', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_kronologi" rows="2" required></textarea>
         </div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Tindakan</label>
-            <button type="button" onclick="Helpers.startSpeech('k_tindakan', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('k_tindakan', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_tindakan" rows="2" required></textarea>
         </div>
@@ -803,7 +808,7 @@ html.dark .theme-badge {
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Unsur Terlibat</label>
-            <button type="button" onclick="Helpers.startSpeech('k_unsur', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('k_unsur', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_unsur" rows="2"></textarea>
         </div>
@@ -966,14 +971,14 @@ html.dark .theme-badge {
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Kronologi</label>
-            <button type="button" onclick="Helpers.startSpeech('nk_kronologi', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('nk_kronologi', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="nk_kronologi" rows="2" required></textarea>
         </div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Tindakan</label>
-            <button type="button" onclick="Helpers.startSpeech('nk_tindakan', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('nk_tindakan', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="nk_tindakan" rows="2" required></textarea>
         </div>
@@ -1052,7 +1057,7 @@ html.dark .theme-badge {
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Kegiatan</label>
-            <button type="button" onclick="Helpers.startSpeech('sos_rangkaian', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
+            <button type="button" onclick="Helpers.startSpeech('sos_rangkaian', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="sos_rangkaian" rows="3" required></textarea>
         </div>
