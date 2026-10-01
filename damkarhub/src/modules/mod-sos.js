@@ -53,18 +53,18 @@ export const ModSoscfg = {
     div.innerHTML = `
       <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90"><i class="fa-solid fa-times"></i></button>
       <div class="grid grid-cols-3 gap-3 mb-2">
-        <div class="col-span-2"><label class="field-label">Nama Instansi / Sekolah</label><input type="text" class="sos_pNama" value="${data?.nama || ''}" required></div>
+        <div class="col-span-2"><label class="field-label">Nama Instansi / Sekolah</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
         <div><label class="field-label">Jml. Peserta</label><input type="number" class="sos_pJumlah" value="${data?.jumlah || ''}" required></div>
       </div>
       <label class="field-label mt-2">Alamat Lengkap</label>
       <div class="grid grid-cols-2 gap-2 mb-2">
-        <input type="text" class="sos_pDusun" placeholder="Lingk/Dusun" value="${data?.dusun || ''}">
-        <input type="text" class="sos_pRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}">
+        <input type="text" enterkeyhint="next" class="sos_pDusun" placeholder="Lingk/Dusun" value="${data?.dusun || ''}">
+        <input type="text" enterkeyhint="next" class="sos_pRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}">
       </div>
       <div class="grid grid-cols-2 gap-2">
-        <input type="text" class="sos_pKel" placeholder="Kel/Desa" value="${data?.kel || ''}">
-        <input type="text" class="sos_pKec" placeholder="Kecamatan" value="${data?.kec || ''}">
-        <input type="text" class="sos_pKabkota col-span-2" placeholder="Kab/Kota" value="${data?.kabkota || ''}">
+        <input type="text" enterkeyhint="next" class="sos_pKel" placeholder="Kel/Desa" value="${data?.kel || ''}">
+        <input type="text" enterkeyhint="next" class="sos_pKec" placeholder="Kecamatan" value="${data?.kec || ''}">
+        <input type="text" enterkeyhint="next" class="sos_pKabkota col-span-2" placeholder="Kab/Kota" value="${data?.kabkota || ''}">
       </div>`;
     c.appendChild(div);
   },

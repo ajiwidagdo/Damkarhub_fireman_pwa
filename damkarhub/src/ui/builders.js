@@ -12,7 +12,7 @@ export const Builders = {
     </div>`;
   },
   inputNum(id, label, value, attrs='') { return `<div><label class="field-label">${label}</label><input type="number" id="${id}" value="${value}" ${attrs}></div>`; },
-  inputText(id, label, ph='', attrs='') { return `<div><label class="field-label">${label}</label><input type="text" id="${id}" placeholder="${ph}" ${attrs}></div>`; },
+  inputText(id, label, ph='', attrs='') { return `<div><label class="field-label">${label}</label><input type="text" enterkeyhint="next" id="${id}" placeholder="${ph}" ${attrs}></div>`; },
   operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">
       ${this.inputText(`${prefix}_armada`, 'Armada', '1 Unit Pancar', armadaRequired ? 'required' : '')}
@@ -31,7 +31,7 @@ export const Builders = {
     return `<div class="mb-3">
       <label class="field-label">Koordinat Gmaps</label>
       <div class="flex gap-2">
-        <input type="text" id="${prefix}_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('${prefix}')">
+        <input type="text" enterkeyhint="next" id="${prefix}_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('${prefix}')">
         <button type="button" onclick="Helpers.getLoc('${prefix}')" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
       </div>
     </div>`;

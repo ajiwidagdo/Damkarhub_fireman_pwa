@@ -224,7 +224,10 @@ html.dark .theme-badge {
   .field-hint { font-size:10px; color:#9a8a8b; margin-top:.25rem; line-height:1.35; }
   .dark .field-hint { color:#a89394; }
   input, select, textarea { width:100%; border:1px solid var(--line-strong); border-radius:.75rem; padding:.55rem .75rem; font-size:16px; background:#fbf8f7; color:var(--ink); transition:border-color .15s, box-shadow .15s, background .15s; }
+  select { appearance:none; -webkit-appearance:none; padding:.55rem .5rem; padding-right:1.7rem; letter-spacing:-.01em; text-overflow:ellipsis; background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a7a7b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .55rem center; background-size:12px; }
+  input[type="date"], input[type="time"] { padding-inline:.5rem; }
   .dark input, .dark select, .dark textarea { background:rgba(255,255,255,.05); color:#fff; border-color:rgba(255,255,255,.13); }
+  .dark select { background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b9a7a8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .55rem center; background-size:12px; }
   input::placeholder, textarea::placeholder { color:#b8a9a9; }
   .dark input::placeholder, .dark textarea::placeholder { color:rgba(255,255,255,.34); }
   input:focus, select:focus, textarea:focus { outline:none; border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.16); }
@@ -520,7 +523,7 @@ html.dark .theme-badge {
 
   <div class="relative mb-4">
     <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-sm"></i>
-    <input type="text" id="riwayat_search" onkeyup="App.renderRiwayat()" placeholder="Cari laporan..." class="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-3 text-sm bg-white dark:bg-gray-800">
+    <input type="text" enterkeyhint="next" id="riwayat_search" onkeyup="App.renderRiwayat()" placeholder="Cari laporan..." class="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-3 text-sm bg-white dark:bg-gray-800">
   </div>
 
   <div class="flex gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1">
@@ -605,7 +608,7 @@ html.dark .theme-badge {
 <div>
   <label class="field-label text-emerald-700 dark:text-emerald-400">Respon Time</label>
   <div class="flex gap-1.5 items-center">
-    <input type="text" id="k_responTime" readonly placeholder="Otomatis dari Jam Lapor Diterima → Jam Penanganan Dimulai" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+    <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
     <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
   </div>
   <p class="field-hint">Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai</p>
@@ -615,7 +618,7 @@ html.dark .theme-badge {
           <select id="k_jenisKebakaran" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
             <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
           </select>
-          <input type="text" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
+          <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
         </div>
 </div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
@@ -623,15 +626,15 @@ html.dark .theme-badge {
       </section>
       <section id="k-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">2. Lokasi Kejadian</h3>
-        <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
+        <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
               <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" id="k_dusun"></div>
-          <div><label class="field-label">RT/RW</label><input type="text" id="k_rtrw" placeholder="Cth: 003/09"></div>
+          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="k_dusun"></div>
+          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Kel/Desa</label><input type="text" id="k_kel" required></div>
-          <div><label class="field-label">Kecamatan</label><input type="text" id="k_kec" required></div>
-          <div class="col-span-2"><label class="field-label">Kab/Kota</label><input type="text" id="k_kabkota"></div>
+          <div><label class="field-label">Kel/Desa</label><input type="text" enterkeyhint="next" id="k_kel" required></div>
+          <div><label class="field-label">Kecamatan</label><input type="text" enterkeyhint="next" id="k_kec" required></div>
+          <div class="col-span-2"><label class="field-label">Kab/Kota</label><input type="text" enterkeyhint="next" id="k_kabkota"></div>
         </div>
 
       </section>
@@ -645,7 +648,7 @@ html.dark .theme-badge {
         <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700">
           <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="field-label">Nama Pelapor</label><input type="text" id="k_pNama" required></div>
+            <div><label class="field-label">Nama Pelapor</label><input type="text" enterkeyhint="next" id="k_pNama" required></div>
             <div><label class="field-label">Nomor Kontak</label><input type="tel" id="k_pHP" placeholder="Cth: 0853..." required></div>
           </div>
         </div>
@@ -657,7 +660,7 @@ html.dark .theme-badge {
           <select id="k_penyebab" required onchange="UI.checkLainnya('k_penyebab','k_penyebab_lainnya')">
             <option>Korsleting listrik</option><option>Kebocoran gas LPG</option><option>Pembakaran sampah</option><option>Lupa mematikan kompor</option><option>Belum Diketahui</option><option>Lainnya</option>
           </select>
-          <input type="text" id="k_penyebab_lainnya" class="mt-2 hidden">
+          <input type="text" enterkeyhint="next" id="k_penyebab_lainnya" class="mt-2 hidden">
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
@@ -665,9 +668,9 @@ html.dark .theme-badge {
             <select id="k_objekTerbakar" required onchange="UI.checkLainnya('k_objekTerbakar','k_objek_lainnya')">
               <option>Atap Rumah / Plafon</option><option>Ruangan Dapur</option><option>Lahan Kosong</option><option>Lainnya</option>
             </select>
-            <input type="text" id="k_objek_lainnya" class="mt-2 hidden">
+            <input type="text" enterkeyhint="next" id="k_objek_lainnya" class="mt-2 hidden">
           </div>
-          <div><label class="field-label">Luas Area</label><input type="text" id="k_luasArea" placeholder="Cth: 80 m²"></div>
+          <div><label class="field-label">Luas Area</label><input type="text" enterkeyhint="next" id="k_luasArea" placeholder="Cth: 80 m²"></div>
         </div>
         <div class="bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-100 dark:border-red-900/30 mb-3">
   <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-3"><i class="fa-solid fa-coins mr-1"></i> Nilai Ekonomi</p>
@@ -780,20 +783,20 @@ html.dark .theme-badge {
           <select id="nk_jenis" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
             <option>Evakuasi Sarang Tawon</option><option>Evakuasi Ular</option><option>Evakuasi Biawak</option><option>Pelepasan Cincin</option><option>Evakuasi Manusia</option><option>Lainnya</option>
           </select>
-          <input type="text" id="nk_jenis_lainnya" class="mt-2 hidden">
+          <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
         </div>
       </section>
       <section id="nk-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">2. Lokasi Kejadian</h3>
-        <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
+        <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" id="nk_dusun"></div>
-          <div><label class="field-label">RT/RW</label><input type="text" id="nk_rtrw"></div>
+          <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="nk_dusun"></div>
+          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="nk_rtrw"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Kel/Desa</label><input type="text" id="nk_kel" required></div>
-          <div><label class="field-label">Kecamatan</label><input type="text" id="nk_kec" required></div>
-          <div class="col-span-2"><label class="field-label">Kab/Kota</label><input type="text" id="nk_kabkota"></div>
+          <div><label class="field-label">Kel/Desa</label><input type="text" enterkeyhint="next" id="nk_kel" required></div>
+          <div><label class="field-label">Kecamatan</label><input type="text" enterkeyhint="next" id="nk_kec" required></div>
+          <div class="col-span-2"><label class="field-label">Kab/Kota</label><input type="text" enterkeyhint="next" id="nk_kabkota"></div>
         </div>
 
       </section>
@@ -803,7 +806,7 @@ html.dark .theme-badge {
           <button type="button" onclick="Mod.nk.copyLokasiToIdentitas()" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600">Samakan dgn Lokasi</button>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Nama</label><input type="text" id="nk_idNama" required></div>
+          <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" id="nk_idNama" required></div>
           <div><label class="field-label">Usia (Thn)</label><input type="number" id="nk_idUsia"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -812,21 +815,21 @@ html.dark .theme-badge {
         </div>
         <label class="field-label mt-3">Alamat Lengkap</label>
         <div class="grid grid-cols-2 gap-2 mb-2">
-          <input type="text" id="nk_idDusun" placeholder="Lingk/Dusun">
-          <input type="text" id="nk_idRtrw" placeholder="RT/RW">
+          <input type="text" enterkeyhint="next" id="nk_idDusun" placeholder="Lingk/Dusun">
+          <input type="text" enterkeyhint="next" id="nk_idRtrw" placeholder="RT/RW">
         </div>
         <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="nk_idKel" placeholder="Kel/Desa">
-          <input type="text" id="nk_idKec" placeholder="Kecamatan">
-          <input type="text" id="nk_idKabkota" placeholder="Kab/Kota" class="col-span-2">
+          <input type="text" enterkeyhint="next" id="nk_idKel" placeholder="Kel/Desa">
+          <input type="text" enterkeyhint="next" id="nk_idKec" placeholder="Kecamatan">
+          <input type="text" enterkeyhint="next" id="nk_idKabkota" placeholder="Kab/Kota" class="col-span-2">
         </div>
       </section>
       <section id="nk-s4" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">4. Operasional & Penanganan</h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
-          <div><label class="field-label">Objek / Satwa</label><input type="text" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
-          <div><label class="field-label">Detail Lokasi</label><input type="text" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
-          <div><label class="field-label">Ukuran / Spesifikasi</label><input type="text" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
+          <div><label class="field-label">Objek / Satwa</label><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
+          <div><label class="field-label">Detail Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
+          <div><label class="field-label">Ukuran / Spesifikasi</label><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
         </div>
         <div id="nk_operasional_inputs"></div>
         <div class="mb-3">
@@ -875,7 +878,7 @@ html.dark .theme-badge {
         </div>
         <!-- Reposisi: Durasi saja -->
         <div id="sos_waktu_inputs" class="mt-3"></div>
-        <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" id="sos_tempat" required></div>
+        <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" enterkeyhint="next" id="sos_tempat" required></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Rangkaian Kegiatan</label>
@@ -945,12 +948,12 @@ html.dark .theme-badge {
     <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
       <p class="text-xs text-blue-700 dark:text-blue-300 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Digunakan sebagai penerima laporan WhatsApp.</p>
     </div>
-    <div><label class="field-label">Nama Instansi</label><input type="text" id="set_instansi" placeholder="UPTD DAMKAR" required></div>
-    <div><label class="field-label">Wilayah / Daerah</label><input type="text" id="set_daerah" placeholder="Kota Banjar" required></div>
+    <div><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" id="set_instansi" placeholder="UPTD DAMKAR" required></div>
+    <div><label class="field-label">Wilayah / Daerah</label><input type="text" enterkeyhint="next" id="set_daerah" placeholder="Kota Banjar" required></div>
     <div>
       <label class="field-label">Koordinat Kantor (Lat, Lng)</label>
       <div class="flex gap-2">
-        <input type="text" id="set_kantor" required placeholder="-7.xxxx, 108.xxxx">
+        <input type="text" enterkeyhint="next" id="set_kantor" required placeholder="-7.xxxx, 108.xxxx">
         <button type="button" onclick="Helpers.getLocKantor()" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
       </div>
     </div>
@@ -973,7 +976,7 @@ html.dark .theme-badge {
     </div>
     <div class="relative mb-3">
       <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
-      <input type="text" id="personil_search" onkeyup="App.renderPersonilList()" placeholder="Cari nama..." class="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-900">
+      <input type="text" enterkeyhint="next" id="personil_search" onkeyup="App.renderPersonilList()" placeholder="Cari nama..." class="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-10 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-900">
     </div>
     <div class="flex gap-2 mb-3 overflow-x-auto hide-scrollbar pb-1">
       <button type="button" onclick="App.setPersonilFilter('all')" data-pfilter="all" class="filter-pill active">Semua</button>
