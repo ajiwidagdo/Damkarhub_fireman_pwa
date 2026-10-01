@@ -252,6 +252,19 @@ html.dark .theme-badge {
   .dark .tl-dot { border-color:#1f2937; }
   .tl-dot-slate { background:#64748b; box-shadow:0 0 0 2px #e2e8f0; }
   .tl-dot-done { background:#10b981; box-shadow:0 0 0 2px #a7f3d0; }
+  .picker-wrap { position:relative; }
+  .picker-native { position:absolute !important; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; }
+  .picker-field { width:100%; display:flex; align-items:flex-start; gap:.5rem; text-align:left; font-size:16px; padding:.55rem .5rem; border:1px solid #e5e7eb; border-radius:.5rem; background:#fff; color:#1f2937; cursor:pointer; }
+  .dark .picker-field { background:#374151; border-color:#4b5563; color:#f3f4f6; }
+  .picker-field:focus { outline:none; border-color:#f87171; box-shadow:0 0 0 3px rgba(239,68,68,.26); }
+  .picker-value { flex:1; line-height:1.35; white-space:normal; word-break:break-word; }
+  .picker-chev { margin-top:.3rem; font-size:.7rem; color:#9ca3af; flex-shrink:0; }
+  .picker-opt { display:flex; align-items:center; gap:.6rem; width:100%; text-align:left; padding:.7rem .4rem; font-size:15px; border-bottom:1px solid #f3f4f6; color:#1f2937; }
+  .dark .picker-opt { border-color:#374151; color:#f3f4f6; }
+  .picker-opt-active { font-weight:700; }
+  .picker-radio { width:18px; height:18px; border-radius:50%; border:2px solid #d1d5db; flex-shrink:0; }
+  .picker-radio-on { border-color:#10b981; background:#10b981; box-shadow:inset 0 0 0 3px #fff; }
+  .dark .picker-radio-on { box-shadow:inset 0 0 0 3px #1f2937; }
   form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
@@ -610,9 +623,9 @@ html.dark .theme-badge {
         <p class="field-hint mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
         <div class="mb-3">
           <label class="field-label">Jenis Kejadian</label>
-          <select id="k_jenisKebakaran" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
+          <div class="picker-wrap"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
             <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
-          </select>
+          </select><button type="button" class="picker-field" onclick="UI.openPicker('k_jenisKebakaran','Jenis Kejadian')" aria-label="Jenis Kejadian"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
           <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
         </div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
@@ -651,17 +664,17 @@ html.dark .theme-badge {
         <h3 class="section-title text-red-600 dark:text-red-400">4. Penyebab & Dampak</h3>
         <div class="mb-3">
           <label class="field-label">Dugaan Penyebab</label>
-          <select id="k_penyebab" required onchange="UI.checkLainnya('k_penyebab','k_penyebab_lainnya')">
+          <div class="picker-wrap"><select id="k_penyebab" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_penyebab','k_penyebab_lainnya')">
             <option>Korsleting listrik</option><option>Kebocoran gas LPG</option><option>Pembakaran sampah</option><option>Lupa mematikan kompor</option><option>Belum Diketahui</option><option>Lainnya</option>
-          </select>
+          </select><button type="button" class="picker-field" onclick="UI.openPicker('k_penyebab','Dugaan Penyebab')" aria-label="Dugaan Penyebab"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
           <input type="text" enterkeyhint="next" id="k_penyebab_lainnya" class="mt-2 hidden">
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
             <label class="field-label">Objek Terbakar</label>
-            <select id="k_objekTerbakar" required onchange="UI.checkLainnya('k_objekTerbakar','k_objek_lainnya')">
+            <div class="picker-wrap"><select id="k_objekTerbakar" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_objekTerbakar','k_objek_lainnya')">
               <option>Atap Rumah / Plafon</option><option>Ruangan Dapur</option><option>Lahan Kosong</option><option>Lainnya</option>
-            </select>
+            </select><button type="button" class="picker-field" onclick="UI.openPicker('k_objekTerbakar','Objek Terbakar')" aria-label="Objek Terbakar"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
             <input type="text" enterkeyhint="next" id="k_objek_lainnya" class="mt-2 hidden">
           </div>
           <div><label class="field-label">Luas Area</label><input type="text" enterkeyhint="next" id="k_luasArea" placeholder="Cth: 80 m²"></div>
@@ -763,9 +776,9 @@ html.dark .theme-badge {
         <div id="nk_waktu_inputs" class="mt-3"></div>
         <div>
           <label class="field-label">Jenis Kegiatan</label>
-          <select id="nk_jenis" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
+          <div class="picker-wrap"><select id="nk_jenis" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
             <option>Evakuasi Sarang Tawon</option><option>Evakuasi Ular</option><option>Evakuasi Biawak</option><option>Pelepasan Cincin</option><option>Evakuasi Manusia</option><option>Lainnya</option>
-          </select>
+          </select><button type="button" class="picker-field" onclick="UI.openPicker('nk_jenis','Jenis Kegiatan')" aria-label="Jenis Kegiatan"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
           <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
         </div>
       </section>
