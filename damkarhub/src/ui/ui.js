@@ -90,18 +90,18 @@ showComingSoon(feature) {
     setTimeout(() => { back.classList.add('hidden'); panel.classList.add('hidden'); }, 250);
   },
   HELP: {
-    'k-s1': { title: 'Waktu & Jenis Kejadian', body: `<p><b>Nama lengkap field:</b> Tanggal Kejadian, Pukul Kejadian, Tanggal Lapor Diterima, Jam Lapor Diterima, Jam Tiba di Lokasi, Jam Penanganan Dimulai, Tanggal Penanganan Selesai, Jam Penanganan Selesai.</p><p><b>Respon Time</b> — Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai (dalam menit).</p><p>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p><p>Ikon kalender/jam di kanan label mengisi tanggal/jam saat ini; ketuk field untuk membuka pemilih tanggal/jam.</p><p><b>Jenis Kejadian</b> — pilih "Lainnya" bila jenisnya spesifik. <b>Koordinat Gmaps</b> untuk menghitung Jarak (Km) otomatis; <b>Durasi (Mnt)</b> terhitung otomatis dari rantai waktu.</p>` },
+    'k-s1': { title: 'Waktu & Jenis Kejadian', body: `<p><b>Nama lengkap field:</b> Tanggal Kejadian, Pukul Kejadian, Tanggal Lapor Diterima, Jam Lapor Diterima, Jam Tiba di Lokasi, Jam Penanganan Dimulai, Tanggal Penanganan Selesai, Jam Penanganan Selesai.</p><p><b>Respon Time</b> — Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai (dalam menit).</p><p>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p><p><b>Tombol kalender/jam di kanan box input</b> mengisi tanggal/jam saat ini; ketuk box bila ingin memilih tanggal/jam manual.</p><p><b>Jenis Kejadian</b> — pilih "Lainnya" bila jenisnya spesifik. <b>Koordinat Gmaps</b> untuk menghitung Jarak otomatis; <b>Durasi</b> terhitung otomatis dari rantai waktu.</p>` },
     'k-s2': { title: 'Lokasi Kejadian', body: `<p><b>Tempat/Patokan</b> — patokan lokasi kejadian (cth: di Kompleks Perum Pepabri).</p><p><b>Dusun</b> = Lingkungan/Dusun. Dilengkapi RT/RW, Kel/Desa, Kecamatan, dan Kab/Kota.</p>` },
     'k-s3': { title: 'Data Pemilik / Korban & Pelapor', body: `<p>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p><p><b>Nama</b> korban/pemilik — kosongkan bila belum diketahui. <b>NIK (Opsional)</b> — 16 digit.</p><p><b>Detail Usia & Alamat:</b> Usia (Thn), Jenis Kelamin, Alamat Lengkap Korban (Dusun, RT/RW, Kel/Desa, Kecamatan, Kab/Kota).</p><p><b>Data Pelapor:</b> Nama Pelapor dan Nomor Kontak wajib diisi.</p>` },
     'k-s4': { title: 'Penyebab & Dampak', body: `<p><b>Dugaan Penyebab</b> dan <b>Objek Terbakar</b> — pilih "Lainnya" bila tidak ada di daftar. <b>Luas Area</b> cth: 80 m².</p><p><b>Nilai Ekonomi:</b> Nilai Aset Keseluruhan (Rp), Taksiran Kerugian (Rp), Aset Terselamatkan (Rp).</p><p>Aset Terselamatkan otomatis = Nilai Aset − Taksiran Kerugian.</p><p><b>Korban:</b> Luka Ringan, Luka Berat, Meninggal.</p>` },
-    'k-s5': { title: 'Operasional & Regu', body: `<p><b>Armada</b> (cth: 1 Unit Pancar) dan <b>Air (Tangki)</b> dalam ton.</p><p><b>Kronologi Singkat</b> dan <b>Tindakan</b> — bisa diisi dengan tombol Suara.</p><p><b>Unsur yang Terlibat</b> — pisahkan tiap unsur dengan Enter.</p><p><b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. <b>Keterangan Lain</b> opsional. Foto: Foto Api (1) dan Foto Akhir (2).</p>` },
-    'nk-s1': { title: 'Waktu & Jenis Kegiatan', body: `<p><b>Nama lengkap field:</b> Tanggal Lapor Diterima, Jam Lapor Diterima, Penanganan Dimulai (= Tanggal mulai ditangani & Jam mulai ditangani), Penanganan Selesai (= Tanggal selesai ditangani & Jam selesai ditangani).</p><p>Ikon kalender/jam di kanan label mengisi tanggal/jam saat ini; ketuk field untuk membuka pemilih tanggal/jam.</p><p><b>Jenis Kegiatan</b> — pilih "Lainnya" bila kegiatannya spesifik. <b>Koordinat Gmaps</b> untuk menghitung Jarak (Km) otomatis; <b>Durasi (Mnt)</b> terhitung otomatis dari waktu mulai–selesai.</p>` },
+    'k-s5': { title: 'Operasional & Regu', body: `<p><b>Armada</b> (cth: 1 Unit Pancar) dan <b>Air (Tangki)</b> dalam ton.</p><p><b>Kronologi Singkat</b> dan <b>Tindakan</b> — bisa diisi lewat tombol Suara — ketuk mikrofon, ucapkan, teks tertulis otomatis.</p><p><b>Unsur yang Terlibat</b> — pisahkan tiap unsur dengan Enter.</p><p><b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. <b>Keterangan Lain</b> opsional. Foto — ketuk Ambil Foto (maks 2 foto).</p>` },
+    'nk-s1': { title: 'Waktu & Jenis Kegiatan', body: `<p><b>Nama lengkap field:</b> Tanggal Lapor Diterima, Jam Lapor Diterima, Penanganan Dimulai (= Tanggal mulai ditangani & Jam mulai ditangani), Penanganan Selesai (= Tanggal selesai ditangani & Jam selesai ditangani).</p><p><b>Tombol kalender/jam di kanan box input</b> mengisi tanggal/jam saat ini; ketuk box bila ingin memilih tanggal/jam manual.</p><p><b>Jenis Kegiatan</b> — pilih "Lainnya" bila kegiatannya spesifik. <b>Koordinat Gmaps</b> untuk menghitung Jarak otomatis; <b>Durasi</b> terhitung otomatis dari waktu mulai–selesai.</p>` },
     'nk-s2': { title: 'Lokasi Kejadian', body: `<p><b>Patokan Lokasi</b> — patokan lokasi kejadian (cth: Rumah Warga).</p><p><b>Dusun</b> = Lingkungan/Dusun. Dilengkapi RT/RW, Kel/Desa, Kecamatan, dan Kab/Kota.</p>` },
     'nk-s3': { title: 'Identitas Pelapor', body: `<p><b>Nama</b>, <b>Usia (Thn)</b>, <b>Jenis Kelamin</b>, dan <b>No HP Pelapor</b>.</p><p><b>Alamat Lengkap:</b> Dusun, RT/RW, Kel/Desa, Kecamatan, Kab/Kota. Tombol "Samakan dgn Lokasi" menyalin alamat dari section Lokasi Kejadian.</p>` },
-    'nk-s4': { title: 'Operasional & Penanganan', body: `<p><b>Objek / Satwa</b> (cth: 1 Ekor Ular Cobra), <b>Detail Lokasi</b> (cth: Di dalam Rumah), <b>Ukuran / Spesifikasi</b> (cth: Panjang ± 30 cm).</p><p><b>Armada</b> dan <b>Air (Tangki)</b> dalam ton. <b>Kronologi Singkat</b> dan <b>Tindakan</b> — bisa diisi dengan tombol Suara.</p><p><b>Kendala</b> — ketuk Pilih Kendala. Korban: Luka Ringan, Luka Berat, Meninggal. <b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. <b>Keterangan Lain</b> opsional. Foto: Foto Proses (1) dan Foto Akhir (2).</p>` },
-    'sos-s1': { title: 'Waktu & Rangkaian', body: `<p><b>Tgl Pelaksanaan</b>, <b>Pukul</b>, <b>Tgl Selesai</b>, dan <b>Jam Selesai</b>. <b>Durasi (Mnt)</b> terhitung otomatis.</p><p><b>Tempat Kegiatan</b> — lokasi sosialisasi dilaksanakan.</p><p><b>Rangkaian Kegiatan</b> — satu kegiatan per baris (tekan Enter).</p>` },
+    'nk-s4': { title: 'Operasional & Penanganan', body: `<p><b>Objek / Satwa</b> (cth: 1 Ekor Ular Cobra), <b>Detail Lokasi</b> (cth: Di dalam Rumah), <b>Ukuran / Spesifikasi</b> (cth: Panjang ± 30 cm).</p><p><b>Armada</b> dan <b>Air (Tangki)</b> dalam ton. <b>Kronologi Singkat</b> dan <b>Tindakan</b> — bisa diisi lewat tombol Suara — ketuk mikrofon, ucapkan, teks tertulis otomatis.</p><p><b>Kendala</b> — ketuk Pilih Kendala. Korban: Luka Ringan, Luka Berat, Meninggal. <b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. <b>Keterangan Lain</b> opsional. Foto — ketuk Ambil Foto (maks 2 foto).</p>` },
+    'sos-s1': { title: 'Waktu & Rangkaian', body: `<p><b>Tgl Pelaksanaan</b>, <b>Pukul</b>, <b>Tgl Selesai</b>, dan <b>Jam Selesai</b>.</p><p><b>Tombol kalender/jam di kanan box input</b> mengisi tanggal/jam saat ini; ketuk box bila ingin memilih tanggal/jam manual. <b>Durasi</b> terhitung otomatis.</p><p><b>Tempat Kegiatan</b> — lokasi sosialisasi dilaksanakan.</p><p><b>Rangkaian Kegiatan</b> — satu kegiatan per baris (tekan Enter).</p>` },
     'sos-s2': { title: 'Data Peserta / Instansi', body: `<p><b>Sasaran Edukasi</b> — ketuk Pilih untuk menentukan kategori sasaran.</p><p><b>Nama Instansi / Sekolah</b>, <b>Jml. Peserta</b>, dan <b>Alamat Lengkap</b> (Dusun, RT/RW, Kel/Desa, Kecamatan, Kab/Kota) untuk tiap peserta/instansi.</p>` },
-    'sos-s3': { title: 'Operasional & Personil', body: `<p><b>Armada</b> (cth: 2 Unit Pancar) dan <b>Air (Tangki)</b> dalam ton.</p><p><b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. Foto: Foto Proses (1) dan Foto Grup (2).</p><p><b>Keterangan Lain</b> = Catatan Evaluasi — feedback program (opsional).</p>` }
+    'sos-s3': { title: 'Operasional & Personil', body: `<p><b>Armada</b> (cth: 2 Unit Pancar) dan <b>Air (Tangki)</b> dalam ton.</p><p><b>Regu Piket</b> dan <b>Personil Bertugas</b> — ketuk Pilih. Foto — ketuk Ambil Foto (maks 2 foto).</p><p><b>Keterangan Lain</b> = Catatan Evaluasi — feedback program (opsional).</p>` }
   },
   openHelp(key) {
     const h = this.HELP[key]; if (!h) return;
@@ -210,6 +210,14 @@ showComingSoon(feature) {
       if (val) val.textContent = sel.options[idx] ? (sel.options[idx].textContent || '').trim() : '';
     });
   },
+  syncDateTime(input) {
+    if (!input) return;
+    const wrap = input.closest('.dt-wrap'); if (!wrap) return;
+    wrap.classList.toggle('is-empty', !input.value);
+  },
+  syncDateTimes(root) {
+    (root || document).querySelectorAll('input[type="date"], input[type="time"]').forEach(inp => this.syncDateTime(inp));
+  },
   checkLainnya(selId, inpId) {
     const sel = document.getElementById(selId), inp = document.getElementById(inpId);
     if (sel.value === 'Lainnya') { inp.classList.remove('hidden'); inp.required = true; inp.focus(); }
@@ -279,3 +287,11 @@ globalThis.UI = UI;
 
 /* Wiring tombol konfirmasi (pindahan dari index.html) */
 document.getElementById('btnConfirmOk').onclick = () => { const cb = UI._confirmCb; UI.closeConfirm(); if (cb) cb(); };
+
+/* Sinkron overlay "Tekan di sini" field tanggal/jam: delegasi change/input, didaftarkan sekali */
+if (!globalThis.__dtSyncWired) {
+  globalThis.__dtSyncWired = true;
+  const _dtSyncHandler = e => { const t = e.target; if (t && (t.type === 'date' || t.type === 'time')) UI.syncDateTime(t); };
+  document.addEventListener('change', _dtSyncHandler);
+  document.addEventListener('input', _dtSyncHandler);
+}

@@ -16,14 +16,14 @@ export const Builders = {
   operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">
       ${this.inputText(`${prefix}_armada`, 'Armada', '1 Unit Pancar', armadaRequired ? 'required' : '')}
-      ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="${prefix}_air"></div>` : ''}
+      ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_air" class="num-compact"></div></div>` : ''}
     </div>`;
   },
 
   durasiJarakInputs(prefix, { includeJarak=true, durasiRequired=true } = {}) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">
-      ${this.inputNum(`${prefix}_durasi`, 'Durasi (Mnt)', '', durasiRequired ? 'required' : '')}
-      ${includeJarak ? `<div><label class="field-label">Jarak (Km)</label><input type="number" step="0.1" id="${prefix}_jarak"></div>` : ''}
+      <div><label class="field-label">Durasi</label><div class="flex items-center gap-2"><input type="number" id="${prefix}_durasi" value="" class="num-compact" ${durasiRequired ? 'required' : ''}><span class="unit-suffix">Mnt</span></div></div>
+      ${includeJarak ? `<div><label class="field-label">Jarak</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_jarak" class="num-compact"><span class="unit-suffix">Km</span></div></div>` : ''}
     </div>`;
   },
 
@@ -74,29 +74,23 @@ export const Builders = {
       <input type="hidden" id="${prefix}_kendala">
     </div>`;
   },
-  photoInputs(prefix, label1='Foto Proses (1)', label2='Foto Akhir (2)') {
-    return `<div class="grid grid-cols-2 gap-3">
-      <div><label class="field-label">${label1}</label>
-        <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">
+  photoInputs(prefix) {
+    const tile = 'block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition';
+    return `<div><label class="field-label">Foto</label>
+    <div class="grid grid-cols-2 gap-3">
+      <div><label class="${tile}">
           <i class="fa-solid fa-camera mr-1"></i> Ambil Foto
           <input type="file" accept="image/*" class="hidden" onchange="Helpers.compressImage(this, '${prefix}_foto1_b64')">
         </label>
         <input type="hidden" id="${prefix}_foto1_b64">
       </div>
-      <div>
-        <div data-disclosure class="disclosure">
-          <button type="button" class="disclosure-head disc-tile" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> ${label2}</button>
-          <div class="disclosure-body hidden">
-            <label class="field-label">${label2}</label>
-            <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">
-              <i class="fa-solid fa-camera mr-1"></i> Ambil Foto
-              <input type="file" accept="image/*" class="hidden" onchange="Helpers.compressImage(this, '${prefix}_foto2_b64')">
-            </label>
-            <input type="hidden" id="${prefix}_foto2_b64">
-          </div>
-        </div>
+      <div><label class="${tile}">
+          <i class="fa-solid fa-camera mr-1"></i> Ambil Foto
+          <input type="file" accept="image/*" class="hidden" onchange="Helpers.compressImage(this, '${prefix}_foto2_b64')">
+        </label>
+        <input type="hidden" id="${prefix}_foto2_b64">
       </div>
-    </div>`;
+    </div></div>`;
   },
   exportPanel(prefix, columns) {
     const saved = (() => { try { return JSON.parse(localStorage.getItem('export_cols_' + prefix) || 'null'); } catch { return null; } })();

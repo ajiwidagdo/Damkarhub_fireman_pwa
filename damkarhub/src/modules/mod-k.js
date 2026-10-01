@@ -82,7 +82,7 @@ const ModKcfg = {
       <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Detail Usia & Alamat</button>
       <div class="disclosure-body">
       <div class="grid grid-cols-2 gap-3 mb-2">
-        <div><label class="field-label">Usia (Thn)</label><input type="number" class="k_kUsia" value="${data?.usia || ''}"></div>
+        <div><label class="field-label">Usia (Thn)</label><input type="number" class="k_kUsia num-compact" value="${data?.usia || ''}"></div>
         <div>
           <label class="field-label">Jenis Kelamin</label>
           <select class="k_kJK"><option value="-" ${data?.jk==='-'?'selected':''}>-</option><option ${data?.jk==='Pria'?'selected':''}>Pria</option><option ${data?.jk==='Wanita'?'selected':''}>Wanita</option></select>
