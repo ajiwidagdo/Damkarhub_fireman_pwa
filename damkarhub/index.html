@@ -244,6 +244,14 @@ html.dark .theme-badge {
   .chip-nav-btn.is-active { background:var(--grad-red); color:#fff; box-shadow:0 6px 14px -6px rgba(220,38,38,.7); }
   .chip-nav[data-chipnav="nk"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#fbbf24,#d97706); box-shadow:0 6px 14px -6px rgba(245,158,11,.7); }
   .chip-nav[data-chipnav="sos"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#34d399,#059669); box-shadow:0 6px 14px -6px rgba(16,185,129,.7); }
+  .timeline { position:relative; margin-left:.3rem; padding:.4rem .2rem .1rem 1.2rem; }
+  .timeline:before { content:''; position:absolute; left:5px; top:14px; bottom:14px; width:2px; border-radius:2px; background:linear-gradient(180deg,#cbd5e1,#93c5fd 30%,#a7f3d0); }
+  .dark .timeline:before { background:linear-gradient(180deg,rgba(203,213,225,.25),rgba(147,197,253,.45) 30%,rgba(110,231,183,.45)); }
+  .tl-row { position:relative; padding:.25rem 0 .65rem; }
+  .tl-dot { position:absolute; left:-1.2rem; top:.4rem; width:12px; height:12px; border-radius:50%; background:#3b82f6; border:2px solid #fff; box-shadow:0 0 0 2px #bfdbfe; }
+  .dark .tl-dot { border-color:#1f2937; }
+  .tl-dot-slate { background:#64748b; box-shadow:0 0 0 2px #e2e8f0; }
+  .tl-dot-done { background:#10b981; box-shadow:0 0 0 2px #a7f3d0; }
   form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
@@ -554,73 +562,59 @@ html.dark .theme-badge {
       <input type="hidden" id="k_editId">
       <section id="k-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">1. Waktu & Jenis Kejadian</h3>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Tgl Kejadian</label><input type="date" id="k_tanggal" required></div>
-          <div><label class="field-label">Pukul</label><input type="time" id="k_pukul" required></div>
+        <div class="timeline">
+          <div class="tl-row">
+            <span class="tl-dot tl-dot-slate"></span>
+            <label class="field-label">Kejadian</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="date" id="k_tanggal" required aria-label="Tanggal kejadian">
+              <input type="time" id="k_pukul" required aria-label="Pukul kejadian">
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot"></span>
+            <label class="field-label text-blue-800 dark:text-blue-400">Lapor Diterima</label>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="flex gap-1.5"><input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1" aria-label="Tanggal lapor diterima"><button type="button" onclick="Helpers.recordDate('k_tglTerima')" class="btn-time" title="Rekam tanggal hari ini">📅</button></div>
+              <div class="flex gap-1.5"><input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1" aria-label="Jam lapor diterima"><button type="button" onclick="Helpers.recordTime('k_jamTerima')" class="btn-time" title="Rekam jam sekarang">⏰</button></div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot"></span>
+            <label class="field-label text-blue-800 dark:text-blue-400">Tiba di Lokasi</label>
+            <div class="flex gap-1.5"><input type="time" id="k_jamTiba" onchange="Helpers.autoFillMulai('k'); Helpers.autoFillDurasi('k')" class="flex-1"><button type="button" onclick="Helpers.recordTime('k_jamTiba')" class="btn-time" title="Rekam jam sekarang">⏰</button></div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot"></span>
+            <label class="field-label text-blue-800 dark:text-blue-400">Penanganan Dimulai</label>
+            <div class="flex gap-1.5"><input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" class="flex-1"><button type="button" onclick="Helpers.recordTime('k_jamMulai')" class="btn-time" title="Rekam jam sekarang">⏰</button></div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot tl-dot-done"></span>
+            <label class="field-label text-emerald-700 dark:text-emerald-400">Selesai</label>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="flex gap-1.5"><input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1" aria-label="Tanggal selesai"><button type="button" onclick="Helpers.recordDate('k_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button></div>
+              <div class="flex gap-1.5"><input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1" aria-label="Jam selesai"><button type="button" onclick="Helpers.recordTime('k_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button></div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot tl-dot-done"></span>
+            <label class="field-label text-emerald-700 dark:text-emerald-400">Respon Time</label>
+            <div class="flex gap-1.5 items-center">
+              <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
+            </div>
+            <p class="field-hint">Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai</p>
+          </div>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-2 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">Tgl Lapor Diterima</label>
-    <div class="flex gap-1.5">
-      <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordDate('k_tglTerima')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">Jam Lapor Diterima</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('k_jamTerima')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">JAM TIBA DI LOKASI</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="k_jamTiba" onchange="Helpers.autoFillMulai('k'); Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('k_jamTiba')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">Jam Penanganan Dimulai</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('k_jamMulai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">Tgl Selesai</label>
-    <div class="flex gap-1.5">
-      <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordDate('k_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">Jam Selesai</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('k_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
-    </div>
-  </div>
-</div>
         <p class="field-hint mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
-
-<div class="grid grid-cols-2 gap-3 mb-3">
-<div>
-  <label class="field-label text-emerald-700 dark:text-emerald-400">Respon Time</label>
-  <div class="flex gap-1.5 items-center">
-    <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
-    <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
-  </div>
-  <p class="field-hint">Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai</p>
-</div>
-        <div>
+        <div class="mb-3">
           <label class="field-label">Jenis Kejadian</label>
           <select id="k_jenisKebakaran" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
             <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
           </select>
           <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
         </div>
-</div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
       </section>
@@ -740,44 +734,33 @@ html.dark .theme-badge {
       <input type="hidden" id="nk_editId">
       <section id="nk-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">1. Waktu & Jenis Kegiatan</h3>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Tgl Lapor Diterima</label><input type="date" id="nk_tanggal" required></div>
-          <div><label class="field-label">Jam Lapor Diterima</label><input type="time" id="nk_pukul" required></div>
+        <div class="timeline">
+          <div class="tl-row">
+            <span class="tl-dot tl-dot-slate"></span>
+            <label class="field-label">Lapor Diterima</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="date" id="nk_tanggal" required aria-label="Tanggal lapor diterima">
+              <input type="time" id="nk_pukul" required aria-label="Jam lapor diterima">
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot"></span>
+            <label class="field-label text-blue-800 dark:text-blue-400">Penanganan Dimulai</label>
+            <div class="grid grid-cols-2 gap-2">
+              <div><div class="flex gap-1.5"><input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1" aria-label="Tanggal mulai ditangani"><button type="button" onclick="Helpers.recordDate('nk_tglMulai')" class="btn-time" title="Rekam tanggal hari ini">📅</button></div><p class="field-hint">Tanggal mulai ditangani</p></div>
+              <div><div class="flex gap-1.5"><input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1" aria-label="Jam mulai ditangani"><button type="button" onclick="Helpers.recordTime('nk_jamMulai')" class="btn-time" title="Rekam jam sekarang">⏰</button></div></div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <span class="tl-dot tl-dot-done"></span>
+            <label class="field-label text-emerald-700 dark:text-emerald-400">Penanganan Selesai</label>
+            <div class="grid grid-cols-2 gap-2">
+              <div><div class="flex gap-1.5"><input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1" aria-label="Tanggal selesai ditangani"><button type="button" onclick="Helpers.recordDate('nk_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button></div><p class="field-hint">Tanggal selesai ditangani</p></div>
+              <div><div class="flex gap-1.5"><input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1" aria-label="Jam selesai ditangani"><button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button></div></div>
+            </div>
+          </div>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-2 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">Penanganan Dimulai</label>
-    <div class="flex gap-1.5">
-      <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-      <button type="button" onclick="Helpers.recordDate('nk_tglMulai')" class="btn-time" title="">📅</button>
-    </div>
-    <p class="field-hint">Tanggal mulai ditangani</p>
-  </div>
-  <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">Jam Penanganan Dimulai</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('nk_jamMulai')" class="btn-time" title="">⏰</button>
-    </div>
-  </div>
-  <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">Penanganan Selesai</label>
-    <div class="flex gap-1.5">
-      <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-      <button type="button" onclick="Helpers.recordDate('nk_tglSelesai')" class="btn-time" title="">📅</button>
-    </div>
-    <p class="field-hint">Tanggal selesai ditangani</p>
-  </div>
-  <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">Jam Selesai</label>
-    <div class="flex gap-1.5">
-      <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
-      <button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="">⏰</button>
-    </div>
-  </div>
-  <!-- Reposisi: Durasi + Jarak + Koordinat -->
-  <div id="nk_waktu_inputs" class="col-span-full mt-3"></div>
-</div>
+        <div id="nk_waktu_inputs" class="mt-3"></div>
         <div>
           <label class="field-label">Jenis Kegiatan</label>
           <select id="nk_jenis" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
