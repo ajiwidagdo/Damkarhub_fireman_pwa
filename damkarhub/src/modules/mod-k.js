@@ -78,6 +78,9 @@ const ModKcfg = {
         <div><label class="field-label">Nama (Kosongkan bila belum diketahui)</label><input type="text" enterkeyhint="next" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>
         <div><label class="field-label">NIK (Opsional)</label><input type="text" enterkeyhint="next" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric"></div>
       </div>
+      <div data-disclosure class="disclosure">
+      <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Detail Usia & Alamat</button>
+      <div class="disclosure-body">
       <div class="grid grid-cols-2 gap-3 mb-2">
         <div><label class="field-label">Usia (Thn)</label><input type="number" class="k_kUsia" value="${data?.usia || ''}"></div>
         <div>
@@ -94,6 +97,8 @@ const ModKcfg = {
         <input type="text" enterkeyhint="next" class="k_kKel" placeholder="Kel/Desa" value="${data?.kel || ''}">
         <input type="text" enterkeyhint="next" class="k_kKec" placeholder="Kecamatan" value="${data?.kec || ''}">
         <input type="text" enterkeyhint="next" class="k_kKabkota col-span-2" placeholder="Kab/Kota" value="${data?.kabkota || ''}">
+      </div>
+      </div>
       </div>`;
     c.appendChild(div);
   },

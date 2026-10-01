@@ -167,6 +167,23 @@ showComingSoon(feature) {
     this.closeSheet();
     this.syncPickers();
   },
+  toggleDisclosure(btn) {
+    const d = btn.closest('[data-disclosure]'); if (!d) return;
+    d.classList.toggle('open');
+    const body = d.querySelector('.disclosure-body');
+    if (body) body.classList.toggle('hidden', !d.classList.contains('open'));
+  },
+  syncDisclosures(root) {
+    (root || document).querySelectorAll('[data-disclosure]').forEach(d => {
+      const body = d.querySelector('.disclosure-body'); if (!body) return;
+      const has = Array.from(body.querySelectorAll('input, textarea, select')).some(el => {
+        if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
+        return (el.value || '').trim() !== '';
+      });
+      d.classList.toggle('open', has);
+      body.classList.toggle('hidden', !has);
+    });
+  },
   syncPickers(root) {
     (root || document).querySelectorAll('select.picker-native').forEach(sel => {
       const wrap = sel.closest('.picker-wrap'); if (!wrap) return;

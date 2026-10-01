@@ -265,6 +265,12 @@ html.dark .theme-badge {
   .picker-radio { width:18px; height:18px; border-radius:50%; border:2px solid #d1d5db; flex-shrink:0; }
   .picker-radio-on { border-color:#10b981; background:#10b981; box-shadow:inset 0 0 0 3px #fff; }
   .dark .picker-radio-on { box-shadow:inset 0 0 0 3px #1f2937; }
+  .disclosure-head { display:flex; align-items:center; gap:.45rem; width:100%; text-align:left; font-size:11px; font-weight:700; color:#6e5f60; padding:.5rem .2rem; cursor:pointer; background:none; border:none; }
+  .dark .disclosure-head { color:#d8caca; }
+  .disclosure-head .disc-ic { transition:transform .2s; font-size:.65rem; }
+  .disclosure.open .disclosure-head .disc-ic { transform:rotate(45deg); }
+  .disc-tile { border:1.5px dashed #d6cdce; border-radius:.5rem; padding:.85rem .5rem; justify-content:center; font-size:11px; }
+  .dark .disc-tile { border-color:#4b5563; }
   form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
@@ -717,6 +723,9 @@ html.dark .theme-badge {
           <textarea id="k_tindakan" rows="2" required></textarea>
         </div>
         <div id="k_kendala_inputs"></div>
+<div data-disclosure class="disclosure mb-3">
+          <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Unsur yang Terlibat</button>
+          <div class="disclosure-body hidden">
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
             <label class="field-label mb-0">Unsur yang Terlibat</label>
@@ -725,11 +734,18 @@ html.dark .theme-badge {
           <textarea id="k_unsur" rows="2"></textarea>
           <p class="field-hint">Pisahkan tiap unsur dengan Enter</p>
         </div>
+          </div>
+        </div>
         <div id="k_regu_inputs"></div>
         <div id="k_photo_inputs"></div>
+<div data-disclosure class="disclosure mb-3">
+          <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Keterangan Lain</button>
+          <div class="disclosure-body hidden">
         <div class="mb-3">
           <label class="field-label">Keterangan Lain</label>
           <textarea id="k_keterangan" rows="2" placeholder="Catatan tambahan (opsional)"></textarea>
+        </div>
+          </div>
         </div>
       </section>
       <div class="flex flex-col md:flex-row gap-3">
@@ -846,9 +862,14 @@ html.dark .theme-badge {
         <div id="nk_casualty_inputs"></div>
         <div id="nk_regu_inputs"></div>
         <div id="nk_photo_inputs"></div>
+<div data-disclosure class="disclosure mb-3">
+          <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Keterangan Lain</button>
+          <div class="disclosure-body hidden">
         <div class="mb-3">
           <label class="field-label">Keterangan Lain</label>
           <textarea id="nk_keterangan" rows="2" placeholder="Catatan tambahan (opsional)"></textarea>
+        </div>
+          </div>
         </div>
       </section>
       <div class="flex flex-col md:flex-row gap-3">
@@ -904,9 +925,14 @@ html.dark .theme-badge {
         <div id="sos_operasional_inputs"></div>
         <div id="sos_regu_inputs"></div>
         <div id="sos_photo_inputs"></div>
+<div data-disclosure class="disclosure mb-3">
+          <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Keterangan Lain</button>
+          <div class="disclosure-body hidden">
         <div class="mb-3">
           <label class="field-label">Keterangan Lain</label>
           <textarea id="sos_catatanEvaluasi" rows="2" placeholder="Feedback program (opsional)"></textarea>
+        </div>
+          </div>
         </div>
       </section>
       <div class="flex flex-col md:flex-row gap-3">
