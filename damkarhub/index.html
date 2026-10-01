@@ -221,6 +221,8 @@ html.dark .theme-badge {
   .dark .btn-loc { background:rgba(30,58,138,.22); color:#7db3ff; border-color:rgba(96,165,250,.3); }
   .field-label { display:block; font-size:.625rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-bottom:.2rem; color:#8a7a7b; }
   .dark .field-label { color:#b9a7a8; }
+  .field-hint { font-size:10px; color:#9a8a8b; margin-top:.25rem; line-height:1.35; }
+  .dark .field-hint { color:#a89394; }
   input, select, textarea { width:100%; border:1px solid var(--line-strong); border-radius:.75rem; padding:.55rem .75rem; font-size:16px; background:#fbf8f7; color:var(--ink); transition:border-color .15s, box-shadow .15s, background .15s; }
   .dark input, .dark select, .dark textarea { background:rgba(255,255,255,.05); color:#fff; border-color:rgba(255,255,255,.13); }
   input::placeholder, textarea::placeholder { color:#b8a9a9; }
@@ -555,14 +557,14 @@ html.dark .theme-badge {
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-2 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
   <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">TGL LAPOR DITERIMA</label>
+    <label class="field-label text-blue-800 dark:text-blue-400">Tgl Lapor Diterima</label>
     <div class="flex gap-1.5">
       <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
       <button type="button" onclick="Helpers.recordDate('k_tglTerima')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
     </div>
   </div>
   <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">JAM LAPOR DITERIMA</label>
+    <label class="field-label text-blue-800 dark:text-blue-400">Jam Lapor Diterima</label>
     <div class="flex gap-1.5">
       <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
       <button type="button" onclick="Helpers.recordTime('k_jamTerima')" class="btn-time" title="Rekam jam sekarang">⏰</button>
@@ -576,36 +578,37 @@ html.dark .theme-badge {
     </div>
   </div>
   <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">JAM PENANGANAN DIMULAI <span class="text-[9px] font-normal">(auto +2,5 mnt)</span></label>
+    <label class="field-label text-blue-800 dark:text-blue-400">Jam Penanganan Dimulai</label>
     <div class="flex gap-1.5">
       <input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
       <button type="button" onclick="Helpers.recordTime('k_jamMulai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
     </div>
   </div>
   <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">TGL SELESAI <span class="text-[9px] font-normal">(kalau beda hari)</span></label>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">Tgl Selesai</label>
     <div class="flex gap-1.5">
       <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
       <button type="button" onclick="Helpers.recordDate('k_tglSelesai')" class="btn-time" title="Rekam tanggal hari ini">📅</button>
     </div>
   </div>
   <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">JAM SELESAI</label>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">Jam Selesai</label>
     <div class="flex gap-1.5">
       <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" class="flex-1">
       <button type="button" onclick="Helpers.recordTime('k_jamSelesai')" class="btn-time" title="Rekam jam sekarang">⏰</button>
     </div>
   </div>
 </div>
-        <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
+        <p class="field-hint mb-3 italic"><i class="fa-solid fa-info-circle mr-1"></i>Jam Penanganan Dimulai otomatis +2,5 menit dari Jam Tiba (dapat diedit). Tgl Selesai hanya jika penanganan lintas hari.</p>
 
 <div class="grid grid-cols-2 gap-3 mb-3">
 <div>
-  <label class="field-label text-emerald-700 dark:text-emerald-400">RESPON TIME (Otomatis)</label>
+  <label class="field-label text-emerald-700 dark:text-emerald-400">Respon Time</label>
   <div class="flex gap-1.5 items-center">
     <input type="text" id="k_responTime" readonly placeholder="Otomatis dari Jam Lapor Diterima → Jam Penanganan Dimulai" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
     <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
   </div>
+  <p class="field-hint">Otomatis: Jam Lapor Diterima → Jam Penanganan Dimulai</p>
 </div>
         <div>
           <label class="field-label">Jenis Kejadian</label>
@@ -706,10 +709,11 @@ html.dark .theme-badge {
         <div id="k_kendala_inputs"></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Unsur Yang Terlibat (Pisahkan Enter)</label>
+            <label class="field-label mb-0">Unsur yang Terlibat</label>
             <button type="button" onclick="Helpers.startSpeech('k_unsur', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="k_unsur" rows="2"></textarea>
+          <p class="field-hint">Pisahkan tiap unsur dengan Enter</p>
         </div>
         <div id="k_regu_inputs"></div>
         <div id="k_photo_inputs"></div>
@@ -734,33 +738,35 @@ html.dark .theme-badge {
       <section id="nk-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">1. Waktu & Jenis Kegiatan</h3>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Tgl Laporan Diterima</label><input type="date" id="nk_tanggal" required></div>
-          <div><label class="field-label">Jam Laporan Diterima</label><input type="time" id="nk_pukul" required></div>
+          <div><label class="field-label">Tgl Lapor Diterima</label><input type="date" id="nk_tanggal" required></div>
+          <div><label class="field-label">Jam Lapor Diterima</label><input type="time" id="nk_pukul" required></div>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-2 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl">
   <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">TGL PENANGANAN DIMULAI</label>
+    <label class="field-label text-blue-800 dark:text-blue-400">Penanganan Dimulai</label>
     <div class="flex gap-1.5">
       <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
       <button type="button" onclick="Helpers.recordDate('nk_tglMulai')" class="btn-time" title="">📅</button>
     </div>
+    <p class="field-hint">Tanggal mulai ditangani</p>
   </div>
   <div>
-    <label class="field-label text-blue-800 dark:text-blue-400">JAM PENANGANAN DIMULAI</label>
+    <label class="field-label text-blue-800 dark:text-blue-400">Jam Penanganan Dimulai</label>
     <div class="flex gap-1.5">
       <input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
       <button type="button" onclick="Helpers.recordTime('nk_jamMulai')" class="btn-time" title="">⏰</button>
     </div>
   </div>
   <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">TGL PENANGANAN SELESAI</label>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">Penanganan Selesai</label>
     <div class="flex gap-1.5">
       <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
       <button type="button" onclick="Helpers.recordDate('nk_tglSelesai')" class="btn-time" title="">📅</button>
     </div>
+    <p class="field-hint">Tanggal selesai ditangani</p>
   </div>
   <div>
-    <label class="field-label text-emerald-700 dark:text-emerald-400">JAM PENANGANAN SELESAI</label>
+    <label class="field-label text-emerald-700 dark:text-emerald-400">Jam Selesai</label>
     <div class="flex gap-1.5">
       <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" class="flex-1">
       <button type="button" onclick="Helpers.recordTime('nk_jamSelesai')" class="btn-time" title="">⏰</button>
@@ -779,7 +785,7 @@ html.dark .theme-badge {
       </section>
       <section id="nk-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">2. Lokasi Kejadian</h3>
-        <div class="mb-3"><label class="field-label">Tempat/Patokan Lokasi</label><input type="text" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
+        <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Lingkungan/Dusun</label><input type="text" id="nk_dusun"></div>
           <div><label class="field-label">RT/RW</label><input type="text" id="nk_rtrw"></div>
@@ -819,7 +825,7 @@ html.dark .theme-badge {
         <h3 class="section-title text-amber-600 dark:text-amber-400">4. Operasional & Penanganan</h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
           <div><label class="field-label">Objek / Satwa</label><input type="text" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
-          <div><label class="field-label">Lokasi Detail Operasi</label><input type="text" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
+          <div><label class="field-label">Detail Lokasi</label><input type="text" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
           <div><label class="field-label">Ukuran / Spesifikasi</label><input type="text" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
         </div>
         <div id="nk_operasional_inputs"></div>
@@ -872,10 +878,11 @@ html.dark .theme-badge {
         <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" id="sos_tempat" required></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <label class="field-label mb-0">Rangkaian Kegiatan (Pisahkan per baris)</label>
+            <label class="field-label mb-0">Rangkaian Kegiatan</label>
             <button type="button" onclick="Helpers.startSpeech('sos_rangkaian', this)" class="text-[10px] bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold border border-blue-200 dark:border-blue-800 active:scale-95"><i class="fa-solid fa-microphone mr-1"></i>Suara</button>
           </div>
           <textarea id="sos_rangkaian" rows="3" required></textarea>
+          <p class="field-hint">Satu kegiatan per baris (tekan Enter)</p>
         </div>
       </section>
       <section id="sos-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
