@@ -214,6 +214,10 @@ html.dark .theme-badge {
   .dark .opt-go { background:rgba(255,255,255,.1); color:#fff; }
 
   .section-title { font-size:.875rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:1rem; }
+  .section-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1rem; }
+  .btn-help { width:22px; height:22px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:#8a7a7b; font-size:.7rem; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }
+  .btn-help:active { transform:scale(.92); }
+  .dark .btn-help { color:#b9a7a8; }
   .btn-add { font-size:.75rem; font-weight:700; padding:.375rem .75rem; border-radius:.75rem; border:1px solid; }
   .btn-cancel { width:100%; background:#efe5e3; color:#4b3a3c; font-weight:700; padding:.75rem 0; border-radius:.75rem; }
   .dark .btn-cancel { background:rgba(255,255,255,.08); color:#e8dcdc; }
@@ -573,10 +577,13 @@ html.dark .theme-badge {
   <div id="view-k-input" class="input-panel">
     <h2 class="text-xl font-black mb-5" id="k_form-title">Input Laporan Kebakaran</h2>
     <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3"><span class="chip-dot"></span>Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4"><span class="chip-dot"></span>Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5"><span class="chip-dot"></span>Operasional</button></nav>
-    <form id="k_form" onsubmit="Mod.k.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+    <form id="k_form" onsubmit="Mod.k.save(event)" class="space-y-4">
       <input type="hidden" id="k_editId">
-      <section id="k-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-red-600 dark:text-red-400">1. Waktu & Jenis Kejadian</h3>
+      <section id="k-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">1. Waktu & Jenis Kejadian</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s1')" aria-label="Bantuan section Waktu & Jenis Kejadian" title="Bantuan">?</button>
+        </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Tgl Kejadian</label><input type="date" id="k_tanggal" required aria-label="Tanggal kejadian" onclick="if(this.showPicker)this.showPicker()"></div>
           <div><label class="field-label">Jam Kejadian</label><input type="time" id="k_pukul" required aria-label="Pukul kejadian" onclick="if(this.showPicker)this.showPicker()"></div>
@@ -624,8 +631,11 @@ html.dark .theme-badge {
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
       </section>
-      <section id="k-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-red-600 dark:text-red-400">2. Lokasi Kejadian</h3>
+      <section id="k-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">2. Lokasi Kejadian</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
+        </div>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
               <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="k_dusun"></div>
@@ -638,10 +648,13 @@ html.dark .theme-badge {
         </div>
 
       </section>
-      <section id="k-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-red-600 dark:text-red-400 mb-0">3. Data Pemilik / Korban & Pelapor</h3>
-          <button type="button" onclick="Mod.k.addKorban()" class="btn-add bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"><i class="fa-solid fa-plus mr-1"></i> Korban</button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="Mod.k.addKorban()" class="btn-add bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"><i class="fa-solid fa-plus mr-1"></i> Korban</button>
+            <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
+          </div>
         </div>
         <p class="text-[10px] text-gray-500 dark:text-gray-400 -mt-2 mb-3 italic"><i class="fa-solid fa-circle-info mr-1"></i>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p>
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
@@ -653,8 +666,11 @@ html.dark .theme-badge {
           </div>
         </div>
       </section>
-      <section id="k-s4" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-red-600 dark:text-red-400">4. Penyebab & Dampak</h3>
+      <section id="k-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">4. Penyebab & Dampak</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s4')" aria-label="Bantuan section Penyebab & Dampak" title="Bantuan">?</button>
+        </div>
         <div class="mb-3">
           <label class="field-label">Dugaan Penyebab</label>
           <div class="picker-wrap"><select id="k_penyebab" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_penyebab','k_penyebab_lainnya')">
@@ -692,8 +708,11 @@ html.dark .theme-badge {
 </div>
         <div id="k_casualty_inputs"></div>
       </section>
-      <section id="k-s5" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-red-600 dark:text-red-400">5. Operasional & Regu</h3>
+      <section id="k-s5" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">5. Operasional & Regu</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s5')" aria-label="Bantuan section Operasional & Regu" title="Bantuan">?</button>
+        </div>
         <div id="k_operasional_inputs"></div>
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
@@ -746,10 +765,13 @@ html.dark .theme-badge {
   <div id="view-nk-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="nk_form-title">Input Laporan Penyelamatan</h2>
     <nav class="chip-nav" data-chipnav="nk" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="nk-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="nk-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="nk-s3"><span class="chip-dot"></span>Pelapor</button><button type="button" class="chip-nav-btn" data-target="nk-s4"><span class="chip-dot"></span>Operasional</button></nav>
-    <form id="nk_form" onsubmit="Mod.nk.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+    <form id="nk_form" onsubmit="Mod.nk.save(event)" class="space-y-4">
       <input type="hidden" id="nk_editId">
-      <section id="nk-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-amber-600 dark:text-amber-400">1. Waktu & Jenis Kegiatan</h3>
+      <section id="nk-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">1. Waktu & Jenis Kegiatan</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s1')" aria-label="Bantuan section Waktu & Jenis Kegiatan" title="Bantuan">?</button>
+        </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Tgl Terima</label><input type="date" id="nk_tanggal" required aria-label="Tanggal lapor diterima" onclick="if(this.showPicker)this.showPicker()"></div>
           <div><label class="field-label">Jam Terima</label><input type="time" id="nk_pukul" required aria-label="Jam lapor diterima" onclick="if(this.showPicker)this.showPicker()"></div>
@@ -781,8 +803,11 @@ html.dark .theme-badge {
           <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
         </div>
       </section>
-      <section id="nk-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-amber-600 dark:text-amber-400">2. Lokasi Kejadian</h3>
+      <section id="nk-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">2. Lokasi Kejadian</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
+        </div>
         <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Lingkungan/Dusun</label><input type="text" enterkeyhint="next" id="nk_dusun"></div>
@@ -795,10 +820,13 @@ html.dark .theme-badge {
         </div>
 
       </section>
-      <section id="nk-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="nk-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">3. Identitas Pelapor</h3>
-          <button type="button" onclick="Mod.nk.copyLokasiToIdentitas()" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600">Samakan dgn Lokasi</button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="Mod.nk.copyLokasiToIdentitas()" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600">Samakan dgn Lokasi</button>
+            <button type="button" class="btn-help" onclick="UI.openHelp('nk-s3')" aria-label="Bantuan section Identitas Pelapor" title="Bantuan">?</button>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" id="nk_idNama" required></div>
@@ -819,8 +847,11 @@ html.dark .theme-badge {
           <input type="text" enterkeyhint="next" id="nk_idKabkota" placeholder="Kab/Kota" class="col-span-2">
         </div>
       </section>
-      <section id="nk-s4" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-amber-600 dark:text-amber-400">4. Operasional & Penanganan</h3>
+      <section id="nk-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">4. Operasional & Penanganan</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s4')" aria-label="Bantuan section Operasional & Penanganan" title="Bantuan">?</button>
+        </div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
           <div><label class="field-label">Objek / Satwa</label><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
           <div><label class="field-label">Detail Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
@@ -866,10 +897,13 @@ html.dark .theme-badge {
   <div id="view-sos-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="sos_form-title">Input Laporan Sosialisasi</h2>
     <nav class="chip-nav" data-chipnav="sos" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="sos-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="sos-s2"><span class="chip-dot"></span>Peserta</button><button type="button" class="chip-nav-btn" data-target="sos-s3"><span class="chip-dot"></span>Operasional</button></nav>
-    <form id="sos_form" onsubmit="Mod.sos.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
+    <form id="sos_form" onsubmit="Mod.sos.save(event)" class="space-y-4">
       <input type="hidden" id="sos_editId">
-      <section id="sos-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-emerald-600 dark:text-emerald-400">1. Waktu & Rangkaian</h3>
+      <section id="sos-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">1. Waktu & Rangkaian</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('sos-s1')" aria-label="Bantuan section Waktu & Rangkaian" title="Bantuan">?</button>
+        </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
           <div><label class="field-label">Tgl Pelaksanaan</label><input type="date" id="sos_tanggal" required onclick="if(this.showPicker)this.showPicker()"></div>
           <div><label class="field-label">Pukul</label><input type="time" id="sos_pukul" required onchange="Helpers.autoFillDurasi('sos')" onclick="if(this.showPicker)this.showPicker()"></div>
@@ -888,10 +922,13 @@ html.dark .theme-badge {
           <p class="field-hint">Satu kegiatan per baris (tekan Enter)</p>
         </div>
       </section>
-      <section id="sos-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="sos-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">2. Data Peserta / Instansi</h3>
-          <button type="button" onclick="Mod.sos.addPeserta()" class="btn-add bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-plus mr-1"></i> Peserta</button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="Mod.sos.addPeserta()" class="btn-add bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-plus mr-1"></i> Peserta</button>
+            <button type="button" class="btn-help" onclick="UI.openHelp('sos-s2')" aria-label="Bantuan section Data Peserta / Instansi" title="Bantuan">?</button>
+          </div>
         </div>
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
@@ -903,8 +940,11 @@ html.dark .theme-badge {
         </div>
         <div id="sos_pesertaListContainer" class="space-y-4"></div>
       </section>
-      <section id="sos-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
-        <h3 class="section-title text-emerald-600 dark:text-emerald-400">3. Operasional & Personil</h3>
+      <section id="sos-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+        <div class="section-head">
+          <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">3. Operasional & Personil</h3>
+          <button type="button" class="btn-help" onclick="UI.openHelp('sos-s3')" aria-label="Bantuan section Operasional & Personil" title="Bantuan">?</button>
+        </div>
         <div id="sos_operasional_inputs"></div>
         <div id="sos_regu_inputs"></div>
         <div id="sos_photo_inputs"></div>
