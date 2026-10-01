@@ -129,7 +129,7 @@ const ModKcfg = {
       nilaiAset:gv('k_nilaiAset') || 0, kerugian:gv('k_kerugian') || 0, asetSelamat:gv('k_asetSelamat') || 0,
       lRingan:gv('k_lRingan') || 0, lBerat:gv('k_lBerat') || 0, mnggal:gv('k_mnggal') || 0,
       armada:gv('k_armada'), durasi:gv('k_durasi'), jarak:gv('k_jarak'), air:gv('k_air'),
-      kronologi:gv('k_kronologi'), tindakan:gv('k_tindakan'), kendala:gv('k_kendala'), unsur:gv('k_unsur'),
+      kronologi:gv('k_kronologi'), tindakan:gv('k_tindakan'), kendala:(gv('k_kendala') || '').split('\n').map(s => s.trim()).filter(Boolean), unsur:gv('k_unsur'),
       regu:gv('k_regu'), personil:gv('k_personil'),
       foto1:gv('k_foto1_b64'), foto2:gv('k_foto2_b64'), keterangan:gv('k_keterangan') };
   },
@@ -145,12 +145,13 @@ const ModKcfg = {
     setSelectOrOther('k_objekTerbakar','k_objek_lainnya', d.objekTerbakar);
     sv('k_luasArea',d.luasArea); sv('k_nilaiAset',d.nilaiAset); sv('k_kerugian',d.kerugian); sv('k_asetSelamat',d.asetSelamat); sv('k_lRingan',d.lRingan); sv('k_lBerat',d.lBerat); sv('k_mnggal',d.mnggal);
     sv('k_armada',d.armada); sv('k_durasi',d.durasi); sv('k_jarak',d.jarak); sv('k_air',d.air);
-    sv('k_kronologi',d.kronologi); sv('k_tindakan',d.tindakan); sv('k_kendala',d.kendala || 'Nihil'); sv('k_unsur',d.unsur); sv('k_keterangan',d.keterangan);
+    sv('k_kronologi',d.kronologi); sv('k_tindakan',d.tindakan); sv('k_kendala', Helpers.kendalaList(d.kendala).join('\n')); sv('k_unsur',d.unsur); sv('k_keterangan',d.keterangan);
     sv('k_regu',d.regu || ''); sv('k_personil',d.personil);
     document.getElementById('k_foto1_b64').value = d.foto1 || '';
     document.getElementById('k_foto2_b64').value = d.foto2 || '';
     App.renderReguChips('k');
     App.renderPersonnelChips('k');
+    App.renderKendalaChips('k');
   },
   onResetForm() {
     ['k_jenis_lainnya','k_penyebab_lainnya','k_objek_lainnya'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -160,6 +161,7 @@ const ModKcfg = {
     document.getElementById('k_foto2_b64').value = '';
     App.renderReguChips('k');
     App.renderPersonnelChips('k');
+    App.renderKendalaChips('k');
   },
   buildPreviewHTML(d) {
     const P = PreviewBuilder;
@@ -201,7 +203,7 @@ const ModKcfg = {
       P.section('G. Pelapor', 'fa-bullhorn',
         P.row('Nama', d.pNama || '-') + P.row('Kontak', d.pHP || '-'), 'text-red-600') +
       P.section('H. Operasional', 'fa-truck-medical',
-        P.row('Armada', d.armada || '-') + P.row('Air', `${d.air || 0} Tangki`) + P.row('Tindakan', d.tindakan || '-') + P.row('Kendala', d.kendala || 'Nihil'), 'text-red-600') +
+        P.row('Armada', d.armada || '-') + P.row('Air', `${d.air || 0} Tangki`) + P.row('Tindakan', d.tindakan || '-') + P.row('Kendala', Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'), 'text-red-600') +
       P.section('I. Personil Bertugas', 'fa-people-group',
         P.row('Regu', reguStr) + (personilList.length ? `<div class="mt-2 flex flex-wrap gap-1">${personilList.map(p => `<span class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-1 rounded-md">${p}</span>`).join('')}</div>` : ''), 'text-red-600') +
       (unsurList.length ? P.section('J. Unsur Terlibat', 'fa-handshake', `<div class="flex flex-wrap gap-1">${unsurList.map(u => `<span class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-[10px] font-bold px-2 py-1 rounded-md">${u}</span>`).join('')}</div>`, 'text-red-600') : '');
@@ -274,7 +276,7 @@ ${d.kronologi || '-'}
 • Armada : ${d.armada || '-'}
 • Suplai Air : ${d.air || 0} Tangki
 • Tindakan : ${d.tindakan || '-'}
-• Kendala : ${d.kendala || 'Nihil'}
+• Kendala : ${Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'}${d.keterangan ? `\n• Catatan : ${d.keterangan}` : ''}
 
  *I. PERSONIL YANG BERTUGAS*
 ${reguStr}
@@ -287,7 +289,6 @@ ${unsur}
  Demikian yang dapat kami laporkan. 
  Terima kasih.
 `;
-    if (d.keterangan) wa += `\n*Catatan:* ${d.keterangan}\n`;
     return wa;
   }
 };

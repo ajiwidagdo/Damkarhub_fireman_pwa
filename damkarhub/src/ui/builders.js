@@ -64,6 +64,16 @@ export const Builders = {
       </div>
     </div>`;
   },
+  kendalaInputs(prefix) {
+    return `<div class="mb-3">
+      <div class="flex justify-between items-center mb-1">
+        <label class="field-label mb-0">Kendala</label>
+        <button type="button" onclick="App.openKendalaSelector('${prefix}')" class="text-[10px] bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded font-bold border border-indigo-200 dark:border-indigo-800 active:scale-95"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Pilih Kendala</button>
+      </div>
+      <div id="${prefix}_kendala_chips" class="flex flex-wrap gap-1.5 min-h-[42px] p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700"></div>
+      <input type="hidden" id="${prefix}_kendala">
+    </div>`;
+  },
   photoInputs(prefix, label1='Foto Proses (1)', label2='Foto Selesai (2)') {
     return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div><label class="field-label">${label1}</label>
