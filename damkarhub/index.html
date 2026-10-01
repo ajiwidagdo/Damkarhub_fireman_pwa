@@ -346,6 +346,10 @@ html.dark .theme-badge {
   .dt-record { flex:0 0 36px; display:flex; align-items:center; justify-content:center; background:none; border:none; color:#2563eb; font-size:1.05rem; cursor:pointer; padding:0; }
   .dt-record:active { transform:scale(.9); }
   .dark .dt-record { color:#7db3ff; }
+  /* Angka pendek: box ringkas + suffix satuan di luar box */
+  .num-compact { width:84px; flex:0 0 84px; }
+  .unit-suffix { font-size:.8rem; font-weight:700; color:#8a7a7b; }
+  .dark .unit-suffix { color:#b9a7a8; }
 
   @media (max-width: 430px) {
     .grid-cols-3.gap-3, .grid-cols-3.gap-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
@@ -666,19 +670,21 @@ html.dark .theme-badge {
             </div>
           </div>
         </div>
-        <div class="mb-3">
-          <label class="field-label">Respon Time</label>
-          <div class="flex gap-1.5 items-center">
-            <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
-            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="field-label">Respon Time</label>
+            <div class="flex items-center gap-2">
+              <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="num-compact bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label class="field-label">Jenis Kejadian</label>
-          <div class="picker-wrap"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
-            <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
-          </select><button type="button" class="picker-field" onclick="UI.openPicker('k_jenisKebakaran','Jenis Kejadian')" aria-label="Jenis Kejadian"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
-          <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
+          <div>
+            <label class="field-label">Jenis Kejadian</label>
+            <div class="picker-wrap"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
+              <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
+            </select><button type="button" class="picker-field" onclick="UI.openPicker('k_jenisKebakaran','Jenis Kejadian')" aria-label="Jenis Kejadian"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
+            <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
+          </div>
         </div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
@@ -926,7 +932,7 @@ html.dark .theme-badge {
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" id="nk_idNama" required></div>
-          <div><label class="field-label">Usia (Thn)</label><input type="number" id="nk_idUsia"></div>
+          <div><label class="field-label">Usia (Thn)</label><input type="number" id="nk_idUsia" class="num-compact"></div>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Jenis Kelamin</label><select id="nk_idJK"><option value="-">-</option><option>Pria</option><option>Wanita</option></select></div>

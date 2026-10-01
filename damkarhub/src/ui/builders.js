@@ -16,14 +16,14 @@ export const Builders = {
   operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">
       ${this.inputText(`${prefix}_armada`, 'Armada', '1 Unit Pancar', armadaRequired ? 'required' : '')}
-      ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="${prefix}_air"></div>` : ''}
+      ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_air" class="num-compact"></div></div>` : ''}
     </div>`;
   },
 
   durasiJarakInputs(prefix, { includeJarak=true, durasiRequired=true } = {}) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">
-      ${this.inputNum(`${prefix}_durasi`, 'Durasi (Mnt)', '', durasiRequired ? 'required' : '')}
-      ${includeJarak ? `<div><label class="field-label">Jarak (Km)</label><input type="number" step="0.1" id="${prefix}_jarak"></div>` : ''}
+      <div><label class="field-label">Durasi</label><div class="flex items-center gap-2"><input type="number" id="${prefix}_durasi" value="" class="num-compact" ${durasiRequired ? 'required' : ''}><span class="unit-suffix">Mnt</span></div></div>
+      ${includeJarak ? `<div><label class="field-label">Jarak</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_jarak" class="num-compact"><span class="unit-suffix">Km</span></div></div>` : ''}
     </div>`;
   },
 
