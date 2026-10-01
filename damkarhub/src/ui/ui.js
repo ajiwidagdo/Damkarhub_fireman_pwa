@@ -210,6 +210,14 @@ showComingSoon(feature) {
       if (val) val.textContent = sel.options[idx] ? (sel.options[idx].textContent || '').trim() : '';
     });
   },
+  syncDateTime(input) {
+    if (!input) return;
+    const wrap = input.closest('.dt-wrap'); if (!wrap) return;
+    wrap.classList.toggle('is-empty', !input.value);
+  },
+  syncDateTimes(root) {
+    (root || document).querySelectorAll('input[type="date"], input[type="time"]').forEach(inp => this.syncDateTime(inp));
+  },
   checkLainnya(selId, inpId) {
     const sel = document.getElementById(selId), inp = document.getElementById(inpId);
     if (sel.value === 'Lainnya') { inp.classList.remove('hidden'); inp.required = true; inp.focus(); }
@@ -279,3 +287,11 @@ globalThis.UI = UI;
 
 /* Wiring tombol konfirmasi (pindahan dari index.html) */
 document.getElementById('btnConfirmOk').onclick = () => { const cb = UI._confirmCb; UI.closeConfirm(); if (cb) cb(); };
+
+/* Sinkron overlay "Tekan di sini" field tanggal/jam: delegasi change/input, didaftarkan sekali */
+if (!globalThis.__dtSyncWired) {
+  globalThis.__dtSyncWired = true;
+  const _dtSyncHandler = e => { const t = e.target; if (t && (t.type === 'date' || t.type === 'time')) UI.syncDateTime(t); };
+  document.addEventListener('change', _dtSyncHandler);
+  document.addEventListener('input', _dtSyncHandler);
+}

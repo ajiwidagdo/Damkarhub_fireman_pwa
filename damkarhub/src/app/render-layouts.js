@@ -118,7 +118,7 @@ export function renderLayouts() {
 
   // Suntik tombol mic ke text input/textarea form laporan (idempoten)
   Helpers.injectMicButtons();
-  if (globalThis.UI) { UI.syncPickers(); if (UI.syncDisclosures) UI.syncDisclosures(); }
+  if (globalThis.UI) { UI.syncPickers(); if (UI.syncDisclosures) UI.syncDisclosures(); if (UI.syncDateTimes) UI.syncDateTimes(); }
 }
 
 globalThis.renderLayouts = renderLayouts;

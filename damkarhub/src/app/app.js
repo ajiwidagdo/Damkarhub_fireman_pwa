@@ -202,7 +202,7 @@ const App = {
     this.currentView = 'input';
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (globalThis.UI) { UI.syncPickers(); if (UI.syncDisclosures) UI.syncDisclosures(); }
+    if (globalThis.UI) { UI.syncPickers(); if (UI.syncDisclosures) UI.syncDisclosures(); if (UI.syncDateTimes) UI.syncDateTimes(); }
   },
 
   editLaporan(mod, id) { Mod[mod].edit(id); },
