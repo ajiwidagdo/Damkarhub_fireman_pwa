@@ -131,7 +131,7 @@ export const ModSoscfg = {
         P.row('Selesai', selesaiStr) + P.row('Durasi', `${d.durasi || 0} Menit`) + P.row('Sasaran Edukasi', kategoriStr), 'text-emerald-600') +
       P.section('B. Tempat', 'fa-location-dot', P.row('Lokasi', d.tempat || '-'), 'text-emerald-600') +
       P.section('C. Rangkaian Kegiatan', 'fa-list-check',
-        (rangkaianList.length ? `<ol class="text-sm text-gray-800 dark:text-gray-200 space-y-1">${rangkaianList.map(r => `<li class="flex gap-2"><span class="text-emerald-500 font-bold">•</span><span>${r.replace(/^-\s*/, '')}</span></li>`).join('')}</ol>` : '<p class="text-xs text-gray-400 italic">-</p>') + (Helpers.sosCatatan(d) ? P.row('Catatan Evaluasi', Helpers.sosCatatan(d)) : ''), 'text-emerald-600') +
+        (rangkaianList.length ? `<ol class="text-sm text-gray-800 dark:text-gray-200 space-y-1">${rangkaianList.map(r => `<li class="flex gap-2"><span class="text-emerald-500 font-bold">•</span><span>${r.replace(/^-\s*/, '')}</span></li>`).join('')}</ol>` : '<p class="text-xs text-gray-400 italic">-</p>') + (Helpers.sosCatatan(d) ? P.row('Keterangan Lain', Helpers.sosCatatan(d)) : ''), 'text-emerald-600') +
       P.section('D. Data Peserta', 'fa-users',
         `<div class="flex gap-2 mb-2">
           <span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-lg">${jumlahInstansi} Instansi</span>
@@ -176,9 +176,9 @@ ${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit
 ${d.tempat || '-'}
 
  *C. RANGKAIAN KEGIATAN*
-${rangkaianList}${Helpers.sosCatatan(d) ? `\nCatatan Evaluasi : ${Helpers.sosCatatan(d)}` : ''}
+${rangkaianList}${Helpers.sosCatatan(d) ? `\nKeterangan Lain : ${Helpers.sosCatatan(d)}` : ''}
 
- *D. SASARAN EDULASI*
+ *D. SASARAN EDUKASI*
 ${kategoriStr}
 ${totalPeserta} Orang
 
