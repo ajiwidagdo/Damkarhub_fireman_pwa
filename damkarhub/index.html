@@ -271,6 +271,11 @@ html.dark .theme-badge {
   .disclosure.open .disclosure-head .disc-ic { transform:rotate(45deg); }
   .disc-tile { border:1.5px dashed #d6cdce; border-radius:.5rem; padding:.85rem .5rem; justify-content:center; font-size:11px; }
   .dark .disc-tile { border-color:#4b5563; }
+  .chip-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#d6cdce; margin-right:.35rem; vertical-align:1px; transition:background .2s; }
+  .dark .chip-dot { background:#57534e; }
+  .chip-nav-btn.is-done .chip-dot { background:#10b981; }
+  .chip-nav-btn.is-active .chip-dot { background:rgba(255,255,255,.55); }
+  .chip-nav-btn.is-active.is-done .chip-dot { background:#a7f3d0; }
   form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
@@ -576,7 +581,7 @@ html.dark .theme-badge {
   <!-- FORM K -->
   <div id="view-k-input" class="input-panel">
     <h2 class="text-xl font-black mb-5" id="k_form-title">Input Laporan Kebakaran</h2>
-    <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2">Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3">Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4">Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5">Operasional</button></nav>
+    <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3"><span class="chip-dot"></span>Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4"><span class="chip-dot"></span>Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5"><span class="chip-dot"></span>Operasional</button></nav>
     <form id="k_form" onsubmit="Mod.k.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="k_editId">
       <section id="k-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
@@ -758,7 +763,7 @@ html.dark .theme-badge {
   <!-- FORM NK -->
   <div id="view-nk-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="nk_form-title">Input Laporan Penyelamatan</h2>
-    <nav class="chip-nav" data-chipnav="nk" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="nk-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="nk-s2">Lokasi</button><button type="button" class="chip-nav-btn" data-target="nk-s3">Pelapor</button><button type="button" class="chip-nav-btn" data-target="nk-s4">Operasional</button></nav>
+    <nav class="chip-nav" data-chipnav="nk" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="nk-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="nk-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="nk-s3"><span class="chip-dot"></span>Pelapor</button><button type="button" class="chip-nav-btn" data-target="nk-s4"><span class="chip-dot"></span>Operasional</button></nav>
     <form id="nk_form" onsubmit="Mod.nk.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="nk_editId">
       <section id="nk-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
@@ -882,7 +887,7 @@ html.dark .theme-badge {
   <!-- FORM SOS -->
   <div id="view-sos-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="sos_form-title">Input Laporan Sosialisasi</h2>
-    <nav class="chip-nav" data-chipnav="sos" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="sos-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="sos-s2">Peserta</button><button type="button" class="chip-nav-btn" data-target="sos-s3">Operasional</button></nav>
+    <nav class="chip-nav" data-chipnav="sos" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="sos-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="sos-s2"><span class="chip-dot"></span>Peserta</button><button type="button" class="chip-nav-btn" data-target="sos-s3"><span class="chip-dot"></span>Operasional</button></nav>
     <form id="sos_form" onsubmit="Mod.sos.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="sos_editId">
       <section id="sos-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
@@ -1230,6 +1235,25 @@ html.dark .theme-badge {
     var s = document.getElementById(id);
     if (s) io.observe(s);
   });
+  function updateChipProgress() {
+    Object.keys(chipFor).forEach(function (id) {
+      var sec = document.getElementById(id);
+      var btn = chipFor[id];
+      if (!sec || !btn) return;
+      var fields = sec.querySelectorAll('[required]');
+      var done = fields.length > 0;
+      fields.forEach(function (f) {
+        if (!done) return;
+        if (f.tagName === 'SELECT' && f.classList.contains('picker-native')) {
+          if (!f.hasAttribute('data-picked')) done = false;
+        } else if (!(f.value || '').trim()) done = false;
+      });
+      btn.classList.toggle('is-done', done);
+    });
+  }
+  document.addEventListener('input', updateChipProgress);
+  document.addEventListener('change', updateChipProgress);
+  updateChipProgress();
   var lastY = window.scrollY;
   window.addEventListener('scroll', function () {
     var y = window.scrollY;
