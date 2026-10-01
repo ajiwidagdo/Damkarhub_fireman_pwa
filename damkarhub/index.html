@@ -229,6 +229,17 @@ html.dark .theme-badge {
   .dark input:focus, .dark select:focus, .dark textarea:focus { background:rgba(255,255,255,.08); box-shadow:0 0 0 3px rgba(239,68,68,.26); }
   .cb-custom { width:1.15rem; height:1.15rem; accent-color:#dc2626; }
   textarea { min-height:80px; field-sizing:content; max-height:260px; }
+  /* Chip navigasi form (sticky + auto-hide) */
+  .chip-nav { position:sticky; top:calc(3.9rem + env(safe-area-inset-top, 0px)); z-index:20; display:flex; gap:.4rem; overflow-x:auto; padding:.45rem; margin-bottom:.75rem; border-radius:999px; background:rgba(255,255,255,.88); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border:1px solid var(--line); box-shadow:var(--shadow); scrollbar-width:none; transition:transform .25s ease, opacity .25s ease; }
+  .chip-nav::-webkit-scrollbar { display:none; }
+  .dark .chip-nav { background:rgba(21,11,13,.85); border-color:rgba(255,255,255,.1); }
+  .chip-nav.nav-hidden { transform:translateY(-140%); opacity:0; pointer-events:none; }
+  .chip-nav-btn { flex:1 0 auto; padding:.42rem .8rem; border-radius:999px; font-size:.72rem; font-weight:700; white-space:nowrap; color:#6e5f60; transition:all .15s; }
+  .dark .chip-nav-btn { color:#d8caca; }
+  .chip-nav-btn.is-active { background:var(--grad-red); color:#fff; box-shadow:0 6px 14px -6px rgba(220,38,38,.7); }
+  .chip-nav[data-chipnav="nk"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#fbbf24,#d97706); box-shadow:0 6px 14px -6px rgba(245,158,11,.7); }
+  .chip-nav[data-chipnav="sos"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#34d399,#059669); box-shadow:0 6px 14px -6px rgba(16,185,129,.7); }
+  form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
   button.bg-red-600:not(.rounded-full):active { filter:brightness(.94); }
@@ -533,9 +544,10 @@ html.dark .theme-badge {
   <!-- FORM K -->
   <div id="view-k-input" class="input-panel">
     <h2 class="text-xl font-black mb-5" id="k_form-title">Input Laporan Kebakaran</h2>
+    <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2">Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3">Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4">Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5">Operasional</button></nav>
     <form id="k_form" onsubmit="Mod.k.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="k_editId">
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">1. Waktu & Jenis Kejadian</h3>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Tgl Kejadian</label><input type="date" id="k_tanggal" required></div>
@@ -606,7 +618,7 @@ html.dark .theme-badge {
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">2. Lokasi Kejadian</h3>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" id="k_lokasiDetail" placeholder="Cth: di Komplek Perum Pepabri" required></div>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -620,7 +632,7 @@ html.dark .theme-badge {
         </div>
 
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-red-600 dark:text-red-400 mb-0">3. Data Pemilik / Korban & Pelapor</h3>
           <button type="button" onclick="Mod.k.addKorban()" class="btn-add bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"><i class="fa-solid fa-plus mr-1"></i> Korban</button>
@@ -635,7 +647,7 @@ html.dark .theme-badge {
           </div>
         </div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s4" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">4. Penyebab & Dampak</h3>
         <div class="mb-3">
           <label class="field-label">Dugaan Penyebab</label>
@@ -674,7 +686,7 @@ html.dark .theme-badge {
 </div>
         <div id="k_casualty_inputs"></div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="k-s5" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-red-600 dark:text-red-400">5. Operasional & Regu</h3>
         <div id="k_operasional_inputs"></div>
         <div class="mb-3">
@@ -716,9 +728,10 @@ html.dark .theme-badge {
   <!-- FORM NK -->
   <div id="view-nk-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="nk_form-title">Input Laporan Penyelamatan</h2>
+    <nav class="chip-nav" data-chipnav="nk" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="nk-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="nk-s2">Lokasi</button><button type="button" class="chip-nav-btn" data-target="nk-s3">Pelapor</button><button type="button" class="chip-nav-btn" data-target="nk-s4">Operasional</button></nav>
     <form id="nk_form" onsubmit="Mod.nk.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="nk_editId">
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="nk-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">1. Waktu & Jenis Kegiatan</h3>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Tgl Laporan Diterima</label><input type="date" id="nk_tanggal" required></div>
@@ -764,7 +777,7 @@ html.dark .theme-badge {
           <input type="text" id="nk_jenis_lainnya" class="mt-2 hidden">
         </div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="nk-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">2. Lokasi Kejadian</h3>
         <div class="mb-3"><label class="field-label">Tempat/Patokan Lokasi</label><input type="text" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -778,7 +791,7 @@ html.dark .theme-badge {
         </div>
 
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="nk-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">3. Identitas Pelapor</h3>
           <button type="button" onclick="Mod.nk.copyLokasiToIdentitas()" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600">Samakan dgn Lokasi</button>
@@ -802,7 +815,7 @@ html.dark .theme-badge {
           <input type="text" id="nk_idKabkota" placeholder="Kab/Kota" class="col-span-2">
         </div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="nk-s4" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-amber-600 dark:text-amber-400">4. Operasional & Penanganan</h3>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
           <div><label class="field-label">Objek / Satwa</label><input type="text" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
@@ -843,9 +856,10 @@ html.dark .theme-badge {
   <!-- FORM SOS -->
   <div id="view-sos-input" class="input-panel hidden">
     <h2 class="text-xl font-black mb-5" id="sos_form-title">Input Laporan Sosialisasi</h2>
+    <nav class="chip-nav" data-chipnav="sos" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="sos-s1">Waktu</button><button type="button" class="chip-nav-btn" data-target="sos-s2">Peserta</button><button type="button" class="chip-nav-btn" data-target="sos-s3">Operasional</button></nav>
     <form id="sos_form" onsubmit="Mod.sos.save(event)" class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
       <input type="hidden" id="sos_editId">
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="sos-s1" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-emerald-600 dark:text-emerald-400">1. Waktu & Rangkaian</h3>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
           <div><label class="field-label">Tgl Pelaksanaan</label><input type="date" id="sos_tanggal" required></div>
@@ -864,7 +878,7 @@ html.dark .theme-badge {
           <textarea id="sos_rangkaian" rows="3" required></textarea>
         </div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="sos-s2" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">2. Data Peserta / Instansi</h3>
           <button type="button" onclick="Mod.sos.addPeserta()" class="btn-add bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-plus mr-1"></i> Peserta</button>
@@ -879,7 +893,7 @@ html.dark .theme-badge {
         </div>
         <div id="sos_pesertaListContainer" class="space-y-4"></div>
       </section>
-      <section class="border-b border-gray-100 dark:border-gray-700 pb-4">
+      <section id="sos-s3" class="border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="section-title text-emerald-600 dark:text-emerald-400">3. Operasional & Personil</h3>
         <div id="sos_operasional_inputs"></div>
         <div id="sos_regu_inputs"></div>
@@ -1154,5 +1168,44 @@ html.dark .theme-badge {
 </div>
 <!-- ===== /MODE SELECTION OVERLAY ===== -->
 
+<script>
+/* Chip navigasi form: tap = smooth scroll, highlight ikut posisi scroll, auto-hide saat scroll ke bawah */
+(function () {
+  var navs = document.querySelectorAll('.chip-nav');
+  if (!navs.length) return;
+  var chipFor = {};
+  navs.forEach(function (nav) {
+    nav.querySelectorAll('.chip-nav-btn').forEach(function (btn) {
+      chipFor[btn.dataset.target] = btn;
+      btn.addEventListener('click', function () {
+        var t = document.getElementById(btn.dataset.target);
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var btn = chipFor[e.target.id];
+      if (!btn) return;
+      btn.closest('.chip-nav').querySelectorAll('.chip-nav-btn').forEach(function (b) {
+        b.classList.toggle('is-active', b === btn);
+      });
+      btn.scrollIntoView({ block: 'nearest', inline: 'center' });
+    });
+  }, { rootMargin: '-25% 0px -65% 0px' });
+  Object.keys(chipFor).forEach(function (id) {
+    var s = document.getElementById(id);
+    if (s) io.observe(s);
+  });
+  var lastY = window.scrollY;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY;
+    var hide = y > lastY && y > 240;
+    navs.forEach(function (n) { n.classList.toggle('nav-hidden', hide); });
+    lastY = y;
+  }, { passive: true });
+})();
+</script>
 </body>
 </html>
