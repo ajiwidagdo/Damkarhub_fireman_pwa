@@ -166,7 +166,8 @@ ${d.kronologi || '-'}
 • Mulai Penanganan : ${d.jamMulai ? (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo) + ' ' + d.jamMulai : '-'} WIB
 ${tglSelesaiStr}• Durasi Penanganan : ${d.durasi || 0} Menit
 • Jarak ke lokasi : ${d.jarak || 0} Km  
-• Armada : ${d.armada || '-'}
+• Armada : ${d.armada || '-'}${parseFloat(d.air) > 0 ? `
+• Suplai Air : ${d.air} Tangki` : ''}
 • Tindakan : ${d.tindakan || '-'}
 • Kendala : ${Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'}${d.keterangan ? `\n• Keterangan Lain : ${d.keterangan}` : ''}
 • Korban Jiwa : LR ${d.lRingan || 0}, LB ${d.lBerat || 0}, MD ${d.mnggal || 0}

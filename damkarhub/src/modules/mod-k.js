@@ -273,8 +273,8 @@ ${d.kronologi || '-'}
 • Kontak : ${d.pHP || '+62'}
 
  *H. DETAIL PENANGANAN*
-• Armada : ${d.armada || '-'}
-• Suplai Air : ${d.air || 0} Tangki
+• Armada : ${d.armada || '-'}${parseFloat(d.air) > 0 ? `
+• Suplai Air : ${d.air} Tangki` : ''}
 • Tindakan : ${d.tindakan || '-'}
 • Kendala : ${Helpers.kendalaList(d.kendala).join(', ') || 'Nihil'}${d.keterangan ? `\n• Keterangan Lain : ${d.keterangan}` : ''}
 

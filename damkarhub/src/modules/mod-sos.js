@@ -170,7 +170,8 @@ ${addressee} Mohon izin melaporkan kegiatan *Sosialisasi* sebagai berikut :
  *A. WAKTU*
 • Hari/Tgl : ${hari}, ${tglIndo}
 • Pukul : ${d.pukul || '-'} WIB
-${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit
+${tglSelesaiStr}• Durasi : ${d.durasi || 0} Menit${parseFloat(d.air) > 0 ? `
+• Suplai Air : ${d.air} Tangki` : ''}
 
  *B. TEMPAT*
 ${d.tempat || '-'}
