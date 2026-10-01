@@ -67,12 +67,15 @@ const ModKcfg = {
   addKorban(data = null) {
     const c = document.getElementById('k_korbanListContainer');
     const div = document.createElement('div');
-    div.className = "bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-gray-700 relative";
+    div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-gray-700 relative";
     div.innerHTML = `
-      <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90"><i class="fa-solid fa-times"></i></button>
+      <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="flex justify-between items-center mb-3">
         <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase">Data Korban / Pemilik</p>
-        <button type="button" onclick="Mod.k._copyLokasiToKorban(this)" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600 active:scale-95">Samakan Lokasi</button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="Mod.k._copyLokasiToKorban(this)" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600 active:scale-95">Samakan Lokasi</button>
+          <button type="button" onclick="this.closest('.korban-item').remove()" class="text-[10px] text-red-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-red-200 dark:border-gray-600 active:scale-95"><i class="fa-solid fa-times mr-1"></i>Hapus</button>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-3 mb-2">
         <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>

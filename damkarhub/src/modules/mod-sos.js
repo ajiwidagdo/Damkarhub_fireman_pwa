@@ -49,9 +49,13 @@ export const ModSoscfg = {
   addPeserta(data = null) {
     const c = document.getElementById('sos_pesertaListContainer');
     const div = document.createElement('div');
-    div.className = "bg-emerald-50/50 dark:bg-gray-800 p-4 rounded-xl border border-emerald-100 dark:border-gray-700 relative";
+    div.className = "peserta-item bg-emerald-50/50 dark:bg-gray-800 p-4 rounded-xl border border-emerald-100 dark:border-gray-700 relative";
     div.innerHTML = `
-      <button type="button" onclick="this.parentElement.remove()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90"><i class="fa-solid fa-times"></i></button>
+      <button type="button" onclick="Mod.sos.addPeserta()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah peserta"><i class="fa-solid fa-plus"></i></button>
+      <div class="flex justify-between items-center mb-3">
+        <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase">Data Peserta / Instansi</p>
+        <button type="button" onclick="this.closest('.peserta-item').remove()" class="text-[10px] text-red-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-emerald-200 dark:border-gray-600 active:scale-95"><i class="fa-solid fa-times mr-1"></i>Hapus</button>
+      </div>
       <div class="grid grid-cols-3 gap-3 mb-2">
         <div class="col-span-2"><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
         <div><label class="field-label">Jml. Peserta</label><input type="number" class="sos_pJumlah num-compact" value="${data?.jumlah || ''}" required></div>

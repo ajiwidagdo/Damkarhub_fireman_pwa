@@ -351,6 +351,10 @@ html.dark .theme-badge {
   .dark .btn-mic, .dark button[onclick*="startSpeech"] { color:#7db3ff; }
   .btn-mic:active, button[onclick*="startSpeech"]:active { transform:scale(.9); }
   .mic-active, button[onclick*="startSpeech"].mic-active, .btn-mic.mic-active { background:rgba(239,68,68,.14) !important; color:#ef4444 !important; animation:pulseSoft 1.2s ease-in-out infinite; }
+  /* Baris tambah saat wadah kartu kosong (Korban/Peserta) */
+  .add-row-empty { display:none; width:100%; padding:.6rem; border:1.5px dashed #d6c9ca; border-radius:.75rem; color:#8a7a7b; font-size:.8rem; font-weight:700; background:transparent; cursor:pointer; }
+  #k_korbanListContainer:empty + .add-row-empty, #sos_pesertaListContainer:empty + .add-row-empty { display:block; }
+  .dark .add-row-empty { border-color:#4b5563; color:#9ca3af; }
   /* Angka pendek: box ringkas + suffix satuan di luar box */
   .num-compact { width:84px; flex:0 0 84px; }
   .unit-suffix { font-size:.8rem; font-weight:700; color:#8a7a7b; }
@@ -718,13 +722,13 @@ html.dark .theme-badge {
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-red-600 dark:text-red-400 mb-0">3. Data Pemilik / Korban & Pelapor</h3>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="Mod.k.addKorban()" class="btn-add bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"><i class="fa-solid fa-plus mr-1"></i> Korban</button>
             <span class="sec-dot" data-sec="k-s3"></span>
             <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
           </div>
         </div>
         <p class="text-[10px] text-gray-500 dark:text-gray-400 -mt-2 mb-3 italic"><i class="fa-solid fa-circle-info mr-1"></i>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p>
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
+        <button type="button" class="add-row-empty" onclick="Mod.k.addKorban()"><i class="fa-solid fa-plus mr-1"></i> Tambah Korban</button>
         <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700">
           <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
           <div class="grid grid-cols-2 gap-3">
@@ -1066,7 +1070,6 @@ html.dark .theme-badge {
         <div class="flex justify-between items-center mb-4">
           <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">2. Data Peserta / Instansi</h3>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="Mod.sos.addPeserta()" class="btn-add bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-plus mr-1"></i> Peserta</button>
             <span class="sec-dot" data-sec="sos-s2"></span>
             <button type="button" class="btn-help" onclick="UI.openHelp('sos-s2')" aria-label="Bantuan section Data Peserta / Instansi" title="Bantuan">?</button>
           </div>
@@ -1080,6 +1083,7 @@ html.dark .theme-badge {
           <input type="hidden" id="sos_kategori">
         </div>
         <div id="sos_pesertaListContainer" class="space-y-4"></div>
+        <button type="button" class="add-row-empty" onclick="Mod.sos.addPeserta()"><i class="fa-solid fa-plus mr-1"></i> Tambah Peserta</button>
       </section>
       <section id="sos-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
