@@ -14,14 +14,14 @@ export const Builders = {
   inputNum(id, label, value, attrs='') { return `<div><label class="field-label">${label}</label><input type="number" id="${id}" value="${value}" ${attrs}></div>`; },
   inputText(id, label, ph='', attrs='') { return `<div><label class="field-label">${label}</label><input type="text" id="${id}" placeholder="${ph}" ${attrs}></div>`; },
   operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
-    return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+    return `<div class="grid grid-cols-2 gap-3 mb-3">
       ${this.inputText(`${prefix}_armada`, 'Armada', '1 Unit Pancar', armadaRequired ? 'required' : '')}
       ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><input type="number" step="0.1" id="${prefix}_air"></div>` : ''}
     </div>`;
   },
 
   durasiJarakInputs(prefix, { includeJarak=true, durasiRequired=true } = {}) {
-    return `<div class="grid grid-cols-1 ${includeJarak ? 'sm:grid-cols-2' : ''} gap-3 mb-3">
+    return `<div class="grid grid-cols-2 gap-3 mb-3">
       ${this.inputNum(`${prefix}_durasi`, 'Durasi (Mnt)', '', durasiRequired ? 'required' : '')}
       ${includeJarak ? `<div><label class="field-label">Jarak (Km)</label><input type="number" step="0.1" id="${prefix}_jarak"></div>` : ''}
     </div>`;
@@ -38,14 +38,14 @@ export const Builders = {
   },
 
   casualtyInputs(prefix) {
-    return `<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg flex flex-col sm:flex-row gap-2">
+    return `<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg grid grid-cols-3 gap-2">
       ${this.inputNum(`${prefix}_lRingan`, 'LUKA RINGAN', 0)}
       ${this.inputNum(`${prefix}_lBerat`, 'LUKA BERAT', 0)}
       <div><label class="field-label text-red-500 dark:text-red-400">MENINGGAL</label><input type="number" id="${prefix}_mnggal" value="0" class="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400"></div>
     </div>`;
   },
   reguInputs(prefix) {
-    return `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+    return `<div class="grid grid-cols-2 gap-3 mb-3">
       <div>
         <div class="flex justify-between items-center mb-1">
           <label class="field-label mb-0">Regu Piket</label>
@@ -75,7 +75,7 @@ export const Builders = {
     </div>`;
   },
   photoInputs(prefix, label1='Foto Proses (1)', label2='Foto Selesai (2)') {
-    return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    return `<div class="grid grid-cols-2 gap-3">
       <div><label class="field-label">${label1}</label>
         <label class="block w-full text-[11px] text-center text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg py-3 cursor-pointer active:scale-95 transition">
           <i class="fa-solid fa-camera mr-1"></i> Ambil Foto

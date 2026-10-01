@@ -74,11 +74,11 @@ const ModKcfg = {
         <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase">Data Korban / Pemilik</p>
         <button type="button" onclick="Mod.k._copyLokasiToKorban(this)" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600 active:scale-95">Samakan Lokasi</button>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+      <div class="grid grid-cols-2 gap-3 mb-2">
         <div><label class="field-label">Nama (Kosongkan bila belum diketahui)</label><input type="text" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>
         <div><label class="field-label">NIK (Opsional)</label><input type="text" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric"></div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+      <div class="grid grid-cols-2 gap-3 mb-2">
         <div><label class="field-label">Usia (Thn)</label><input type="number" class="k_kUsia" value="${data?.usia || ''}"></div>
         <div>
           <label class="field-label">Jenis Kelamin</label>
@@ -86,14 +86,14 @@ const ModKcfg = {
         </div>
       </div>
       <label class="field-label mt-2">Alamat Lengkap Korban</label>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+      <div class="grid grid-cols-2 gap-2 mb-2">
         <input type="text" class="k_kDusun" placeholder="Lingk/Dusun" value="${data?.dusun || ''}">
         <input type="text" class="k_kRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}">
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div class="grid grid-cols-2 gap-2">
         <input type="text" class="k_kKel" placeholder="Kel/Desa" value="${data?.kel || ''}">
         <input type="text" class="k_kKec" placeholder="Kecamatan" value="${data?.kec || ''}">
-        <input type="text" class="k_kKabkota" placeholder="Kab/Kota" value="${data?.kabkota || ''}">
+        <input type="text" class="k_kKabkota col-span-2" placeholder="Kab/Kota" value="${data?.kabkota || ''}">
       </div>`;
     c.appendChild(div);
   },
