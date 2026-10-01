@@ -20,7 +20,7 @@ const Config = {
   ],
   DEFAULT_EXPORT_COLS: {
     k:   ['Tanggal','Jenis Kejadian','Penyebab','Objek','Kerugian','Alamat Korban','Data Korban','Respon Time','Jarak Tempuh','Kendala','Keterangan'],
-    nk:  ['Tanggal','Jenis Giat','Data Pelapor','Alamat Pelapor','Objek','Durasi & Jarak','Kendala','Keterangan'],
+    nk:  ['Tanggal','Jenis Giat','Data Pelapor','Objek','Alamat Pelapor','Jarak','Regu','Keterangan'],
     sos: ['Tanggal','Sasaran Edukasi','Nama Instansi','Alamat Instansi','Jumlah Peserta','Keterangan']
   },
   DB_VERSION: 3,
