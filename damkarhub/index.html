@@ -263,7 +263,6 @@ html.dark .theme-badge {
   .icon-ghost { background:transparent !important; border:none !important; box-shadow:none !important; width:36px; height:36px; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; color:#2563eb; font-size:16px; border-radius:9999px; cursor:pointer; flex:0 0 auto; }
   .dark .icon-ghost { color:#7db3ff; }
   .icon-ghost:active { transform:scale(.9); }
-  .trio-row .num-compact { width:100%; min-width:0; flex:1 1 auto; }
   .picker-chev { margin-top:.3rem; font-size:.7rem; color:#9ca3af; flex-shrink:0; }
   .picker-opt { display:flex; align-items:center; gap:.6rem; width:100%; text-align:left; padding:.7rem .4rem; font-size:15px; border-bottom:1px solid #f3f4f6; color:#1f2937; }
   .dark .picker-opt { border-color:#374151; color:#f3f4f6; }
@@ -643,17 +642,17 @@ html.dark .theme-badge {
             </div>
           </div>
           <div>
-            <label class="field-label">Tgl Terima</label>
+            <label class="field-label">Tgl Terima Laporan</label>
             <div class="dt-wrap is-empty">
-              <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Tanggal lapor diterima" onclick="if(this.showPicker)this.showPicker()">
+              <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Tanggal terima laporan" onclick="if(this.showPicker)this.showPicker()">
               <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
               <button type="button" class="dt-record" onclick="Helpers.recordDate('k_tglTerima')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
             </div>
           </div>
           <div>
-            <label class="field-label">Jam Terima</label>
+            <label class="field-label">Jam Terima Laporan</label>
             <div class="dt-wrap is-empty">
-              <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Jam lapor diterima" onclick="if(this.showPicker)this.showPicker()">
+              <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Jam terima laporan" onclick="if(this.showPicker)this.showPicker()">
               <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
               <button type="button" class="dt-record" onclick="Helpers.recordTime('k_jamTerima')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
             </div>
@@ -691,16 +690,14 @@ html.dark .theme-badge {
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-2 mb-3 trio-row">
-          <div>
-            <label class="field-label">Respon Time</label>
-            <div class="flex items-center gap-1">
-              <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="num-compact bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
-              <span class="unit-suffix text-emerald-700 dark:text-emerald-400">Mnt</span>
-            </div>
+        <div class="mb-3">
+          <label class="field-label">Respon Time</label>
+          <div class="flex items-center gap-2">
+            <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="num-compact bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+            <span class="unit-suffix text-emerald-700 dark:text-emerald-400">Mnt</span>
           </div>
-          <span id="k_trio_cells" class="contents"></span>
         </div>
+        <div id="k_durasi_jarak_row"></div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
       </section>

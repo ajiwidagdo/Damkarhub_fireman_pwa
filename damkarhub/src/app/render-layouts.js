@@ -96,7 +96,7 @@ export function renderLayouts() {
   document.getElementById('k_regu_inputs').innerHTML = Builders.reguInputs('k');
   document.getElementById('k_photo_inputs').innerHTML = Builders.photoInputs('k');
   document.getElementById('k_waktu_inputs').innerHTML = Builders.koordinatInputs('k');
-  document.getElementById('k_trio_cells').innerHTML = Builders.durasiJarakCells('k');
+  document.getElementById('k_durasi_jarak_row').innerHTML = Builders.durasiJarakInputs('k');
 
   document.getElementById('nk_operasional_inputs').innerHTML = Builders.operasionalInputs('nk', { armadaRequired:false });
   document.getElementById('nk_kendala_inputs').innerHTML = Builders.kendalaInputs('nk');
