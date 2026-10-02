@@ -5,3 +5,5 @@ node_modules/
 .env.local
 dist/
 docs/
+.backups/
+.backups/

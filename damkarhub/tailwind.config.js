@@ -1,7 +1,7 @@
 // Konfigurasi Tailwind: dark mode via class, warna kustom, dan palet abu HANGAT (tema api)
 module.exports = {
   darkMode: 'class',
-  content: ['./index.html'],
+  content: ['./index.html', './src/**/*.js'],
   theme: {
     extend: {
       colors: {
