@@ -27,6 +27,18 @@ const App = {
     ];
   },
 
+  _defaultSettings() {
+    return {
+      id:'global',
+      instansi:'', daerah:'', kantor:'', pimpinan:'',
+      petugas_nama:'', petugas_hp:'', petugas_jabatan:'',
+      petugas_dispatch_active:true,
+      notif_backup:true, notif_sync:true,
+      notif_sound:true, notif_vibration:true,
+      lastBackup:0
+    };
+  },
+
   async boot() {
     try {
       await DB.init();
@@ -36,7 +48,7 @@ const App = {
         DB.getAll(Config.STORES.settings), DB.getAll(Config.STORES.personil), DB.getAll(Config.STORES.regu)
       ]);
       Mod.k.setData(k); Mod.nk.setData(nk); Mod.sos.setData(sos);
-      if (settings?.[0]) this.settings = settings[0];
+      this.settings = { ...this._defaultSettings(), ...(settings?.[0] || {}) };
       this.personil = personil || [];
       if (!regu || regu.length === 0) {
         this.regu = this._defaultRegu();
@@ -46,6 +58,7 @@ const App = {
       UI.initTheme();
       renderLayouts();
       this._loadSettingsToForm();
+      this._checkBackupReminder();
       Mod.k.addKorban();
       Mod.sos.addPeserta();
       App.renderReguChips('k'); App.renderPersonnelChips('k');
@@ -110,10 +123,20 @@ const App = {
   },
 
   _loadSettingsToForm() {
-    document.getElementById('set_instansi').value = this.settings.instansi || '';
-    document.getElementById('set_daerah').value = this.settings.daerah || '';
-    document.getElementById('set_kantor').value = this.settings.kantor || '';
-    document.getElementById('set_pimpinan').value = this.settings.pimpinan || '';
+    const s = this.settings || {};
+    document.getElementById('set_instansi').value = s.instansi || '';
+    document.getElementById('set_daerah').value = s.daerah || '';
+    document.getElementById('set_kantor').value = s.kantor || '';
+    document.getElementById('set_pimpinan').value = s.pimpinan || '';
+    document.getElementById('set_petugas_nama').value = s.petugas_nama || '';
+    document.getElementById('set_petugas_hp').value = s.petugas_hp || '';
+    document.getElementById('set_petugas_jabatan').value = s.petugas_jabatan || '';
+    const setTgl = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('aria-checked', val !== false ? 'true' : 'false'); };
+    setTgl('set_dispatch_active', s.petugas_dispatch_active);
+    setTgl('set_notif_backup', s.notif_backup);
+    setTgl('set_notif_sync', s.notif_sync);
+    setTgl('set_notif_sound', s.notif_sound);
+    setTgl('set_notif_vibration', s.notif_vibration);
   },
 
   _attachFormValidation() {
@@ -147,8 +170,24 @@ const App = {
     } else this.switchView('beranda', false);
   },
 
-  switchView(view, pushHistory = true) {
-    if (pushHistory && view !== this.currentView) {
+  navTap(view) {
+    try {
+      Helpers.haptic(10);
+      const s = this.settings || {};
+      if (s.notif_sound !== false) UI.beep();
+    } catch(e){}
+    this.switchView(view);
+  },
+  openAccountSettings() {
+    try {
+      Helpers.haptic(10);
+      const s = this.settings || {};
+      if (s.notif_sound !== false) UI.beep();
+    } catch(e){}
+    this.switchView('sistem');
+    UI.switchSistemTab('akun');
+  },
+  switchView(view, pushHistory = true) {    if (pushHistory && view !== this.currentView) {
       this._viewHistory.push(this.currentView);
       history.pushState({ view }, '', '');
     }
@@ -167,6 +206,7 @@ const App = {
 
   openFab() {
     Helpers.haptic(10);
+    try { const s = this.settings || {}; if (s.notif_sound !== false) UI.beep(); } catch(e){}
     const content = `
       <div class="p-4 pt-2 space-y-2.5">
         <button onclick="UI.closeSheet(); App.openInputForm('k')" class="opt-card opt-k">
@@ -767,6 +807,7 @@ renderSistem() {
   async saveSettings(e) {
     e.preventDefault();
     this.settings = {
+      ...this.settings,
       id:'global',
       instansi: document.getElementById('set_instansi').value,
       daerah: document.getElementById('set_daerah').value,
@@ -775,6 +816,37 @@ renderSistem() {
     };
     try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan disimpan!'); }
     catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  async saveAccount(e) {
+    e.preventDefault();
+    this.settings = {
+      ...this.settings,
+      id:'global',
+      petugas_nama: document.getElementById('set_petugas_nama').value.trim(),
+      petugas_hp: document.getElementById('set_petugas_hp').value.trim(),
+      petugas_jabatan: document.getElementById('set_petugas_jabatan').value.trim(),
+      petugas_dispatch_active: document.getElementById('set_dispatch_active').getAttribute('aria-checked') === 'true'
+    };
+    try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan akun disimpan!'); }
+    catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  async toggleSetting(btn, key) {
+    const on = btn.getAttribute('aria-checked') !== 'true';
+    btn.setAttribute('aria-checked', on ? 'true' : 'false');
+    this.settings = { ...this.settings, id:'global', [key]: on };
+    try { await DB.put(Config.STORES.settings, this.settings); }
+    catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  _checkBackupReminder() {
+    try {
+      const s = this.settings || {};
+      if (s.notif_backup === false) return;
+      const days = (Date.now() - (s.lastBackup || 0)) / 86400000;
+      if (days > 7) setTimeout(() => UI.toast('Sudah >7 hari tanpa backup. Waktunya backup data!', 'info'), 2500);
+    } catch(e){}
   },
 
   backupJSON() {
@@ -792,6 +864,7 @@ renderSistem() {
     const a = document.createElement('a');
     a.href = dataStr; a.download = `Damkarhub_Backup_${Date.now()}.json`;
     document.body.appendChild(a); a.click(); a.remove();
+    try { this.settings = { ...this.settings, id:'global', lastBackup: Date.now() }; DB.put(Config.STORES.settings, this.settings).catch(()=>{}); } catch(e){}
     UI.toast('File backup diunduh! (Termasuk regu & personil)');
   },
 

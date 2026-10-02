@@ -163,7 +163,7 @@ export const Sync = {
       const pulled = await this._pull();
       this._lastSync = new Date();
       if (p.failed) this._lastError = 'Sebagian laporan ditolak server (lihat konsol / hubungi admin).';
-      if (opts.manual) {
+      if (opts.manual && (typeof App === 'undefined' || !App.settings || App.settings.notif_sync !== false)) {
         UI.toast(`Sinkron selesai — ${p.sent} terkirim, ${pulled} diterima${p.failed ? ', ' + p.failed + ' ditolak' : ''}`, p.failed ? 'error' : 'success');
       }
     } catch (e) {

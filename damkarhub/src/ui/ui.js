@@ -55,6 +55,38 @@ showComingSoon(feature) {
     document.getElementById('toast-icon').className = icons[type] || icons.success;
     t.classList.remove('-translate-y-20','opacity-0');
     setTimeout(() => t.classList.add('-translate-y-20','opacity-0'), 3000);
+    // Notifikasi suara & getar sesuai Pengaturan Notifikasi
+    try {
+      const s = (typeof App !== 'undefined' && App.settings) || {};
+      if (s.notif_sound !== false) UI.beep();
+      if (s.notif_vibration !== false && navigator.vibrate) navigator.vibrate(15);
+    } catch(e){}
+  },
+  beep() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.08, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      o.start(); o.stop(ctx.currentTime + 0.18);
+      o.onended = () => { try { ctx.close(); } catch(e){} };
+    } catch(e){}
+  },
+  switchSistemTab(tab) {
+    document.querySelectorAll('[data-chipnav="sistem"] .chip-nav-btn').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.stab === tab);
+    });
+    document.querySelectorAll('.sys-panel').forEach(p => {
+      p.classList.toggle('hidden', p.dataset.spanel !== tab);
+    });
+    const active = document.querySelector(`[data-chipnav="sistem"] .chip-nav-btn[data-stab="${tab}"]`);
+    try { active?.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' }); } catch(e){}
+    this._sistemTab = tab;
   },
   _confirmCb: null,
   confirm(cb) {
