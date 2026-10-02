@@ -40,14 +40,12 @@ export const ModNkcfg = {
     UI.renderLeaderboard('nk_statReguRank', s._reguRank || {}, s.total, 'text-amber-700 dark:text-amber-400');
     UI.renderLeaderboard('nk_statPersonilRank', s.personilRank, null, 'text-amber-700 dark:text-amber-400');
   },
-  copyLokasiToIdentitas() {
-    const sv = (id,v) => { const el = document.getElementById(id); if (el) el.value = v; };
-    sv('nk_idDusun', document.getElementById('nk_dusun').value);
-    sv('nk_idRtrw', document.getElementById('nk_rtrw').value);
-    sv('nk_idKel', document.getElementById('nk_kel').value);
-    sv('nk_idKec', document.getElementById('nk_kec').value);
-    sv('nk_idKabkota', document.getElementById('nk_kabkota').value);
-    Helpers.haptic(8);
+  autofillIdentitasAlamat() {
+    const pairs = [['nk_dusun','nk_idDusun'],['nk_rtrw','nk_idRtrw'],['nk_kel','nk_idKel'],['nk_kec','nk_idKec'],['nk_kabkota','nk_idKabkota']];
+    pairs.forEach(([src, dst]) => {
+      const s = document.getElementById(src), d = document.getElementById(dst);
+      if (s && d && !(d.value || '').trim() && (s.value || '').trim()) d.value = s.value;
+    });
   },
   collectForm(id) {
     const jenis = document.getElementById('nk_jenis').value === 'Lainnya' ? document.getElementById('nk_jenis_lainnya').value : document.getElementById('nk_jenis').value;
@@ -77,6 +75,7 @@ export const ModNkcfg = {
     sv('nk_regu',d.regu || ''); sv('nk_personil',d.personil);
     document.getElementById('nk_foto1_b64').value = d.foto1 || '';
     document.getElementById('nk_foto2_b64').value = d.foto2 || '';
+    this.autofillIdentitasAlamat();
     App.renderReguChips('nk');
     App.renderPersonnelChips('nk');
     App.renderKendalaChips('nk');
