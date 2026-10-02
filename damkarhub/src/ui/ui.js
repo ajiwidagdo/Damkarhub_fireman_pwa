@@ -18,8 +18,7 @@ export const UI = {
     setTimeout(() => btn.classList.remove('rotating'), 500);
   }
   
-  // Haptic feedback
-  Helpers.haptic(isDark ? [15, 30, 15] : 10);
+  // Haptic feedback — dipindah ke App._initFireToggle: [10,40,10] ignite / 20 extinguish
   
   // Update badge
   const badge = document.getElementById('theme-badge');
