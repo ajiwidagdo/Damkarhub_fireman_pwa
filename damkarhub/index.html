@@ -933,14 +933,12 @@ html.dark .theme-badge {
             <button type="button" class="btn-help" onclick="UI.openHelp('nk-s3')" aria-label="Bantuan section Identitas Pelapor" title="Bantuan">?</button>
           </div>
         </div>
+        <div class="mb-3"><label class="field-label">Nama</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idNama" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idNama', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" id="nk_idNama" required></div>
           <div><label class="field-label">Usia (Thn)</label><input type="number" id="nk_idUsia" class="num-compact"></div>
-        </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
           <div><label class="field-label">Jenis Kelamin</label><select id="nk_idJK"><option value="-">-</option><option>Pria</option><option>Wanita</option></select></div>
-          <div><label class="field-label">No HP Pelapor</label><input type="tel" id="nk_pHP"></div>
         </div>
+        <div class="mb-3"><label class="field-label">No HP Pelapor</label><div class="flex items-center gap-2"><input type="tel" id="nk_pHP" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_pHP', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <label class="field-label mt-3">Alamat Lengkap</label>
         <div class="grid grid-cols-2 gap-2 mb-2">
           <input type="text" enterkeyhint="next" id="nk_idDusun" placeholder="Lingk/Dusun">
@@ -957,10 +955,10 @@ html.dark .theme-badge {
           <span class="sec-status" data-sec="nk-s4"></span>
           <button type="button" class="btn-help" onclick="UI.openHelp('nk-s4')" aria-label="Bantuan section Operasional & Penanganan" title="Bantuan">?</button>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
-          <div><label class="field-label">Objek / Satwa</label><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
-          <div><label class="field-label">Detail Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah"></div>
-          <div><label class="field-label">Ukuran</label><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm"></div>
+        <div class="mb-3"><label class="field-label">Objek / Satwa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_objek', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div><label class="field-label">Detail Lokasi</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_lokasiOp', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+          <div><label class="field-label">Ukuran</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_ukuran', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
         <div id="nk_operasional_inputs"></div>
         <div class="mb-3">
