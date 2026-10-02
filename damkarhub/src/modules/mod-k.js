@@ -106,10 +106,8 @@ const ModKcfg = {
         <div><input type="text" enterkeyhint="next" class="k_kRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}"></div>
         <div class="col-span-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kel" class="k_kKel flex-1 min-w-0" placeholder="Kel/Desa" value="${data?.kel || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kel', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kec" class="k_kKec flex-1 min-w-0" placeholder="Kecamatan" value="${data?.kec || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kec', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        <div><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kabkota" class="k_kKabkota flex-1 min-w-0" placeholder="Kab/Kota" value="${data?.kabkota || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kabkota', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      </div>
+      <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kec" class="k_kKec flex-1 min-w-0" placeholder="Kecamatan" value="${data?.kec || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kec', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+      <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kabkota" class="k_kKabkota flex-1 min-w-0" placeholder="Kab/Kota" value="${data?.kabkota || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kabkota', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       </div>
       </div>`;
     c.appendChild(div);
