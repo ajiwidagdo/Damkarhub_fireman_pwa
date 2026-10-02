@@ -58,6 +58,7 @@ const App = {
       UI.initTheme();
       this._initFireToggle();
       renderLayouts();
+      this._populateDates(); // isi opsi bulan/tahun filter (dashboard + export)
       this._loadSettingsToForm();
       this._checkBackupReminder();
       Mod.k.addKorban();
@@ -249,6 +250,7 @@ const App = {
   editLaporan(mod, id) { Mod[mod].edit(id); },
 
   switchDashTab(mod) {
+    Helpers.haptic(10);
     this.currentDashTab = mod;
     document.querySelectorAll('.dash-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-dashboard`).classList.remove('hidden');
@@ -267,6 +269,7 @@ const App = {
   },
 
   switchExportTab(mod) {
+    Helpers.haptic(10);
     this.currentExportTab = mod;
     document.querySelectorAll('#view-export .export-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-export`).classList.remove('hidden');
@@ -295,6 +298,54 @@ const App = {
     const p = document.getElementById(`${prefix}_ex_period`).value;
     document.getElementById(`${prefix}_ex_year`).classList.toggle('hidden', p === 'all');
     document.getElementById(`${prefix}_ex_month`).classList.toggle('hidden', p !== 'month');
+  },
+
+  // Hitung baris yang akan diekspor (mirror filter Export.generate — read-only)
+  _exportRowCount(prefix) {
+    try {
+      const m = (typeof Mod !== 'undefined' && Mod[prefix]) || null;
+      if (!m) return 0;
+      const p = document.getElementById(`${prefix}_ex_period`)?.value || 'all';
+      const mIdx = parseInt(document.getElementById(`${prefix}_ex_month`)?.value);
+      const y = parseInt(document.getElementById(`${prefix}_ex_year`)?.value);
+      if (p === 'all') return m.data.length;
+      if (isNaN(mIdx) || isNaN(y)) return 0;
+      return m.data.filter(d => {
+        const dt = new Date(d.tanggal + 'T00:00:00');
+        if (isNaN(dt.getTime())) return false;
+        return p === 'month' ? dt.getMonth() === mIdx && dt.getFullYear() === y : dt.getFullYear() === y;
+      }).length;
+    } catch(e){ return 0; }
+  },
+
+  // Preview jumlah baris (display-only) + enable/disable tombol export
+  updateExportCount(prefix) {
+    try {
+      const n = this._exportRowCount(prefix);
+      const el = document.getElementById(`${prefix}_ex_count`);
+      if (!el) return;
+      const btns = [document.getElementById(`${prefix}_ex_btn_csv`), document.getElementById(`${prefix}_ex_btn_pdf`)].filter(Boolean);
+      if (n > 0) {
+        el.classList.remove('zero');
+        el.innerHTML = `<i class="fa-solid fa-chart-column"></i><span>${n} laporan siap diekspor</span>`;
+        btns.forEach(b => { b.disabled = false; b.classList.remove('opacity-40','pointer-events-none'); });
+      } else {
+        el.classList.add('zero');
+        el.innerHTML = `<i class="fa-solid fa-chart-column"></i><span>Tidak ada laporan untuk periode ini</span><button type="button" onclick="App.openInputForm('${prefix}')" class="ex-cta">Buat Laporan</button>`;
+        btns.forEach(b => { b.disabled = true; b.classList.add('opacity-40','pointer-events-none'); });
+      }
+    } catch(e){}
+  },
+
+  // Wrapper export: haptic + loading toast + panggil Export.generate (export.js TIDAK disentuh)
+  exportWithFeedback(prefix, kind) {
+    try {
+      Helpers.haptic(12);
+      const n = this._exportRowCount(prefix);
+      if (!n) { UI.toast('Tidak ada laporan untuk periode ini', 'error'); return; }
+      UI.toast(kind === 'pdf' ? 'Menyiapkan PDF…' : 'Menyiapkan CSV…', 'info');
+      if (typeof Export !== 'undefined' && Export.generate) Export.generate(prefix, kind);
+    } catch(e){}
   },
 
   renderBeranda() {
