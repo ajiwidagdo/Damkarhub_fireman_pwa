@@ -39,11 +39,10 @@ const Config = {
   KATEGORI_OPTIONS: [
     'MAS - Masyarakat (Pemukiman / Warga)',
     'EDU - Sektor Pendidikan (Sekolah / Kampus)',
-    'KTOR - Perkantoran (Swasta / Pemerintahan)',
-    'IND - Industri (Pabrik / Gudang)',
     'RS - Rumah Sakit / Faskes',
-    'FASUM - Fasilitas Umum (Mal, Pasar, Transportasi)',
     'REL - Relawan (Organisasi / Komunitas Tanggap Bencana)',
+    'DUN - Dunia usaha (UMKM, Industri, Perkantoran Swasta)',
+    'PEM - Pemerintahan (Dinas Instansi, Perangkat Desa)',
     'LLN - Lainnya'
   ],
   KENDALA_OPTIONS: [

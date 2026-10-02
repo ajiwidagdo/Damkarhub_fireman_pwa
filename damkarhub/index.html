@@ -368,6 +368,8 @@ html.dark .theme-badge {
     .grid-cols-3.gap-3, .grid-cols-3.gap-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .grid-cols-3.gap-3 > *:last-child:nth-child(odd),
     .grid-cols-3.gap-2 > *:last-child:nth-child(odd) { grid-column: span 2; }
+    /* Pengecualian: grid 1:2 (2 anak) tetap 3 kolom di HP */
+    .grid-cols-3.keep-3col.gap-3, .grid-cols-3.keep-3col.gap-2 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   }
   @media (max-width: 360px) {
     .grid-cols-2.gap-3, .grid-cols-2.gap-4 { grid-template-columns: 1fr !important; }
@@ -693,29 +695,27 @@ html.dark .theme-badge {
         <div class="mb-3">
           <label class="field-label">Respon Time</label>
           <div class="flex items-center gap-2">
-            <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="num-compact bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
+            <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 min-w-0 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
             <span class="unit-suffix text-emerald-700 dark:text-emerald-400">Mnt</span>
           </div>
         </div>
+        <div id="k_waktu_inputs"></div>
         <div id="k_durasi_jarak_row"></div>
-<!-- Reposisi: Durasi + Jarak + Koordinat -->
-<div id="k_waktu_inputs" class="mt-4"></div>
       </section>
       <section id="k-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
           <span class="sec-status" data-sec="k-s2"></span>
+          <span class="text-[10px] font-black uppercase tracking-wide text-gray-700 dark:text-gray-300">Lokasi Kejadian</span>
           <button type="button" class="btn-help" onclick="UI.openHelp('k-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
         </div>
-        <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
+        <div class="mb-3"><label class="field-label">Tempat/Patokan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_lokasiDetail', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="mb-3"><label class="field-label">Dusun</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_dusun" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_dusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        <div class="grid grid-cols-3 gap-3 mb-3">
-          <div><label class="field-label">RT/RW</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_rtrw', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
+          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09"  onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="hidden" onclick="Helpers.startSpeech('k_rtrw', this)" aria-hidden="true" tabindex="-1"></button></div>
           <div class="col-span-2"><label class="field-label">Kel/Desa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kel" required class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kel', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kec" required class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-          <div><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kabkota" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        </div>
+        <div class="mb-3"><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kec" required class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kabkota" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
 
       </section>
       <section id="k-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
@@ -727,7 +727,7 @@ html.dark .theme-badge {
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
         <button type="button" class="add-row-empty" onclick="Mod.k.addKorban()"><i class="fa-solid fa-plus mr-1"></i> Tambah Korban</button>
         <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700">
-          <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
+          <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3 text-center"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
           <div class="mb-3"><label class="field-label">Nama Pelapor</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_pNama" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_pNama', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
           <div class="mb-3"><label class="field-label">Nomor Kontak</label><div class="flex items-center gap-2"><input type="tel" id="k_pHP" placeholder="Cth: 0853..." required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_pHP', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
@@ -853,7 +853,7 @@ html.dark .theme-badge {
         </div>
 <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label class="field-label">Tgl Terima</label>
+            <label class="field-label">Tgl Terima Laporan</label>
             <div class="dt-wrap is-empty">
               <input type="date" id="nk_tanggal" required aria-label="Tanggal lapor diterima" onclick="if(this.showPicker)this.showPicker()">
               <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
@@ -861,7 +861,7 @@ html.dark .theme-badge {
             </div>
           </div>
           <div>
-            <label class="field-label">Jam Terima</label>
+            <label class="field-label">Jam Terima Laporan</label>
             <div class="dt-wrap is-empty">
               <input type="time" id="nk_pukul" required aria-label="Jam lapor diterima" onclick="if(this.showPicker)this.showPicker()">
               <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
@@ -906,43 +906,38 @@ html.dark .theme-badge {
       <section id="nk-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
           <span class="sec-status" data-sec="nk-s2"></span>
+          <span class="text-[10px] font-black uppercase tracking-wide text-gray-700 dark:text-gray-300">Lokasi Kejadian</span>
           <button type="button" class="btn-help" onclick="UI.openHelp('nk-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
         </div>
-        <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
+        <div class="mb-3"><label class="field-label">Patokan Lokasi</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_lokasiDetail', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="mb-3"><label class="field-label">Dusun</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_dusun" class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_dusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        <div class="grid grid-cols-3 gap-3 mb-3">
-          <div><label class="field-label">RT/RW</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_rtrw" class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_rtrw', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
+          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="nk_rtrw"onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="hidden" onclick="Helpers.startSpeech('nk_rtrw', this)" aria-hidden="true" tabindex="-1"></button></div>
           <div class="col-span-2"><label class="field-label">Kel/Desa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_kel" required class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_kel', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_kec" required class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-          <div><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_kabkota" class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        </div>
+        <div class="mb-3"><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_kec" required class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_kabkota" class="flex-1 min-w-0" onchange="Mod.nk.autofillIdentitasAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
 
       </section>
       <section id="nk-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
-        <div class="flex justify-between items-center mb-4">
-          <div class="flex items-center gap-2">
-            <span class="sec-status" data-sec="nk-s3"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('nk-s3')" aria-label="Bantuan section Identitas Pelapor" title="Bantuan">?</button>
-          </div>
+        <div class="section-head">
+          <span class="sec-status" data-sec="nk-s3"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s3')" aria-label="Bantuan section Identitas Pelapor" title="Bantuan">?</button>
         </div>
         <div class="mb-3"><label class="field-label">Nama</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idNama" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idNama', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
-          <div><label class="field-label">Usia (Thn)</label><input type="number" id="nk_idUsia" class="num-compact"></div>
           <div><label class="field-label">Jenis Kelamin</label><select id="nk_idJK"><option value="-">-</option><option>Pria</option><option>Wanita</option></select></div>
+          <div><label class="field-label">Usia (Thn)</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="nk_idUsia" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idUsia', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
         <div class="mb-3"><label class="field-label">No HP Pelapor</label><div class="flex items-center gap-2"><input type="tel" id="nk_pHP" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_pHP', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <label class="field-label mt-3">Alamat Lengkap</label>
-        <div class="grid grid-cols-2 gap-2 mb-2">
-          <input type="text" enterkeyhint="next" id="nk_idDusun" placeholder="Lingk/Dusun">
-          <input type="text" enterkeyhint="next" id="nk_idRtrw" placeholder="RT/RW">
+        <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idDusun" placeholder="Lingk/Dusun" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idDusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
+          <div><input type="text" enterkeyhint="next" id="nk_idRtrw" placeholder="RT/RW"><button type="button" class="hidden" onclick="Helpers.startSpeech('nk_idRtrw', this)" aria-hidden="true" tabindex="-1"></button></div>
+          <div class="col-span-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idKel" placeholder="Kel/Desa" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idKel', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <input type="text" enterkeyhint="next" id="nk_idKel" placeholder="Kel/Desa">
-          <input type="text" enterkeyhint="next" id="nk_idKec" placeholder="Kecamatan">
-          <input type="text" enterkeyhint="next" id="nk_idKabkota" placeholder="Kab/Kota" class="col-span-2">
-        </div>
+        <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idKec" placeholder="Kecamatan" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idKec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idKabkota" placeholder="Kab/Kota" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idKabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       </section>
       <section id="nk-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
@@ -951,8 +946,8 @@ html.dark .theme-badge {
         </div>
         <div class="mb-3"><label class="field-label">Objek / Satwa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_objek', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
+          <div><label class="field-label">Ukuran</label><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm"><button type="button" class="hidden" onclick="Helpers.startSpeech('nk_ukuran', this)" aria-hidden="true" tabindex="-1"></button></div>
           <div><label class="field-label">Detail Lokasi</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_lokasiOp" placeholder="Di dalam Rumah" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_lokasiOp', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-          <div><label class="field-label">Ukuran</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_ukuran" placeholder="Panjang ± 30 cm" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_ukuran', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
         <div id="nk_operasional_inputs"></div>
         <div class="mb-3">
