@@ -750,7 +750,7 @@ html.dark .theme-badge {
           <label class="field-label">Dugaan Penyebab</label>
           <div class="flex items-center gap-2">
             <div class="picker-wrap flex-1 min-w-0"><select id="k_penyebab" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_penyebab','k_penyebab_lainnya')">
-              <option>Korsleting listrik</option><option>Kebocoran gas LPG</option><option>Pembakaran sampah</option><option>Lupa mematikan kompor</option><option>Belum Diketahui</option><option>Lainnya</option>
+              <option value="" selected disabled hidden></option><option>Korsleting listrik</option><option>Kebocoran gas LPG</option><option>Pembakaran sampah</option><option>Lupa mematikan kompor</option><option>Belum Diketahui</option><option>Lainnya</option>
             </select><button type="button" class="picker-field" onclick="UI.openPicker('k_penyebab','Dugaan Penyebab')" aria-label="Dugaan Penyebab"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
             <button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_penyebab_lainnya', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
           </div>
@@ -760,7 +760,7 @@ html.dark .theme-badge {
           <label class="field-label">Objek Terbakar</label>
           <div class="flex items-center gap-2">
             <div class="picker-wrap flex-1 min-w-0"><select id="k_objekTerbakar" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_objekTerbakar','k_objek_lainnya')">
-              <option>Atap Rumah / Plafon</option><option>Ruangan Dapur</option><option>Lahan Kosong</option><option>Lainnya</option>
+              <option value="" selected disabled hidden></option><option>Atap Rumah / Plafon</option><option>Ruangan Dapur</option><option>Lahan Kosong</option><option>Lainnya</option>
             </select><button type="button" class="picker-field" onclick="UI.openPicker('k_objekTerbakar','Objek Terbakar')" aria-label="Objek Terbakar"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
             <button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_objek_lainnya', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
           </div>
