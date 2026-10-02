@@ -66,20 +66,29 @@ const ModKcfg = {
   },
   addKorban(data = null) {
     const c = document.getElementById('k_korbanListContainer');
+    this._micSeq = (this._micSeq || 0) + 1;
+    const uid = 'kkm' + this._micSeq + Date.now().toString(36);
     const div = document.createElement('div');
     div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-gray-700 relative";
     div.innerHTML = `
       <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="flex justify-between items-center mb-3">
         <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase">Data Korban / Pemilik</p>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="Mod.k._copyLokasiToKorban(this)" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600 active:scale-95">Samakan Lokasi</button>
-          <button type="button" onclick="this.closest('.korban-item').remove()" class="text-[10px] text-red-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-red-200 dark:border-gray-600 active:scale-95"><i class="fa-solid fa-times mr-1"></i>Hapus</button>
-        </div>
+        <button type="button" onclick="this.closest('.korban-item').remove()" class="text-[10px] text-red-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-red-200 dark:border-gray-600 active:scale-95"><i class="fa-solid fa-times mr-1"></i>Hapus</button>
       </div>
-      <div class="grid grid-cols-2 gap-3 mb-2">
-        <div><label class="field-label">Nama</label><input type="text" enterkeyhint="next" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban"></div>
-        <div><label class="field-label">NIK (Opsional)</label><input type="text" enterkeyhint="next" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric"></div>
+      <div class="mb-2">
+        <div class="flex justify-between items-center mb-1">
+          <label class="field-label mb-0">Nama</label>
+          <button type="button" onclick="Helpers.startSpeech('${uid}_nama', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+        </div>
+        <input type="text" enterkeyhint="next" id="${uid}_nama" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban">
+      </div>
+      <div class="mb-2">
+        <div class="flex justify-between items-center mb-1">
+          <label class="field-label mb-0">NIK (Opsional)</label>
+          <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+        </div>
+        <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
       </div>
       <div data-disclosure class="disclosure">
       <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Detail Usia & Alamat</button>
@@ -104,6 +113,7 @@ const ModKcfg = {
       </div>
       </div>`;
     c.appendChild(div);
+    this.autofillKorbanAlamat();
   },
   calcAsetTerselamatkan() {
     const nilai = parseFloat(document.getElementById('k_nilaiAset')?.value) || 0;
@@ -112,14 +122,15 @@ const ModKcfg = {
     const field = document.getElementById('k_asetSelamat');
     if (field) field.value = selamat || '';
   },
-  _copyLokasiToKorban(btn) {
-    const p = btn.closest('div.bg-red-50\\/50, div.dark\\:bg-gray-800');
-    p.querySelector('.k_kDusun').value = document.getElementById('k_dusun').value;
-    p.querySelector('.k_kRtrw').value = document.getElementById('k_rtrw').value;
-    p.querySelector('.k_kKel').value = document.getElementById('k_kel').value;
-    p.querySelector('.k_kKec').value = document.getElementById('k_kec').value;
-    p.querySelector('.k_kKabkota').value = document.getElementById('k_kabkota').value;
-    Helpers.haptic(8);
+  autofillKorbanAlamat() {
+    const pairs = [['k_dusun','.k_kDusun'],['k_rtrw','.k_kRtrw'],['k_kel','.k_kKel'],['k_kec','.k_kKec'],['k_kabkota','.k_kKabkota']];
+    const c = document.getElementById('k_korbanListContainer'); if (!c) return;
+    [...c.children].forEach(card => {
+      pairs.forEach(([srcId, sel]) => {
+        const sEl = document.getElementById(srcId), d = card.querySelector(sel);
+        if (sEl && d && !(d.value || '').trim() && (sEl.value || '').trim()) d.value = sEl.value;
+      });
+    });
   },
   collectForm(id) {
     const jenis = document.getElementById('k_jenisKebakaran').value === 'Lainnya' ? document.getElementById('k_jenis_lainnya').value : document.getElementById('k_jenisKebakaran').value;

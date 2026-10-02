@@ -95,14 +95,15 @@ export function renderLayouts() {
   document.getElementById('k_casualty_inputs').innerHTML = Builders.casualtyInputs('k');
   document.getElementById('k_regu_inputs').innerHTML = Builders.reguInputs('k');
   document.getElementById('k_photo_inputs').innerHTML = Builders.photoInputs('k');
-  document.getElementById('k_waktu_inputs').innerHTML = Builders.koordinatInputs('k') + Builders.durasiJarakInputs('k');
+  document.getElementById('k_waktu_inputs').innerHTML = Builders.koordinatInputs('k');
+  document.getElementById('k_trio_cells').innerHTML = Builders.durasiJarakCells('k');
 
   document.getElementById('nk_operasional_inputs').innerHTML = Builders.operasionalInputs('nk', { armadaRequired:false });
   document.getElementById('nk_kendala_inputs').innerHTML = Builders.kendalaInputs('nk');
   document.getElementById('nk_casualty_inputs').innerHTML = Builders.casualtyInputs('nk');
   document.getElementById('nk_regu_inputs').innerHTML = Builders.reguInputs('nk');
   document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk');
-  document.getElementById('nk_waktu_inputs').innerHTML = Builders.koordinatInputs('nk') + Builders.durasiJarakInputs('nk');
+  document.getElementById('nk_waktu_inputs').innerHTML = Builders.durasiJarakInputs('nk') + Builders.koordinatInputs('nk');
 
   document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-2 gap-3 mb-3">
     ${Builders.inputText('sos_armada', 'Armada', '2 Unit Pancar')}
