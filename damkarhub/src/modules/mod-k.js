@@ -77,18 +77,18 @@ const ModKcfg = {
         <button type="button" onclick="this.closest('.korban-item').remove()" class="text-[10px] text-red-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-red-200 dark:border-gray-600 active:scale-95"><i class="fa-solid fa-times mr-1"></i>Hapus</button>
       </div>
       <div class="mb-2">
-        <div class="flex justify-between items-center mb-1">
-          <label class="field-label mb-0">Nama</label>
+        <label class="field-label">Nama</label>
+        <div class="flex items-center gap-2">
+          <input type="text" enterkeyhint="next" id="${uid}_nama" class="k_kNama flex-1 min-w-0" value="${data?.nama || ''}" placeholder="Nama pemilik/korban">
           <button type="button" onclick="Helpers.startSpeech('${uid}_nama', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
         </div>
-        <input type="text" enterkeyhint="next" id="${uid}_nama" class="k_kNama" value="${data?.nama || ''}" placeholder="Nama pemilik/korban">
       </div>
       <div class="mb-2">
-        <div class="flex justify-between items-center mb-1">
-          <label class="field-label mb-0">NIK (Opsional)</label>
+        <label class="field-label">NIK (Opsional)</label>
+        <div class="flex items-center gap-2">
+          <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
           <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
         </div>
-        <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
       </div>
       <div data-disclosure class="disclosure">
       <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Detail Usia & Alamat</button>
