@@ -20,19 +20,21 @@ export const Builders = {
     </div>`;
   },
 
+  durasiJarakCells(prefix, { includeJarak=true, durasiRequired=true } = {}) {
+    return `<div><label class="field-label">Durasi</label><div class="flex items-center gap-2"><input type="number" id="${prefix}_durasi" value="" class="num-compact" ${durasiRequired ? 'required' : ''}><span class="unit-suffix">Mnt</span></div></div>
+      ${includeJarak ? `<div><label class="field-label">Jarak</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_jarak" class="num-compact"><span class="unit-suffix">Km</span></div></div>` : ''}`;
+  },
+
   durasiJarakInputs(prefix, { includeJarak=true, durasiRequired=true } = {}) {
-    return `<div class="grid grid-cols-2 gap-3 mb-3">
-      <div><label class="field-label">Durasi</label><div class="flex items-center gap-2"><input type="number" id="${prefix}_durasi" value="" class="num-compact" ${durasiRequired ? 'required' : ''}><span class="unit-suffix">Mnt</span></div></div>
-      ${includeJarak ? `<div><label class="field-label">Jarak</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_jarak" class="num-compact"><span class="unit-suffix">Km</span></div></div>` : ''}
-    </div>`;
+    return `<div class="grid grid-cols-2 gap-3 mb-3">${this.durasiJarakCells(prefix, { includeJarak, durasiRequired })}</div>`;
   },
 
   koordinatInputs(prefix) {
     return `<div class="mb-3">
       <label class="field-label">Koordinat Gmaps</label>
-      <div class="flex gap-2">
+      <div class="flex gap-2 items-center">
         <input type="text" enterkeyhint="next" id="${prefix}_koordinat" placeholder="-7.xxxx, 108.xxxx" oninput="Helpers.autoFillJarak('${prefix}')">
-        <button type="button" onclick="Helpers.getLoc('${prefix}')" class="btn-loc"><i class="fa-solid fa-location-crosshairs"></i></button>
+        <button type="button" onclick="Helpers.getLoc('${prefix}')" class="icon-ghost" title="Rekam koordinat saat ini" aria-label="Rekam koordinat saat ini"><i class="fa-solid fa-location-crosshairs"></i></button>
       </div>
     </div>`;
   },

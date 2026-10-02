@@ -258,6 +258,12 @@ html.dark .theme-badge {
   .dark .picker-field { background:#374151; border-color:#4b5563; color:#f3f4f6; }
   .picker-field:focus { outline:none; border-color:#f87171; box-shadow:0 0 0 3px rgba(239,68,68,.26); }
   .picker-value { flex:1; line-height:1.35; white-space:normal; word-break:break-word; }
+  .picker-value.picker-empty { color:#9ca3af; font-weight:400; }
+  .dark .picker-value.picker-empty { color:#6b7280; }
+  .icon-ghost { background:transparent !important; border:none !important; box-shadow:none !important; width:36px; height:36px; padding:0 !important; display:inline-flex; align-items:center; justify-content:center; color:#2563eb; font-size:16px; border-radius:9999px; cursor:pointer; flex:0 0 auto; }
+  .dark .icon-ghost { color:#7db3ff; }
+  .icon-ghost:active { transform:scale(.9); }
+  .trio-row .num-compact { width:100%; min-width:0; flex:1 1 auto; }
   .picker-chev { margin-top:.3rem; font-size:.7rem; color:#9ca3af; flex-shrink:0; }
   .picker-opt { display:flex; align-items:center; gap:.6rem; width:100%; text-align:left; padding:.7rem .4rem; font-size:15px; border-bottom:1px solid #f3f4f6; color:#1f2937; }
   .dark .picker-opt { border-color:#374151; color:#f3f4f6; }
@@ -609,7 +615,17 @@ html.dark .theme-badge {
           <span class="sec-status" data-sec="k-s1"></span>
           <button type="button" class="btn-help" onclick="UI.openHelp('k-s1')" aria-label="Bantuan section Waktu & Jenis Kejadian" title="Bantuan">?</button>
         </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
+        <div class="mb-3">
+          <label class="field-label">Jenis Kejadian</label>
+          <div class="flex items-center gap-2">
+            <div class="picker-wrap flex-1 min-w-0"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
+              <option value="" selected disabled hidden></option><option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
+            </select><button type="button" class="picker-field" onclick="UI.openPicker('k_jenisKebakaran','Jenis Kejadian')" aria-label="Jenis Kejadian"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
+            <button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_jenis_lainnya', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+          </div>
+          <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
+        </div>
+<div class="grid grid-cols-2 gap-3 mb-3">
           <div>
             <label class="field-label">Tgl Kejadian</label>
             <div class="dt-wrap is-empty">
@@ -675,21 +691,15 @@ html.dark .theme-badge {
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
+        <div class="grid grid-cols-3 gap-2 mb-3 trio-row">
           <div>
             <label class="field-label">Respon Time</label>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="num-compact bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
-              <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400">Menit</span>
+              <span class="unit-suffix text-emerald-700 dark:text-emerald-400">Mnt</span>
             </div>
           </div>
-          <div>
-            <label class="field-label">Jenis Kejadian</label>
-            <div class="picker-wrap"><select id="k_jenisKebakaran" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('k_jenisKebakaran','k_jenis_lainnya')">
-              <option>Kebakaran Rumah</option><option>Kebakaran Ruko / Tempat Usaha</option><option>Kebakaran Pabrik</option><option>Kebakaran Lahan</option><option>Kebakaran Kendaraan</option><option>Lainnya</option>
-            </select><button type="button" class="picker-field" onclick="UI.openPicker('k_jenisKebakaran','Jenis Kejadian')" aria-label="Jenis Kejadian"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
-            <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
-          </div>
+          <span id="k_trio_cells" class="contents"></span>
         </div>
 <!-- Reposisi: Durasi + Jarak + Koordinat -->
 <div id="k_waktu_inputs" class="mt-4"></div>
@@ -832,7 +842,17 @@ html.dark .theme-badge {
           <span class="sec-status" data-sec="nk-s1"></span>
           <button type="button" class="btn-help" onclick="UI.openHelp('nk-s1')" aria-label="Bantuan section Waktu & Jenis Kegiatan" title="Bantuan">?</button>
         </div>
-        <div class="grid grid-cols-2 gap-3 mb-3">
+                <div class="mb-3">
+          <label class="field-label">Jenis Kegiatan</label>
+          <div class="flex items-center gap-2">
+            <div class="picker-wrap flex-1 min-w-0"><select id="nk_jenis" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
+              <option value="" selected disabled hidden></option><option>Evakuasi Sarang Tawon</option><option>Evakuasi Ular</option><option>Evakuasi Biawak</option><option>Pelepasan Cincin</option><option>Evakuasi Manusia</option><option>Lainnya</option>
+            </select><button type="button" class="picker-field" onclick="UI.openPicker('nk_jenis','Jenis Kegiatan')" aria-label="Jenis Kegiatan"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
+            <button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_jenis_lainnya', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+          </div>
+          <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
+        </div>
+<div class="grid grid-cols-2 gap-3 mb-3">
           <div>
             <label class="field-label">Tgl Terima</label>
             <div class="dt-wrap is-empty">
@@ -883,13 +903,6 @@ html.dark .theme-badge {
           </div>
         </div>
         <div id="nk_waktu_inputs" class="mt-3"></div>
-        <div>
-          <label class="field-label">Jenis Kegiatan</label>
-          <div class="picker-wrap"><select id="nk_jenis" class="picker-native" tabindex="-1" aria-hidden="true" required onchange="UI.checkLainnya('nk_jenis','nk_jenis_lainnya')">
-            <option>Evakuasi Sarang Tawon</option><option>Evakuasi Ular</option><option>Evakuasi Biawak</option><option>Pelepasan Cincin</option><option>Evakuasi Manusia</option><option>Lainnya</option>
-          </select><button type="button" class="picker-field" onclick="UI.openPicker('nk_jenis','Jenis Kegiatan')" aria-label="Jenis Kegiatan"><span class="picker-value"></span><i class="fa-solid fa-chevron-down picker-chev"></i></button></div>
-          <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
-        </div>
       </section>
       <section id="nk-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">

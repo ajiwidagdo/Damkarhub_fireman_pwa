@@ -170,10 +170,12 @@ showComingSoon(feature) {
   openPicker(selId, title) {
     const sel = document.getElementById(selId); if (!sel) return;
     this.syncPickers();
-    const rows = Array.from(sel.options).map((o, i) => {
-      const active = i === (sel.selectedIndex >= 0 ? sel.selectedIndex : 0);
-      return `<button type="button" onclick="UI.pickOption('${selId}', ${i})" class="picker-opt ${active ? 'picker-opt-active' : ''}"><span class="picker-radio ${active ? 'picker-radio-on' : ''}"></span><span class="flex-1">${(o.textContent || '').trim()}</span>${active ? '<i class="fa-solid fa-check text-emerald-500"></i>' : ''}</button>`;
-    }).join('');
+    const rows = Array.from(sel.options).map((o, i) => ({ o, i }))
+      .filter(({ o }) => o.value !== '')
+      .map(({ o, i }) => {
+        const active = i === (sel.selectedIndex >= 0 ? sel.selectedIndex : -1);
+        return `<button type="button" onclick="UI.pickOption('${selId}', ${i})" class="picker-opt ${active ? 'picker-opt-active' : ''}"><span class="picker-radio ${active ? 'picker-radio-on' : ''}"></span><span class="flex-1">${(o.textContent || '').trim()}</span>${active ? '<i class="fa-solid fa-check text-emerald-500"></i>' : ''}</button>`;
+      }).join('');
     this.openSheet(title, rows);
   },
   pickOption(selId, idx) {
@@ -207,7 +209,11 @@ showComingSoon(feature) {
       const wrap = sel.closest('.picker-wrap'); if (!wrap) return;
       const val = wrap.querySelector('.picker-value');
       const idx = sel.selectedIndex >= 0 ? sel.selectedIndex : 0;
-      if (val) val.textContent = sel.options[idx] ? (sel.options[idx].textContent || '').trim() : '';
+      const empty = !sel.value;
+      if (val) {
+        val.textContent = empty ? 'Tekan di sini' : (sel.options[idx] ? (sel.options[idx].textContent || '').trim() : '');
+        val.classList.toggle('picker-empty', empty);
+      }
     });
   },
   syncDateTime(input) {
