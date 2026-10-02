@@ -55,6 +55,34 @@ showComingSoon(feature) {
     document.getElementById('toast-icon').className = icons[type] || icons.success;
     t.classList.remove('-translate-y-20','opacity-0');
     setTimeout(() => t.classList.add('-translate-y-20','opacity-0'), 3000);
+    // Notifikasi suara & getar sesuai Pengaturan Notifikasi
+    try {
+      const s = (typeof App !== 'undefined' && App.settings) || {};
+      if (s.notif_sound !== false) UI.beep();
+      if (s.notif_vibration !== false && navigator.vibrate) navigator.vibrate(15);
+    } catch(e){}
+  },
+  beep() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.08, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      o.start(); o.stop(ctx.currentTime + 0.18);
+      o.onended = () => { try { ctx.close(); } catch(e){} };
+    } catch(e){}
+  },
+  toggleAcc(btn) {
+    const item = btn.closest('.acc-item');
+    if (!item) return;
+    const willOpen = !item.classList.contains('open');
+    item.classList.toggle('open', willOpen);
+    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
   },
   _confirmCb: null,
   confirm(cb) {
