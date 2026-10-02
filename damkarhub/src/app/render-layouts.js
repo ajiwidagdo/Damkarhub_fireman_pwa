@@ -105,8 +105,8 @@ export function renderLayouts() {
   document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk');
   document.getElementById('nk_waktu_inputs').innerHTML = Builders.durasiJarakInputs('nk') + Builders.koordinatInputs('nk');
 
-  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-2 gap-3 mb-3">
-    ${Builders.inputText('sos_armada', 'Armada', '2 Unit Pancar')}
+  document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-3 gap-3 mb-3">
+    <div class="col-span-2"><label class="field-label">Armada</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="sos_armada" placeholder="2 Unit Pancar" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('sos_armada', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
     <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="sos_air" value="0" class="num-compact"></div></div>
   </div>`;
   document.getElementById('sos_waktu_inputs').innerHTML = Builders.durasiJarakInputs('sos', { includeJarak: false });
