@@ -56,6 +56,7 @@ const App = {
       } else this.regu = regu.sort((a,b) => (a.urutan || 0) - (b.urutan || 0));
 
       UI.initTheme();
+      this._initFireToggle();
       renderLayouts();
       this._loadSettingsToForm();
       this._checkBackupReminder();
@@ -751,6 +752,81 @@ renderSistem() {
     names.splice(idx, 1);
     el.value = names.join('\n');
     this.renderKendalaChips(prefix);
+  },
+
+  // Fire Toggle FX: animasi + suara + hint (logic theme tetap milik UI.toggleDark)
+  _initFireToggle() {
+    try {
+      const btn = document.querySelector('.brand-toggle');
+      const mark = btn?.querySelector('.brand-mark');
+      if (!btn || !mark) return;
+      let cleanupT = null;
+      btn.addEventListener('click', () => {
+        // UI.toggleDark (inline onclick) sudah jalan duluan — baca state terbaru
+        setTimeout(() => {
+          const isDark = document.documentElement.classList.contains('dark');
+          if (cleanupT) clearTimeout(cleanupT);
+          mark.classList.remove('puff', 'ignite');
+          void mark.offsetWidth; // reflow: one-shot animation bisa di-restart
+          if (isDark) {
+            mark.classList.add('puff');
+            Helpers.haptic(20); // extinguish: lembut
+            this._fireSound('extinguish');
+          } else {
+            mark.classList.add('ignite');
+            Helpers.haptic([10, 40, 10]); // ignite: double-tap
+            this._fireSound('ignite');
+          }
+          cleanupT = setTimeout(() => mark.classList.remove('puff', 'ignite'), 700);
+        }, 40);
+      });
+      // First-time hint — sekali saja
+      if (!localStorage.getItem('damkarhub_fire_toggle_hint_shown')) {
+        const hint = document.getElementById('fire-hint');
+        if (hint) {
+          const showT = setTimeout(() => hint.classList.remove('hidden'), 6200);
+          const dismiss = () => {
+            clearTimeout(showT);
+            hint.classList.add('hidden');
+            try { localStorage.setItem('damkarhub_fire_toggle_hint_shown', '1'); } catch(e){}
+          };
+          setTimeout(dismiss, 11000);
+          btn.addEventListener('click', dismiss, { once:true });
+        }
+      }
+    } catch(e){}
+  },
+
+  // WebAudio: crackle (ignite) / whoosh (extinguish) — hormati pengaturan Suara
+  _fireSound(kind) {
+    try {
+      const s = this.settings || {};
+      if (s.notif_sound === false) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const dur = kind === 'ignite' ? 0.32 : 0.45;
+      const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      if (kind === 'ignite') {
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * Math.pow(Math.random(), 3.2);
+      } else {
+        let last = 0;
+        for (let i = 0; i < d.length; i++) { const w = Math.random()*2-1; last = (last + 0.025*w) / 1.025; d[i] = last * 3.4; }
+      }
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const f = ctx.createBiquadFilter();
+      f.type = 'bandpass'; f.Q.value = 0.9;
+      f.frequency.value = kind === 'ignite' ? 2600 : 750;
+      const g = ctx.createGain();
+      const now = ctx.currentTime;
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.22, now + 0.035);
+      g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      src.connect(f); f.connect(g); g.connect(ctx.destination);
+      src.start();
+      src.onended = () => { try { ctx.close(); } catch(e){} };
+    } catch(e){}
   },
 
   refreshReguSelects() {},

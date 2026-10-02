@@ -67,53 +67,79 @@
   /* ---------- Header ---------- */
   .app-header { background:rgba(255,255,255,.84); backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4); border-bottom:1px solid var(--line); }
   .dark .app-header { background:rgba(21,11,13,.8); }
-  /* ===== Brand Mark (Logo Toggle Dark Mode) ===== */
-.brand-mark { 
-  width:40px; height:40px; flex-shrink:0; border-radius:.9rem; 
+  /* ===== Brand Mark — Logo = Theme Toggle (api = sumber cahaya) ===== */
+.brand-mark {
+  width:40px; height:40px; flex-shrink:0; border-radius:.9rem;
   display:flex; align-items:center; justify-content:center;
   position: relative;
   background:linear-gradient(150deg,#3a0a0e 0%,#7f1d1d 55%,#b91c1c 100%);
   box-shadow:0 8px 18px -8px rgba(220,38,38,.65), inset 0 0 0 1px rgba(255,255,255,.14);
-  transition: background .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
+  transition: background .5s ease, box-shadow .5s ease, transform .45s cubic-bezier(.34,1.56,.64,1);
 }
-.brand-mark svg { 
-  width:23px; height:23px; 
-  position: absolute; top: 50%; left: 50%; 
+/* ambient glow lembut — hanya saat api menyala (light mode) */
+.brand-mark::before {
+  content:''; position:absolute; inset:-7px; border-radius:1.15rem;
+  background:radial-gradient(closest-side, rgba(255,110,25,.38), rgba(255,110,25,0) 72%);
+  opacity:0; transition:opacity .6s ease; pointer-events:none;
+}
+html:not(.dark) .brand-mark::before { opacity:1; animation: glowPulse 2.9s ease-in-out infinite; }
+.brand-mark svg {
+  width:23px; height:23px;
+  position: absolute; top: 50%; left: 50%;
   margin: -11.5px 0 0 -11.5px;
-  transition: opacity .4s ease, transform .5s cubic-bezier(.34,1.56,.64,1), filter .4s ease;
+  transition: opacity .45s ease, transform .55s cubic-bezier(.34,1.56,.64,1), filter .45s ease;
 }
+.bm-flame-outer, .bm-flame-inner { transform-origin: 50% 88%; }
 
-/* ===== DARK MODE — Api Menyala ===== */
-html.dark .brand-mark {
+/* ===== LIGHT MODE — Api Menyala ===== */
+html:not(.dark) .brand-mark {
   background: linear-gradient(150deg,#3a0a0e 0%,#7f1d1d 55%,#b91c1c 100%);
   box-shadow: 0 8px 18px -8px rgba(220,38,38,.75), inset 0 0 0 1px rgba(255,255,255,.14);
 }
-html.dark .brand-mark .bm-flame {
+html:not(.dark) .bm-flame-outer {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
-  filter: drop-shadow(0 0 6px rgba(255,140,40,.55));
-  animation: flameFlicker 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 7px rgba(255,140,40,.6));
+  animation: flameSway 3.1s ease-in-out infinite;
 }
-html.dark .brand-mark .bm-smoke {
-  opacity: 0;
-  transform: scale(.5) translateY(6px);
+html:not(.dark) .bm-flame-inner {
+  opacity: .95;
+  animation: flameFlick 1.6s ease-in-out infinite;
 }
+html:not(.dark) .bm-smoke { opacity: 0; transform: scale(.5) translateY(8px); animation: none; }
+html:not(.dark) .bm-embers { opacity: 1; }
 
-/* ===== LIGHT MODE — Api Padam + Asap ===== */
-html:not(.dark) .brand-mark {
-  background: linear-gradient(150deg,#fef3f3 0%,#fee2e2 55%,#fecaca 100%);
-  box-shadow: 0 8px 18px -8px rgba(120,120,120,.25), inset 0 0 0 1px rgba(0,0,0,.06);
+/* ===== DARK MODE — Api Padam (bara + asap naik) ===== */
+html.dark .brand-mark {
+  background: linear-gradient(150deg,#232a35 0%,#333c49 60%,#454f5e 100%);
+  box-shadow: 0 8px 18px -8px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.09);
 }
-html:not(.dark) .brand-mark .bm-flame {
-  opacity: 0;
-  transform: scale(.5) translateY(-6px);
+html.dark .bm-flame-outer {
+  opacity: .55; animation: none; transform: scale(.88);
+  filter: grayscale(1) brightness(.42); /* bara padam */
 }
-html:not(.dark) .brand-mark .bm-smoke {
-  color: #9ca3af;
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  animation: smokeDrift 4.5s ease-in-out infinite;
+html.dark .bm-flame-inner { opacity: 0; animation: none; transform: scale(.5); }
+html.dark .bm-smoke {
+  color: #aeb6c2; opacity: 1;
+  animation: smokeRise 3.8s ease-out infinite;
 }
+html.dark .bm-embers { opacity: 0; }
+
+/* ===== Partikel ember (3, CSS stagger — tanpa JS) ===== */
+.bm-embers { position:absolute; inset:0; pointer-events:none; transition:opacity .5s ease; }
+.bm-embers i {
+  position:absolute; bottom:9px; left:50%; width:3px; height:3px;
+  border-radius:50%; background:#ffc46b;
+  box-shadow:0 0 5px 1px rgba(255,150,40,.85);
+  opacity:0; animation: emberFloat 2.6s linear infinite;
+}
+.bm-embers i:nth-child(1) { left:calc(50% - 7px); animation-delay:0s; }
+.bm-embers i:nth-child(2) { left:calc(50% + 1px); animation-delay:.9s; }
+.bm-embers i:nth-child(3) { left:calc(50% + 7px); animation-delay:1.7s; }
+
+/* ===== One-shot FX saat toggle (class dari JS, bukan logic theme) ===== */
+html.dark .brand-mark.puff .bm-smoke { animation: smokePuff .55s ease-out 1; color:#c3c9d4; }
+html:not(.dark) .brand-mark.ignite .bm-flame-outer { animation: flamePop .55s cubic-bezier(.34,1.56,.64,1) 1; }
+html:not(.dark) .brand-mark.ignite .bm-flame-inner { animation: flamePop .5s cubic-bezier(.34,1.56,.64,1) .06s 1; }
 
 /* ===== Tombol brand-toggle (bisa diklik) ===== */
 .brand-toggle {
@@ -127,35 +153,68 @@ html:not(.dark) .brand-mark .bm-smoke {
   transform: rotate(180deg) scale(1.12);
 }
 
-/* ===== Badge indikator mode di sudut logo ===== */
-.theme-badge {
-  position: absolute; bottom: -3px; right: -3px;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: #fff; color: #111;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; line-height: 1;
-  box-shadow: 0 2px 6px rgba(0,0,0,.2);
-  border: 1.5px solid rgba(0,0,0,.08);
-  transition: all .3s ease;
-  pointer-events: none;
-  z-index: 2;
+/* ===== Hint pill — muncul sekali saja (first-time) ===== */
+.fire-hint {
+  position:absolute; top:calc(100% + 8px); left:12px; z-index:40;
+  display:flex; align-items:center; gap:6px;
+  background:#1f2937; color:#fff; font-size:11px; font-weight:600;
+  padding:7px 11px; border-radius:999px; white-space:nowrap;
+  box-shadow:0 6px 16px rgba(0,0,0,.25);
+  animation: hintPop .35s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
 }
-html.dark .theme-badge {
-  background: #1f2937; color: #fbbf24;
-  border-color: rgba(255,255,255,.15);
-  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+.fire-hint::before {
+  content:''; position:absolute; top:-5px; left:24px;
+  border:5px solid transparent; border-top:0; border-bottom-color:#1f2937;
 }
+.fire-hint svg { width:14px; height:14px; }
+html.dark .fire-hint { background:#f3f4f6; color:#111827; }
+html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 
 /* ===== ANIMASI ===== */
-@keyframes flameFlicker {
-  0%, 100% { transform: scale(1);      filter: drop-shadow(0 0 6px rgba(255,140,40,.55)); }
-  25%      { transform: scale(1.06);   filter: drop-shadow(0 0 11px rgba(255,160,50,.9)); }
-  50%      { transform: scale(0.96);   filter: drop-shadow(0 0 4px rgba(255,120,30,.6)); }
-  75%      { transform: scale(1.03);   filter: drop-shadow(0 0 9px rgba(255,150,45,.8)); }
+@keyframes flameSway {
+  0%, 100% { transform: skewX(0deg) scale(1,1); }
+  25%      { transform: skewX(2.6deg) scale(1.02,1.05); }
+  50%      { transform: skewX(-3.2deg) scale(.98,.96); }
+  75%      { transform: skewX(1.8deg) scale(1.03,1.02); }
 }
-@keyframes smokeDrift {
-  0%, 100% { transform: translateY(0)    scale(1);    opacity: .85; }
-  50%      { transform: translateY(-3px) scale(1.03); opacity: 1; }
+@keyframes flameFlick {
+  0%, 100% { transform: scale(1,1); opacity:.95; }
+  20%      { transform: scale(1.08,1.14) skewX(-2deg); opacity:1; }
+  45%      { transform: scale(.94,.9) skewX(2.4deg); opacity:.85; }
+  65%      { transform: scale(1.05,1.08); opacity:1; }
+  85%      { transform: scale(.97,.94) skewX(-1.6deg); opacity:.9; }
+}
+@keyframes smokeRise {
+  0%   { transform: translateY(5px) scale(.85); opacity: 0; }
+  25%  { opacity: .9; }
+  70%  { opacity: .55; }
+  100% { transform: translateY(-9px) scale(1.18); opacity: 0; }
+}
+@keyframes smokePuff {
+  0%   { transform: translateY(7px) scale(.55); opacity: 0; }
+  22%  { opacity: 1; }
+  100% { transform: translateY(-15px) scale(1.75); opacity: 0; }
+}
+@keyframes flamePop {
+  0%   { opacity:0; transform: scale(.25) translateY(9px); filter: brightness(2.4) drop-shadow(0 0 16px rgba(255,190,80,1)); }
+  55%  { opacity:1; transform: scale(1.14,.9) translateY(-2px); filter: brightness(1.35) drop-shadow(0 0 11px rgba(255,150,45,.95)); }
+  100% { opacity:1; transform: scale(1,1) translateY(0); filter: brightness(1) drop-shadow(0 0 7px rgba(255,140,40,.6)); }
+}
+@keyframes emberFloat {
+  0%   { transform: translate(0,0) scale(1); opacity: 0; }
+  12%  { opacity: 1; }
+  100% { transform: translate(5px,-24px) scale(.25); opacity: 0; }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: .75; }
+  50%      { opacity: 1; }
+}
+@keyframes hintPop {
+  from { opacity:0; transform: translateY(-6px) scale(.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bm-flame-outer, .bm-flame-inner, .bm-smoke, .bm-embers i, .brand-mark::before { animation: none !important; }
 }
   .brand-name { font-weight:900; letter-spacing:-.025em; color:var(--ink); white-space:nowrap; }
   .brand-name .fm { color:var(--red); font-style:italic; font-weight:800; margin-left:.3rem; letter-spacing:-.01em; }
@@ -404,6 +463,12 @@ html.dark .theme-badge {
       <path fill="url(#gFlame)" d="M25.2 1.5c.9 6.4-2.4 10.1-6 14.6-3.6 4.5-7.2 8.9-7.2 15.2C12 39.6 17.4 46.5 24.6 46.5S37.5 40 37.5 32.4c0-4.6-2-8.1-4.5-10.9-.2 3.4-1.7 5.5-3.7 6.6 1.3-6.9.3-17.2-4.1-26.6z"/>
       <path fill="#fff1b8" opacity=".95" d="M24.6 46.5c-4.4 0-7.5-3.2-7.5-7.7 0-3.3 2-5.5 3.7-7.8.4 2.2 1.7 3.6 3 3.9 1.3-2.4 1.1-5.7-.3-9 4.3 3.3 8.5 7.4 8.5 12.9 0 4.6-3.2 7.7-7.4 7.7z"/>
     </symbol>
+    <symbol id="ic-flame-outer" viewBox="0 0 48 48">
+      <path fill="url(#gFlame)" d="M25.2 1.5c.9 6.4-2.4 10.1-6 14.6-3.6 4.5-7.2 8.9-7.2 15.2C12 39.6 17.4 46.5 24.6 46.5S37.5 40 37.5 32.4c0-4.6-2-8.1-4.5-10.9-.2 3.4-1.7 5.5-3.7 6.6 1.3-6.9.3-17.2-4.1-26.6z"/>
+    </symbol>
+    <symbol id="ic-flame-inner" viewBox="0 0 48 48">
+      <path fill="#fff1b8" opacity=".95" d="M24.6 46.5c-4.4 0-7.5-3.2-7.5-7.7 0-3.3 2-5.5 3.7-7.8.4 2.2 1.7 3.6 3 3.9 1.3-2.4 1.1-5.7-.3-9 4.3 3.3 8.5 7.4 8.5 12.9 0 4.6-3.2 7.7-7.4 7.7z"/>
+    </symbol>
     <symbol id="ic-smoke" viewBox="0 0 48 48">
   <path d="M24 6 C19 11, 29 14, 24 19 C19 24, 29 27, 24 32 C20 36, 26 39, 24 42" 
         stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" opacity=".85"/>
@@ -469,14 +534,16 @@ html.dark .theme-badge {
   <div class="px-4 py-2.5 flex justify-between items-center gap-3">
     <button onclick="UI.toggleDark()" class="brand-toggle flex items-center gap-3 min-w-0 text-left" aria-label="Ganti tema">
   <div class="brand-mark">
-    <svg class="bm-flame" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg>
+    <svg class="bm-flame bm-flame-outer" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-outer"/></svg>
+    <svg class="bm-flame bm-flame-inner" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-inner"/></svg>
     <svg class="bm-smoke" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-smoke"/></svg>
-    <span id="theme-badge" class="theme-badge">🌙</span>
+    <span class="bm-embers" aria-hidden="true"><i></i><i></i><i></i></span>
   </div>
   <div class="leading-tight min-w-0">
     <h1 class="brand-name text-[19px]">DAMKARHUB<span class="fm">Fireman</span></h1>
   </div>
 </button>
+<span id="fire-hint" class="fire-hint hidden"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-outer"/></svg>Ketuk api untuk ganti tema</span>
 <div class="flex items-center gap-1.5">
   <button onclick="UI.showComingSoon('Notifikasi Dispatch')" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Notifikasi">
     <i class="fa-solid fa-bell"></i>
