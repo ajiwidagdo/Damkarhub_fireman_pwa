@@ -58,13 +58,13 @@ export const ModSoscfg = {
       <div class="mb-3">
         <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase">Data Peserta / Instansi</p>
       </div>
-      <div class="grid grid-cols-3 gap-3 mb-2">
+      <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
         <div class="col-span-2"><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
         <div><label class="field-label">Jml. Peserta</label><input type="number" class="sos_pJumlah num-compact" value="${data?.jumlah || ''}" required></div>
       </div>
       <label class="field-label mt-2">Alamat Lengkap</label>
       <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_dusun" class="sos_pDusun flex-1 min-w-0" placeholder="Lingk/Dusun" value="${data?.dusun || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_dusun', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      <div class="grid grid-cols-3 gap-3 mb-2">
+      <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
         <div><input type="text" enterkeyhint="next" class="sos_pRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}"></div>
         <div class="col-span-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kel" class="sos_pKel flex-1 min-w-0" placeholder="Kel/Desa" value="${data?.kel || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kel', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       </div>

@@ -14,7 +14,7 @@ export const Builders = {
   inputNum(id, label, value, attrs='') { return `<div><label class="field-label">${label}</label><input type="number" id="${id}" value="${value}" ${attrs}></div>`; },
   inputText(id, label, ph='', attrs='') { return `<div><label class="field-label">${label}</label><input type="text" enterkeyhint="next" id="${id}" placeholder="${ph}" ${attrs}></div>`; },
   operasionalInputs(prefix, { armadaRequired=true, includeAir=true } = {}) {
-    return `<div class="grid grid-cols-3 gap-3 mb-3">
+    return `<div class="grid grid-cols-3 gap-3 mb-3 keep-3col">
       <div class="col-span-2"><label class="field-label">Armada</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${prefix}_armada" placeholder="1 Unit Pancar" class="flex-1 min-w-0" ${armadaRequired ? 'required' : ''}><button type="button" class="btn-mic" onclick="Helpers.startSpeech('${prefix}_armada', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       ${includeAir ? `<div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="${prefix}_air" class="num-compact"></div></div>` : ''}
     </div>`;

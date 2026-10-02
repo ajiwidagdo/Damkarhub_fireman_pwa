@@ -102,7 +102,7 @@ const ModKcfg = {
       </div>
       <label class="field-label mt-2">Alamat Korban</label>
       <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_dusun" class="k_kDusun flex-1 min-w-0" placeholder="Lingk/Dusun" value="${data?.dusun || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_dusun', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      <div class="grid grid-cols-3 gap-3 mb-2">
+      <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
         <div><input type="text" enterkeyhint="next" class="k_kRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}"></div>
         <div class="col-span-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kel" class="k_kKel flex-1 min-w-0" placeholder="Kel/Desa" value="${data?.kel || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kel', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
       </div>
