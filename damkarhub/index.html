@@ -214,6 +214,13 @@ html.dark .theme-badge {
   .dark .opt-go { background:rgba(255,255,255,.1); color:#fff; }
 
   .section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  /* Toggle switch (Pengaturan Sistem) */
+  .toggle { width:46px; height:27px; border-radius:999px; background:#d1d5db; position:relative; transition:background .2s; flex:0 0 auto; cursor:pointer; }
+  .toggle[aria-checked="true"] { background:#16a34a; }
+  .toggle .knob { position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:50%; background:#fff; transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .toggle[aria-checked="true"] .knob { left:22px; }
+  .dark .toggle { background:#4b5563; }
+  .dark .toggle[aria-checked="true"] { background:#16a34a; }
   .sec-status { font-size:10px; font-weight:700; color:#a8a29e; letter-spacing:.02em; }
   .dark .sec-status { color:#78716c; }
   .sec-status.is-done { color:#16a34a; font-weight:800; }
@@ -474,7 +481,7 @@ html.dark .theme-badge {
   <button onclick="UI.showComingSoon('Notifikasi Dispatch')" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Notifikasi">
     <i class="fa-solid fa-bell"></i>
   </button>
-  <button onclick="UI.showComingSoon('Profil Petugas')" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Akun">
+  <button onclick="App.openAccountSettings()" class="icon-btn text-gray-500 dark:text-gray-300" aria-label="Akun">
     <i class="fa-solid fa-user"></i>
   </button>
 </div>
@@ -1106,7 +1113,23 @@ html.dark .theme-badge {
     <h2 class="text-lg font-black uppercase tracking-tight">Sistem</h2>
   </div>
 
-  <form onsubmit="App.saveSettings(event)" class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4 mb-5">
+  <nav class="chip-nav" data-chipnav="sistem" aria-label="Navigasi pengaturan">
+    <button type="button" class="chip-nav-btn is-active" data-stab="umum" onclick="UI.switchSistemTab('umum')">Umum</button>
+    <button type="button" class="chip-nav-btn" data-stab="akun" onclick="UI.switchSistemTab('akun')">Akun</button>
+    <button type="button" class="chip-nav-btn" data-stab="tim" onclick="UI.switchSistemTab('tim')">Tim</button>
+    <button type="button" class="chip-nav-btn" data-stab="sinkron" onclick="UI.switchSistemTab('sinkron')">Sinkron</button>
+    <button type="button" class="chip-nav-btn" data-stab="notifikasi" onclick="UI.switchSistemTab('notifikasi')">Notifikasi</button>
+    <button type="button" class="chip-nav-btn" data-stab="backup" onclick="UI.switchSistemTab('backup')">Backup</button>
+    <button type="button" class="chip-nav-btn" data-stab="mode" onclick="UI.switchSistemTab('mode')">Mode</button>
+  </nav>
+
+  <div class="mb-5">
+
+  <!-- 1. Umum -->
+  <div class="sys-panel" data-spanel="umum">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase text-center mb-4">Pengaturan Umum</p>
+    <form onsubmit="App.saveSettings(event)" class="space-y-4">
     <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
       <p class="text-xs text-blue-700 dark:text-blue-300 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Digunakan sebagai penerima laporan WhatsApp.</p>
     </div>
@@ -1121,19 +1144,41 @@ html.dark .theme-badge {
     </div>
     <div><label class="field-label">Tujuan WA</label><textarea id="set_pimpinan" rows="5" required></textarea></div>
     <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl active:scale-[.98]">Simpan Pengaturan</button>
-  </form>
-
-  <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-sm font-bold"><i class="fa-solid fa-people-group mr-2 text-indigo-500"></i> Kelola Regu</h3>
-      <button type="button" onclick="App.editRegu()" class="btn-add bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800"><i class="fa-solid fa-plus mr-1"></i> Regu</button>
+    </form>
     </div>
-    <div id="regu-list"></div>
   </div>
 
-  <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-sm font-bold"><i class="fa-solid fa-users mr-2 text-emerald-500"></i> Kelola Personil</h3>
+  <!-- 2. Akun -->
+  <div class="sys-panel hidden" data-spanel="akun">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase text-center mb-4">Pengaturan Akun</p>
+    <form onsubmit="App.saveAccount(event)" class="space-y-4">
+    <div><label class="field-label">Nama Petugas</label><input type="text" enterkeyhint="next" id="set_petugas_nama" placeholder="Nama lengkap petugas"></div>
+    <div><label class="field-label">No HP</label><input type="tel" enterkeyhint="next" id="set_petugas_hp" placeholder="Cth: 0853..." inputmode="tel"></div>
+    <div><label class="field-label">Jabatan</label><input type="text" enterkeyhint="next" id="set_petugas_jabatan" placeholder="Cth: Komandan Regu"></div>
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold">Aktif Menerima Dispatch</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Kalau libur/sakit, matikan untuk sementara</p>
+      </div>
+      <button type="button" role="switch" id="set_dispatch_active" class="toggle" aria-checked="true" onclick="App.toggleSetting(this,'petugas_dispatch_active')" aria-label="Aktif menerima dispatch"><span class="knob"></span></button>
+    </div>
+    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl active:scale-[.98]">Simpan Akun</button>
+    </form>
+    </div>
+  </div>
+
+  <!-- 3. Tim (Regu + Personil digabung) -->
+  <div class="sys-panel hidden" data-spanel="tim">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase text-center mb-4">Tim &amp; Personil</p>
+    <div class="flex justify-between items-center mb-3">
+      <h4 class="text-sm font-bold"><i class="fa-solid fa-people-group mr-2 text-indigo-500"></i>Regu</h4>
+      <button type="button" onclick="App.editRegu()" class="btn-add bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800"><i class="fa-solid fa-plus mr-1"></i> Regu</button>
+    </div>
+    <div id="regu-list" class="mb-5"></div>
+    <div class="flex justify-between items-center mb-3">
+      <h4 class="text-sm font-bold"><i class="fa-solid fa-users mr-2 text-emerald-500"></i>Personil</h4>
       <button type="button" onclick="App.editPersonil()" class="btn-add bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-plus mr-1"></i> Personil</button>
     </div>
     <div class="relative mb-3">
@@ -1149,10 +1194,13 @@ html.dark .theme-badge {
       <i class="fa-solid fa-user-slash text-3xl mb-2"></i>
       <p class="text-xs">Belum ada personil. Tap "+ Personil" untuk menambah.</p>
     </div>
+    </div>
   </div>
 
-  <div id="syncCard" class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-5">
-    <h3 class="text-sm font-bold mb-2"><i class="fa-solid fa-cloud-arrow-up mr-2 text-emerald-500"></i> Sinkronisasi Pusat</h3>
+  <!-- 4. Sinkron -->
+  <div class="sys-panel hidden" data-spanel="sinkron" id="syncCard">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase text-center mb-4">Sinkronisasi Pusat</p>
     <p id="syncStatus" class="text-xs text-gray-500 dark:text-gray-400 mb-3 whitespace-pre-line">Memuat...</p>
     <div id="syncLoginBox" class="hidden space-y-3">
       <div><label class="field-label">Email Petugas</label><input type="email" id="sync_email" autocomplete="username" placeholder="nama@instansi.go.id"></div>
@@ -1163,29 +1211,50 @@ html.dark .theme-badge {
       <button type="button" onclick="Sync.run({manual:true})" class="flex-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 active:scale-[.98]"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>
       <button type="button" onclick="Sync.logout()" class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98]"><i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
+    </div>
   </div>
 
-  <!-- ===== MODE CARD ===== -->
-  <div id="modeCard" class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-5">
-    <h3 class="text-sm font-bold mb-2"><i class="fa-solid fa-user-shield mr-2 text-blue-500"></i> Mode Penggunaan</h3>
-    <p id="modeStatus" class="text-xs text-gray-500 dark:text-gray-400 mb-3 whitespace-pre-line">Memuat...</p>
-
-    <!-- Tombol upgrade (muncul kalau mode anon) -->
-    <button type="button" id="modeUpgradeBtn" onclick="Mode.upgrade()"
-      class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl active:scale-[.98] mb-2">
-      <i class="fa-solid fa-shield-halved mr-2"></i>Upgrade ke Akun
-    </button>
-
-    <!-- Tombol reset (buat demo) -->
-    <button type="button" onclick="Mode.reset()"
-      class="w-full bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold py-2 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98] text-xs">
-      <i class="fa-solid fa-rotate-left mr-1"></i>Reset Mode
-    </button>
+  <!-- 5. Notifikasi -->
+  <div class="sys-panel hidden" data-spanel="notifikasi">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase text-center mb-4">Pengaturan Notifikasi</p>
+    <div class="space-y-4">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold">Pengingat Backup Berkala</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Ingatkan bila >7 hari belum backup</p>
+      </div>
+      <button type="button" role="switch" id="set_notif_backup" class="toggle" aria-checked="true" onclick="App.toggleSetting(this,'notif_backup')" aria-label="Pengingat backup berkala"><span class="knob"></span></button>
+    </div>
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold">Info Hasil Sinkronisasi</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Tampilkan ringkasan tiap sinkron selesai</p>
+      </div>
+      <button type="button" role="switch" id="set_notif_sync" class="toggle" aria-checked="true" onclick="App.toggleSetting(this,'notif_sync')" aria-label="Info hasil sinkronisasi"><span class="knob"></span></button>
+    </div>
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold">Suara Notifikasi</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Bunyi tiap ada pemberitahuan</p>
+      </div>
+      <button type="button" role="switch" id="set_notif_sound" class="toggle" aria-checked="true" onclick="App.toggleSetting(this,'notif_sound')" aria-label="Suara notifikasi"><span class="knob"></span></button>
+    </div>
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-bold">Getar Notifikasi</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Getar tiap ada pemberitahuan</p>
+      </div>
+      <button type="button" role="switch" id="set_notif_vibration" class="toggle" aria-checked="true" onclick="App.toggleSetting(this,'notif_vibration')" aria-label="Getar notifikasi"><span class="knob"></span></button>
+    </div>
+    </div>
+    </div>
   </div>
-  <!-- ===== /MODE CARD ===== -->
 
-  <div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
-    <h3 class="text-sm font-bold mb-2"><i class="fa-solid fa-network-wired mr-2 text-blue-500"></i> Backup & Restore</h3>
+  <!-- 6. Backup -->
+  <div class="sys-panel hidden" data-spanel="backup">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase text-center mb-4">Backup &amp; Restore</p>
     <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Backup mencakup laporan, regu, personil, dan pengaturan. Merge menggabungkan data tanpa menghapus.</p>
     <div class="flex flex-col sm:flex-row gap-3">
       <button type="button" onclick="App.backupJSON()" class="flex-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold py-3 rounded-xl border border-blue-200 dark:border-blue-800 active:scale-[.98]"><i class="fa-solid fa-download mr-1"></i> Unduh Backup</button>
@@ -1193,8 +1262,26 @@ html.dark .theme-badge {
         <i class="fa-solid fa-sync mr-1"></i> Merge Data<input type="file" accept=".json" class="hidden" onchange="App.restoreJSON(event)">
       </label>
     </div>
+    </div>
   </div>
 
+  <!-- 7. Mode -->
+  <div class="sys-panel hidden" data-spanel="mode" id="modeCard">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <p class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase text-center mb-4">Mode Penggunaan</p>
+    <p id="modeStatus" class="text-xs text-gray-500 dark:text-gray-400 mb-3 whitespace-pre-line">Memuat...</p>
+    <button type="button" id="modeUpgradeBtn" onclick="Mode.upgrade()"
+      class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl active:scale-[.98] mb-2">
+      <i class="fa-solid fa-shield-halved mr-2"></i>Upgrade ke Akun
+    </button>
+    <button type="button" onclick="Mode.reset()"
+      class="w-full bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold py-2 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98] text-xs">
+      <i class="fa-solid fa-rotate-left mr-1"></i>Reset Mode
+    </button>
+    </div>
+  </div>
+
+  </div>
 
   <div class="h-24"></div>
 </section>
@@ -1203,14 +1290,14 @@ html.dark .theme-badge {
 
 <nav class="bottom-nav">
   <div class="grid grid-cols-5 items-end">
-    <button onclick="App.switchView('beranda')" id="nav-beranda" class="nav-btn"><i class="fa-solid fa-house"></i><span>Beranda</span></button>
-    <button onclick="App.switchView('dashboard')" id="nav-dashboard" class="nav-btn"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
+    <button onclick="App.navTap('beranda')" id="nav-beranda" class="nav-btn"><i class="fa-solid fa-house"></i><span>Beranda</span></button>
+    <button onclick="App.navTap('dashboard')" id="nav-dashboard" class="nav-btn"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
     <div class="flex flex-col items-center justify-start pointer-events-none">
       <button onclick="App.openFab()" id="fab-center" class="fab-center pointer-events-auto" aria-label="Buat Laporan"><i class="fa-solid fa-plus"></i></button>
       <span class="fab-label">Buat Laporan</span>
     </div>
-    <button onclick="App.switchView('riwayat')" id="nav-riwayat" class="nav-btn"><i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat</span></button>
-    <button onclick="App.switchView('sistem')" id="nav-sistem" class="nav-btn"><i class="fa-solid fa-gear"></i><span>Sistem</span></button>
+    <button onclick="App.navTap('riwayat')" id="nav-riwayat" class="nav-btn"><i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat</span></button>
+    <button onclick="App.navTap('sistem')" id="nav-sistem" class="nav-btn"><i class="fa-solid fa-gear"></i><span>Sistem</span></button>
   </div>
 </nav>
 
