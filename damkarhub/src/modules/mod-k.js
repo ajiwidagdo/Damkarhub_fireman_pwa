@@ -72,9 +72,9 @@ const ModKcfg = {
     div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-gray-700 relative";
     div.innerHTML = `
       <button type="button" onclick="this.closest('.korban-item').remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Hapus kartu"><i class="fa-solid fa-times"></i></button>
-      <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
+      <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="mb-3">
-        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase">Data Korban / Pemilik</p>
+        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Korban / Pemilik</p>
       </div>
       <div class="mb-2">
         <label class="field-label">Nama</label>

@@ -56,7 +56,7 @@ export const ModSoscfg = {
       <button type="button" onclick="this.closest('.peserta-item').remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Hapus kartu"><i class="fa-solid fa-times"></i></button>
       <button type="button" onclick="Mod.sos.addPeserta()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah peserta"><i class="fa-solid fa-plus"></i></button>
       <div class="mb-3">
-        <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase">Data Peserta / Instansi</p>
+        <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase text-center">Data Peserta / Instansi</p>
       </div>
       <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
         <div class="col-span-2"><label class="field-label">Nama Instansi</label><input type="text" enterkeyhint="next" class="sos_pNama" value="${data?.nama || ''}" required></div>
