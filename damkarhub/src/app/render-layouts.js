@@ -103,7 +103,7 @@ export function renderLayouts() {
   document.getElementById('nk_casualty_inputs').innerHTML = Builders.casualtyInputs('nk');
   document.getElementById('nk_regu_inputs').innerHTML = Builders.reguInputs('nk');
   document.getElementById('nk_photo_inputs').innerHTML = Builders.photoInputs('nk');
-  document.getElementById('nk_waktu_inputs').innerHTML = Builders.durasiJarakInputs('nk') + Builders.koordinatInputs('nk');
+  document.getElementById('nk_waktu_inputs').innerHTML = Builders.koordinatInputs('nk') + Builders.durasiJarakInputs('nk');
 
   document.getElementById('sos_operasional_inputs').innerHTML = `<div class="grid grid-cols-3 gap-3 mb-3 keep-3col">
     <div><label class="field-label text-blue-500 dark:text-blue-400">Air (Tangki)</label><div class="flex items-center gap-2"><input type="number" step="0.1" id="sos_air" value="0" class="num-compact"></div></div>
