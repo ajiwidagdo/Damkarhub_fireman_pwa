@@ -213,8 +213,11 @@ html.dark .theme-badge {
   .opt-go { position:relative; z-index:1; width:30px; height:30px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.7rem; background:rgba(255,255,255,.7); color:#7a6c6d; }
   .dark .opt-go { background:rgba(255,255,255,.1); color:#fff; }
 
-  .section-title { font-size:.875rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:1rem; }
-  .section-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1rem; }
+  .section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .sec-status { font-size:10px; font-weight:700; color:#a8a29e; letter-spacing:.02em; }
+  .dark .sec-status { color:#78716c; }
+  .sec-status.is-done { color:#16a34a; font-weight:800; }
+  .dark .sec-status.is-done { color:#4ade80; }
   .btn-help { width:22px; height:22px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:#8a7a7b; font-size:.7rem; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }
   .btn-help:active { transform:scale(.92); }
   .dark .btn-help { color:#b9a7a8; }
@@ -244,10 +247,9 @@ html.dark .theme-badge {
   .chip-nav { position:sticky; top:calc(3.9rem + env(safe-area-inset-top, 0px)); z-index:20; display:flex; gap:.4rem; overflow-x:auto; padding:.45rem; margin-bottom:.75rem; border-radius:999px; background:rgba(255,255,255,.88); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border:1px solid var(--line); box-shadow:var(--shadow); scrollbar-width:none; transition:transform .25s ease, opacity .25s ease; }
   .chip-nav::-webkit-scrollbar { display:none; }
   .dark .chip-nav { background:rgba(21,11,13,.85); border-color:rgba(255,255,255,.1); }
-  .chip-nav.nav-hidden { transform:translateY(-140%); opacity:0; pointer-events:none; }
-  .chip-nav-btn { flex:1 0 auto; padding:.42rem .8rem; border-radius:999px; font-size:.72rem; font-weight:700; white-space:nowrap; color:#6e5f60; transition:all .15s; }
+  .chip-nav-btn { flex:1 0 auto; padding:.5rem .95rem; border-radius:999px; font-size:.75rem; font-weight:700; white-space:nowrap; color:#6e5f60; transition:all .15s; }
   .dark .chip-nav-btn { color:#d8caca; }
-  .chip-nav-btn.is-active { background:var(--grad-red); color:#fff; box-shadow:0 6px 14px -6px rgba(220,38,38,.7); }
+  .chip-nav-btn.is-active { background:var(--grad-red); color:#fff; box-shadow:0 8px 18px -6px rgba(220,38,38,.8); }
   .chip-nav[data-chipnav="nk"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#fbbf24,#d97706); box-shadow:0 6px 14px -6px rgba(245,158,11,.7); }
   .chip-nav[data-chipnav="sos"] .chip-nav-btn.is-active { background:linear-gradient(135deg,#34d399,#059669); box-shadow:0 6px 14px -6px rgba(16,185,129,.7); }
   .picker-wrap { position:relative; }
@@ -274,9 +276,6 @@ html.dark .theme-badge {
   .chip-nav-btn.is-done .chip-dot { background:#10b981; }
   .chip-nav-btn.is-active .chip-dot { background:rgba(255,255,255,.55); }
   .chip-nav-btn.is-active.is-done .chip-dot { background:#a7f3d0; }
-  .sec-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#d6cdce; flex-shrink:0; transition:background .2s; }
-  .dark .sec-dot { background:#57534e; }
-  .sec-dot.is-done { background:#22c55e; }
   form section[id] { scroll-margin-top:calc(7.75rem + env(safe-area-inset-top, 0px)); }
   /* Tombol utama merah → gradien api */
   button.bg-red-600:not(.rounded-full) { background-image:var(--grad-red); box-shadow:0 10px 22px -10px rgba(220,38,38,.75); }
@@ -607,11 +606,8 @@ html.dark .theme-badge {
       <input type="hidden" id="k_editId">
       <section id="k-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">1. Waktu & Jenis Kejadian</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="k-s1"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('k-s1')" aria-label="Bantuan section Waktu & Jenis Kejadian" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="k-s1"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s1')" aria-label="Bantuan section Waktu & Jenis Kejadian" title="Bantuan">?</button>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
@@ -700,11 +696,8 @@ html.dark .theme-badge {
       </section>
       <section id="k-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">2. Lokasi Kejadian</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="k-s2"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('k-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="k-s2"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
         </div>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required></div>
               <div class="grid grid-cols-2 gap-3 mb-3">
@@ -720,11 +713,8 @@ html.dark .theme-badge {
       </section>
       <section id="k-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">3. Data Pemilik / Korban & Pelapor</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="k-s3"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="k-s3"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
         </div>
         <p class="text-[10px] text-gray-500 dark:text-gray-400 -mt-2 mb-3 italic"><i class="fa-solid fa-circle-info mr-1"></i>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p>
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
@@ -739,11 +729,8 @@ html.dark .theme-badge {
       </section>
       <section id="k-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">4. Penyebab & Dampak</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="k-s4"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('k-s4')" aria-label="Bantuan section Penyebab & Dampak" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="k-s4"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s4')" aria-label="Bantuan section Penyebab & Dampak" title="Bantuan">?</button>
         </div>
         <div class="mb-3">
           <label class="field-label">Dugaan Penyebab</label>
@@ -784,11 +771,8 @@ html.dark .theme-badge {
       </section>
       <section id="k-s5" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-red-600 dark:text-red-400 mb-0">5. Operasional & Regu</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="k-s5"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('k-s5')" aria-label="Bantuan section Operasional & Regu" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="k-s5"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('k-s5')" aria-label="Bantuan section Operasional & Regu" title="Bantuan">?</button>
         </div>
         <div id="k_operasional_inputs"></div>
         <div class="mb-3">
@@ -845,11 +829,8 @@ html.dark .theme-badge {
       <input type="hidden" id="nk_editId">
       <section id="nk-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">1. Waktu & Jenis Kegiatan</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="nk-s1"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('nk-s1')" aria-label="Bantuan section Waktu & Jenis Kegiatan" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="nk-s1"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s1')" aria-label="Bantuan section Waktu & Jenis Kegiatan" title="Bantuan">?</button>
         </div>
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
@@ -912,11 +893,8 @@ html.dark .theme-badge {
       </section>
       <section id="nk-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">2. Lokasi Kejadian</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="nk-s2"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('nk-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="nk-s2"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
         </div>
         <div class="mb-3"><label class="field-label">Patokan Lokasi</label><input type="text" enterkeyhint="next" id="nk_lokasiDetail" placeholder="Cth: Rumah Warga" required></div>
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -932,10 +910,9 @@ html.dark .theme-badge {
       </section>
       <section id="nk-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">3. Identitas Pelapor</h3>
           <div class="flex items-center gap-2">
             <button type="button" onclick="Mod.nk.copyLokasiToIdentitas()" class="text-[10px] text-blue-500 font-bold bg-white dark:bg-gray-900 px-2 py-1 rounded shadow-sm border border-blue-200 dark:border-gray-600">Samakan dgn Lokasi</button>
-            <span class="sec-dot" data-sec="nk-s3"></span>
+            <span class="sec-status" data-sec="nk-s3"></span>
             <button type="button" class="btn-help" onclick="UI.openHelp('nk-s3')" aria-label="Bantuan section Identitas Pelapor" title="Bantuan">?</button>
           </div>
         </div>
@@ -960,11 +937,8 @@ html.dark .theme-badge {
       </section>
       <section id="nk-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-amber-600 dark:text-amber-400 mb-0">4. Operasional & Penanganan</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="nk-s4"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('nk-s4')" aria-label="Bantuan section Operasional & Penanganan" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="nk-s4"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('nk-s4')" aria-label="Bantuan section Operasional & Penanganan" title="Bantuan">?</button>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
           <div><label class="field-label">Objek / Satwa</label><input type="text" enterkeyhint="next" id="nk_objek" placeholder="1 Ekor Ular Cobra" required></div>
@@ -1015,11 +989,8 @@ html.dark .theme-badge {
       <input type="hidden" id="sos_editId">
       <section id="sos-s1" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">1. Waktu & Rangkaian</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="sos-s1"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('sos-s1')" aria-label="Bantuan section Waktu & Rangkaian" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="sos-s1"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('sos-s1')" aria-label="Bantuan section Waktu & Rangkaian" title="Bantuan">?</button>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
           <div>
@@ -1068,11 +1039,8 @@ html.dark .theme-badge {
       </section>
       <section id="sos-s2" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">2. Data Peserta / Instansi</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="sos-s2"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('sos-s2')" aria-label="Bantuan section Data Peserta / Instansi" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="sos-s2"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('sos-s2')" aria-label="Bantuan section Data Peserta / Instansi" title="Bantuan">?</button>
         </div>
         <div class="mb-4">
           <div class="flex justify-between items-center mb-1">
@@ -1087,11 +1055,8 @@ html.dark .theme-badge {
       </section>
       <section id="sos-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
-          <h3 class="section-title text-emerald-600 dark:text-emerald-400 mb-0">3. Operasional & Personil</h3>
-          <div class="flex items-center gap-2">
-            <span class="sec-dot" data-sec="sos-s3"></span>
-            <button type="button" class="btn-help" onclick="UI.openHelp('sos-s3')" aria-label="Bantuan section Operasional & Personil" title="Bantuan">?</button>
-          </div>
+          <span class="sec-status" data-sec="sos-s3"></span>
+          <button type="button" class="btn-help" onclick="UI.openHelp('sos-s3')" aria-label="Bantuan section Operasional & Personil" title="Bantuan">?</button>
         </div>
         <div id="sos_operasional_inputs"></div>
         <div id="sos_regu_inputs"></div>
@@ -1415,20 +1380,13 @@ html.dark .theme-badge {
         } else if (!(f.value || '').trim()) done = false;
       });
       btn.classList.toggle('is-done', done);
-      var sd = document.querySelector('.sec-dot[data-sec="' + id + '"]');
-      if (sd) sd.classList.toggle('is-done', done);
+      var sd = document.querySelector('.sec-status[data-sec="' + id + '"]');
+      if (sd) { sd.classList.toggle('is-done', done); sd.textContent = done ? '✓ Lengkap' : 'Belum lengkap'; }
     });
   }
   document.addEventListener('input', updateChipProgress);
   document.addEventListener('change', updateChipProgress);
   updateChipProgress();
-  var lastY = window.scrollY;
-  window.addEventListener('scroll', function () {
-    var y = window.scrollY;
-    var hide = y > lastY && y > 240;
-    navs.forEach(function (n) { n.classList.toggle('nav-hidden', hide); });
-    lastY = y;
-  }, { passive: true });
 })();
 </script>
 </body>
