@@ -1568,6 +1568,18 @@ body.auth-locked .app-header, body.auth-locked main, body.auth-locked .bottom-na
 </div>
 <!-- ===== /LOGIN SCREEN ===== -->
 
+<!-- ===== STORAGE ERROR (blocking — tampil bila IndexedDB gagal dibuka) ===== -->
+<div id="storage-error-screen" class="hidden fixed inset-0 z-[10001] flex items-center justify-center px-6" style="background:rgba(20,8,8,.97);">
+  <div class="w-full max-w-sm bg-white dark:bg-gray-800 rounded-3xl p-6 text-center shadow-2xl">
+    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 text-2xl"><i class="fa-solid fa-database"></i></div>
+    <h2 class="font-black text-lg mb-2 text-gray-900 dark:text-white">Penyimpanan Gagal Dibuka</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-1 leading-relaxed">Aplikasi tidak bisa membuka penyimpanan lokal setelah 3x percobaan.</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-5 leading-relaxed"><b>Data Anda aman.</b> Tutup tab/aplikasi Damkarhub lain, lalu coba lagi.</p>
+    <button type="button" onclick="location.reload()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-rotate mr-2"></i>Coba Lagi</button>
+  </div>
+</div>
+<!-- ===== /STORAGE ERROR ===== -->
+
 <!-- Hidden fields: engine Sync.login() membaca dari sini (objek Sync tidak diubah) -->
 <div class="hidden" aria-hidden="true"><input type="hidden" id="sync_email"><input type="hidden" id="sync_password"></div>
 
