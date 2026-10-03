@@ -6,6 +6,7 @@
    ========================================================================= */
 
 const Config = {
+  APP_VERSION: '1.3.0', // sinkron dengan package.json
   DB_NAME: 'DamkarHubDB',
   PROVINSI: [
     'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi', 'Sumatera Selatan',
