@@ -105,7 +105,7 @@ export const Auth = {
     if (!navigator.onLine) { UI.toast('Login butuh koneksi internet.', 'error'); return; }
     // Migrasi B1: konfirmasi sebelum login pertama
     const n = this._localCount();
-    const first = !localStorage.getItem(Sync.SEEDED_KEY);
+    const first = !localStorage.getItem(Sync._seededKey());
     if (n > 0 && first) {
       if (!confirm(`Ditemukan ${n} laporan di perangkat ini. Setelah masuk, semuanya akan disinkronkan ke akun Anda. Lanjutkan?`)) return;
     }

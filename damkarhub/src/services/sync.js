@@ -1,7 +1,20 @@
 export const Sync = {
   SESSION_KEY: 'damkarhub_sync_session',
-  CURSOR_KEY: 'damkarhub_sync_cursor',
-  SEEDED_KEY: 'damkarhub_sync_seeded',
+  TENANT_KEY: 'damkarhub_tenant_id',
+  _uid() { try { return this._session()?.uid || 'anon'; } catch (e) { return 'anon'; } },
+  _cursorKey() { return 'damkarhub_sync_cursor_' + this._uid(); },
+  _seededKey() { return 'damkarhub_sync_seeded_' + this._uid(); },
+  _ownerId() { try { return this._session()?.uid || null; } catch (e) { return null; } },
+  _tenantId() { try { return localStorage.getItem(this.TENANT_KEY) || null; } catch (e) { return null; } },
+  // DEFENSIVE (Fix 3): sertakan owner + tenant_id agar lolos RLS
+  _row(rid, module, data, deleted) {
+    const row = { id: rid, module, data, deleted };
+    const owner = this._ownerId();
+    if (owner) row.owner = owner;
+    const tenant = this._tenantId();
+    if (tenant) row.tenant_id = tenant;
+    return row;
+  },
   _busy: false, _timer: null, _deb: null, _lastError: '', _lastSync: null,
 
   enabled() { return !!(SyncConfig.URL && SyncConfig.ANON_KEY); },
@@ -47,6 +60,7 @@ export const Sync = {
         return null;
       }
       const tenantId = await res.json();
+      try { if (tenantId) localStorage.setItem(this.TENANT_KEY, tenantId); } catch (e) {}
       console.log('✅ Auto-join tenant:', tenantId);
       return tenantId;
     } catch (e) {
@@ -132,13 +146,13 @@ export const Sync = {
     this.schedule();
   },
   async _seed() {
-    if (localStorage.getItem(this.SEEDED_KEY)) return;
+    if (localStorage.getItem(this._seededKey())) return;
     for (const m of ['k', 'nk', 'sos']) {
       for (const d of Mod[m].data) {
         await DB.put(Config.STORES.sync, { id: m + ':' + d.id, module: m, rid: d.id, op: 'upsert', ts: Date.now() });
       }
     }
-    localStorage.setItem(this.SEEDED_KEY, '1');
+    localStorage.setItem(this._seededKey(), '1');
   },
   async _ack(it) {
     const cur = (await DB.getAll(Config.STORES.sync)).find(x => x.id === it.id);
@@ -179,10 +193,24 @@ export const Sync = {
     const q = (await DB.getAll(Config.STORES.sync)).sort((a, b) => a.ts - b.ts);
     const items = [];
     for (const it of q) {
-      if (it.op === 'delete') { items.push({ it, row: { id: it.rid, module: it.module, data: {}, deleted: true } }); continue; }
-      const d = Mod[it.module]?.data.find(x => x.id === it.rid);
-      if (!d) { await this._ack(it); continue; }
-      items.push({ it, row: { id: it.rid, module: it.module, data: d, deleted: false } });
+      if (it.op === 'delete') { items.push({ it, row: this._row(it.rid, it.module, {}, true) }); continue; }
+      let d = Mod[it.module]?.data.find(x => x.id === it.rid);
+      if (!d) {
+        // DEFENSIVE: coba muat ulang dari IndexedDB sebelum menyerah
+        try {
+          const all = await DB.getAll(Config.STORES[it.module]);
+          const fromDb = (all || []).find(x => x.id === it.rid);
+          if (fromDb && Mod[it.module]) Mod[it.module].data.push(fromDb);
+        } catch (e) {}
+        d = Mod[it.module]?.data.find(x => x.id === it.rid);
+      }
+      if (!d) {
+        // DEFENSIVE: JANGAN ack — pertahankan outbox, tandai agar terlihat
+        console.warn('Sync: outbox orphan dipertahankan, laporan tidak ditemukan:', it.id);
+        await this._markFail(it, 'Laporan tidak ditemukan di perangkat — outbox dipertahankan');
+        continue;
+      }
+      items.push({ it, row: this._row(it.rid, it.module, d, false) });
     }
     let sent = 0, failed = 0;
     for (let i = 0; i < items.length; i += SyncConfig.CHUNK) {
@@ -210,7 +238,7 @@ export const Sync = {
 
   /* ---------- Tarik dari server ---------- */
   async _pull() {
-    let cursor = localStorage.getItem(this.CURSOR_KEY) || '1970-01-01T00:00:00+00:00';
+    let cursor = localStorage.getItem(this._cursorKey()) || '1970-01-01T00:00:00+00:00';
     const pending = new Set((await DB.getAll(Config.STORES.sync)).map(x => x.id));
     let changed = 0, guard = 0;
     while (guard++ < 500) {
@@ -223,7 +251,7 @@ export const Sync = {
       const last = rows[rows.length - 1].updated_at;
       const advanced = last !== cursor;
       cursor = last;
-      localStorage.setItem(this.CURSOR_KEY, cursor);
+      localStorage.setItem(this._cursorKey(), cursor);
       if (rows.length < SyncConfig.PAGE || !advanced) break;
     }
     if (changed > 0) this._refreshUI();
