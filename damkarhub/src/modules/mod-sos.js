@@ -129,7 +129,7 @@ export const ModSoscfg = {
         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">${Helpers.formatAddress(p.dusun, p.rtrw, p.kel, p.kec, p.kabkota)}</p>
       </div>`).join('') : '<p class="text-xs text-gray-400 italic">Tidak ada data peserta</p>';
 
-    return P.header('LAPORAN SOSIALISASI', '📢', 'from-emerald-500 to-teal-700 shadow-emerald-500/20') +
+    return P.header('LAPORAN SOSIALISASI', '<i class="fa-solid fa-bullhorn"></i>', 'from-emerald-500 to-teal-700 shadow-emerald-500/20') +
       P.section('A. Identitas Kegiatan', 'fa-file-lines',
         P.row('Hari/Tgl', `${hari}, ${tglIndo}`) + P.row('Pukul', `${d.pukul || '-'} WIB`) +
         P.row('Selesai', selesaiStr) + P.row('Durasi', `${d.durasi || 0} Menit`) + P.row('Sasaran Edukasi', kategoriStr), 'text-emerald-600') +

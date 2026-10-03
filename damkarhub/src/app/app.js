@@ -922,7 +922,7 @@ renderSistem() {
         <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a>
       </div>
 
-      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam 🔥</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam <i class="fa-solid fa-fire text-red-500"></i></p>
     </div>`;
     UI.openSheet('Tentang Aplikasi', content);
   },

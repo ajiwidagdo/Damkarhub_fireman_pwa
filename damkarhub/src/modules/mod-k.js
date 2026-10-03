@@ -200,7 +200,7 @@ const ModKcfg = {
         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">${Helpers.formatAddress(k.dusun, k.rtrw, k.kel, k.kec, k.kabkota)}</p>
       </div>`).join('') : '<p class="text-xs text-gray-400 italic">Tidak ada data korban</p>';
 
-    return P.header('LAPORAN KEBAKARAN', '🔥', 'from-red-600 to-red-800 shadow-red-600/20') +
+    return P.header('LAPORAN KEBAKARAN', '<i class="fa-solid fa-fire"></i>', 'from-red-600 to-red-800 shadow-red-600/20') +
       P.section('A. Identitas Laporan', 'fa-file-lines',
         P.row('Hari/Tgl', `${hari}, ${tglIndo}`) + P.row('Pukul', `${d.pukul || '-'} WIB`) + P.row('Jenis', d.jenis || '-'), 'text-red-600') +
       P.section('B. Waktu Respon', 'fa-stopwatch',
