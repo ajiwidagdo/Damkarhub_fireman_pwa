@@ -272,14 +272,14 @@ const App = {
   switchExportTab(mod) {
     Helpers.haptic(10);
     this.currentExportTab = mod;
-    document.querySelectorAll('#view-export .export-panel').forEach(el => el.classList.add('hidden'));
+    // direct children saja — inner .export-panel (hasil Builders.exportPanel) tidak ikut ke-hidden
+    document.querySelectorAll('#view-export > .export-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-export`).classList.remove('hidden');
     document.querySelectorAll('#view-export .module-tab').forEach(el => el.classList.remove('active','nk-active','sos-active'));
     const tab = document.getElementById(`extab-${mod}`);
     tab.classList.add('active');
     if (mod === 'nk') tab.classList.add('nk-active');
     if (mod === 'sos') tab.classList.add('sos-active');
-    Helpers.haptic(6);
   },
 
   saveExportCols(prefix) {
