@@ -52,6 +52,7 @@ export const Auth = {
       try { await Sync._token(); } catch (e) {} // refresh diam-diam bila kedaluwarsa
       if (!Sync.isLoggedIn()) return this.requireLogin('Sesi berakhir. Silakan login ulang.');
       Sync.init();
+      try { await App._onUserChanged(); } catch (e) {}
       this._syncAccountUI();
       return true;
     }
@@ -66,9 +67,10 @@ export const Auth = {
     return false;
   },
 
-  onLoginSuccess() {
+  async onLoginSuccess() {
     document.body.classList.remove('auth-locked');
     document.getElementById('login-screen')?.classList.add('hidden');
+    try { await App._onUserChanged(); } catch (e) {}
     this._syncAccountUI();
     if (App.switchView) App.switchView('beranda');
   },
@@ -178,7 +180,7 @@ export const Auth = {
   },
 
   /* ---------- LOGOUT (dari tab Akun) ---------- */
-  logout() {
+  async logout() {
     if (!confirm('Keluar dari akun? Data di perangkat ini tetap aman.')) return;
     try {
       localStorage.removeItem(Sync.SESSION_KEY);
@@ -186,7 +188,9 @@ export const Auth = {
       if (Sync.updateUI) Sync.updateUI();
       Helpers.haptic(15);
     } catch (e) {}
+    try { await App._onUserChanged(); } catch (e) {} // kembali ke defaults
     const p = document.getElementById('login_password'); if (p) p.value = '';
+    this._syncAccountUI();
     this.requireLogin('Anda telah keluar.');
   }
 };
