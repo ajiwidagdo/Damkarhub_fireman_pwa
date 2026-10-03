@@ -72,8 +72,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
-      // Sync hanya jalan kalau mode = auth (via Mode.check)
-      Mode.check();
+      // Auth wajib: guard sesi → tampilkan login screen bila belum login
+      await Auth.guard();
     } catch (err) {
       console.error('Boot error:', err);
       UI.toast('Gagal memuat aplikasi: ' + (err?.message || err), 'error');
@@ -455,7 +455,6 @@ const App = {
   },
 
 renderSistem() {
-    if (window.Mode) Mode.updateUI();
     this._loadSettingsToForm();
     this.renderReguList();
     this.renderPersonilFilter();
@@ -1075,7 +1074,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* ---------- Mode → di-extract ke src/lib/mode.js ---------- */
 
 // Handle PWA shortcut actions (dari long-press icon di home screen)
 (function handleShortcut() {

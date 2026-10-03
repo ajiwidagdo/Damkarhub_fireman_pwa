@@ -1272,6 +1272,10 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     </div>
     <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl active:scale-[.98]">Simpan Akun</button>
     </form>
+    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+      <p id="akun_email" class="text-xs text-gray-400 dark:text-gray-500 text-center mb-2"></p>
+      <button type="button" onclick="Auth.logout()" class="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold py-3 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98]"><i class="fa-solid fa-right-from-bracket mr-2"></i>Keluar dari Akun</button>
+    </div>
     </div>
   </div>
 
@@ -1309,14 +1313,8 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
     <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase text-center mb-4">Sinkronisasi Pusat</p>
     <p id="syncStatus" class="text-xs text-gray-500 dark:text-gray-400 mb-3 whitespace-pre-line">Memuat...</p>
-    <div id="syncLoginBox" class="hidden space-y-3">
-      <div><label class="field-label">Email Petugas</label><input type="email" id="sync_email" autocomplete="username" placeholder="nama@instansi.go.id"></div>
-      <div><label class="field-label">Password</label><input type="password" id="sync_password" autocomplete="current-password"></div>
-      <button type="button" onclick="Sync.login()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk &amp; Sinkron</button>
-    </div>
-      <div id="syncActionBox" class="hidden flex gap-3">
-      <button type="button" onclick="Sync.run({manual:true})" class="flex-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 active:scale-[.98]"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>
-      <button type="button" onclick="Sync.logout()" class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-600 active:scale-[.98]"><i class="fa-solid fa-right-from-bracket"></i></button>
+      <div id="syncActionBox" class="hidden">
+      <button type="button" onclick="Sync.run({manual:true})" class="w-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 active:scale-[.98]"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>
     </div>
     </div>
   </div>
@@ -1452,7 +1450,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 <script type="module" src="src/ui/ui.js"></script>
 <script type="module" src="src/lib/helpers.js"></script>
 <script type="module" src="src/lib/db.js"></script>
-<script type="module" src="src/lib/mode.js"></script>
+<script type="module" src="src/lib/auth.js"></script>
 <script type="module" src="src/services/sync-config.js"></script>
 <script type="module" src="src/services/sync.js"></script>
 <script type="module" src="src/services/export.js"></script>
@@ -1464,57 +1462,102 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 <script type="module" src="src/app/app.js"></script>
 <script src="src/lib/config.js"></script>
 
-<!-- ===== MODE SELECTION OVERLAY ===== -->
-<div id="mode-screen" class="fixed inset-0 z-[9999] hidden bg-gradient-to-b from-red-700 via-red-800 to-gray-900 dark:from-red-950 dark:via-gray-900 dark:to-black">
-  <div class="h-full w-full flex flex-col items-center justify-center px-6 overflow-y-auto py-10">
+<!-- ===== LOGIN SCREEN (auth wajib) ===== -->
+<style>
+.login-bg { background: radial-gradient(120% 70% at 50% 30%, #a11b1c 0%, #6b1013 42%, #2a0508 100%); }
+.login-sub { color:#ff5a4a; font-size:1.15rem; font-style:italic; font-weight:800; letter-spacing:.04em; text-shadow:0 2px 10px rgba(0,0,0,.5); margin-bottom:1.4rem; }
+.login-card { width:100%; max-width:24rem; background:rgba(255,255,255,.97); border-radius:1.4rem; padding:1.25rem; box-shadow:0 24px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.3); }
+.dark .login-card { background:rgba(31,41,55,.97); border-color:rgba(255,255,255,.1); }
+.login-card .field-label { margin-bottom:.35rem; }
+.login-input { width:100%; font-size:16px; border:1px solid #e5e7eb; border-radius:.8rem; padding:.8rem 1rem; background:#fff; color:#1f2937; }
+.dark .login-input { background:#374151; border-color:#4b5563; color:#f3f4f6; }
+.login-input::placeholder { color:#9ca3af; }
+.login-input:focus { outline:none; border-color:#dc2626; box-shadow:0 0 0 3px rgba(220,38,38,.15); }
+.login-btn { width:100%; font-size:16px; font-weight:800; color:#fff; background:var(--grad-red); padding:.85rem; border-radius:.8rem; box-shadow:0 10px 20px -8px rgba(220,38,38,.7); }
+.login-btn:active { transform:scale(.98); }
+.login-link { display:block; margin:.9rem auto 0; font-size:.8rem; font-weight:700; color:#dc2626; }
+.dark .login-link { color:#f87171; }
+.login-eye { position:absolute; right:.5rem; top:50%; transform:translateY(-50%); padding:.6rem; color:#9ca3af; font-size:.95rem; }
+.login-switch { margin-top:1.1rem; font-size:.82rem; color:rgba(255,255,255,.75); text-align:center; }
+.login-switch button { font-weight:800; color:#fff; text-decoration:underline; }
+.login-copy { margin-top:1.6rem; font-size:10px; letter-spacing:.15em; color:rgba(255,255,255,.45); text-align:center; }
+#login-fire .brand-mark { cursor:pointer; }
+body.auth-locked .app-header, body.auth-locked main, body.auth-locked .bottom-nav { display:none !important; }
+</style>
+<div id="login-screen" class="login-bg fixed inset-0 z-[9990] hidden overflow-y-auto">
+  <div class="min-h-full flex flex-col items-center justify-center px-6 py-10">
+    <button type="button" id="login-fire" onclick="Auth.fireTap()" class="mb-4 active:scale-95 transition" aria-label="Ganti tema">
+      <span class="brand-mark" style="width:72px;height:72px;border-radius:1.4rem;">
+        <svg class="bm-flame bm-flame-outer" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-outer"/></svg>
+        <svg class="bm-flame bm-flame-inner" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-inner"/></svg>
+        <svg class="bm-smoke" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-smoke"/></svg>
+        <span class="bm-embers" aria-hidden="true"><i></i><i></i><i></i></span>
+      </span>
+    </button>
+    <h1 class="text-white text-2xl font-black tracking-wider" style="text-shadow:0 2px 10px rgba(0,0,0,.55);">DAMKARHUB</h1>
+    <p class="login-sub">Fireman</p>
 
-    <!-- Logo + Judul -->
-    <div class="flex items-center gap-3 mb-2">
-      <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl text-orange-400"><i class="fa-solid fa-fire"></i></div>
-      <div>
-        <div class="text-white font-black text-2xl tracking-tight">DAMKARHUB</div>
-        <div class="text-red-200 text-xs font-bold tracking-widest">FIREMAN</div>
+    <!-- FORM LOGIN -->
+    <div id="login-form-box" class="login-card">
+      <div class="mb-3">
+        <label class="field-label" for="login_email">Email</label>
+        <input type="email" id="login_email" class="login-input" autocomplete="username" placeholder="nama@instansi.go.id" enterkeyhint="next">
       </div>
+      <div class="mb-4">
+        <label class="field-label" for="login_password">Password</label>
+        <div class="relative">
+          <input type="password" id="login_password" class="login-input pr-12" autocomplete="current-password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" enterkeyhint="go" onkeydown="if(event.key==='Enter')Auth.login()">
+          <button type="button" onclick="Auth.togglePw('login_password', this)" class="login-eye" aria-label="Tampilkan password"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+      <button type="button" id="login_btn" onclick="Auth.login()" class="login-btn"><i class="fa-solid fa-right-to-bracket mr-2"></i>Masuk</button>
+      <button type="button" onclick="Auth.showForgot()" class="login-link">Lupa password?</button>
     </div>
 
-    <p class="text-red-100 text-sm mb-8 mt-4 text-center">Pilih mode penggunaan aplikasi</p>
-
-    <!-- Card Tanpa Akun -->
-    <button type="button" onclick="Mode.selectAnon()"
-      class="w-full max-w-md bg-white/95 dark:bg-gray-800/95 backdrop-blur rounded-3xl p-5 mb-4 text-left shadow-2xl active:scale-[.98] transition border border-white/30 dark:border-gray-700">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl shrink-0">
-          <i class="fa-solid fa-mobile-screen"></i>
-        </div>
-        <div class="flex-1">
-          <div class="font-black text-gray-900 dark:text-white text-base mb-0.5">Tanpa Akun</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-2">Langsung pakai. Data tersimpan lokal di perangkat ini.</div>
-          <div class="text-emerald-600 dark:text-emerald-400 text-xs font-bold">Mulai →</div>
+    <!-- FORM REGISTER -->
+    <div id="register-form-box" class="login-card hidden">
+      <div class="mb-3">
+        <label class="field-label" for="reg_nama">Nama Lengkap</label>
+        <input type="text" id="reg_nama" class="login-input" autocomplete="name" placeholder="Nama petugas" enterkeyhint="next">
+      </div>
+      <div class="mb-3">
+        <label class="field-label" for="reg_email">Email</label>
+        <input type="email" id="reg_email" class="login-input" autocomplete="username" placeholder="nama@instansi.go.id" enterkeyhint="next">
+      </div>
+      <div class="mb-3">
+        <label class="field-label" for="reg_password">Password</label>
+        <div class="relative">
+          <input type="password" id="reg_password" class="login-input pr-12" autocomplete="new-password" placeholder="Minimal 6 karakter" enterkeyhint="next">
+          <button type="button" onclick="Auth.togglePw('reg_password', this)" class="login-eye" aria-label="Tampilkan password"><i class="fa-solid fa-eye"></i></button>
         </div>
       </div>
-    </button>
-
-    <!-- Card Dengan Akun -->
-    <button type="button" onclick="Mode.selectAuth()"
-      class="w-full max-w-md bg-white/95 dark:bg-gray-800/95 backdrop-blur rounded-3xl p-5 text-left shadow-2xl active:scale-[.98] transition border border-white/30 dark:border-gray-700">
-      <div class="flex items-start gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl shrink-0">
-          <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <div class="flex-1">
-          <div class="font-black text-gray-900 dark:text-white text-base mb-0.5">Dengan Akun</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-2">Sinkron ke server pusat. Bisa multi-device.</div>
-          <div class="text-blue-600 dark:text-blue-400 text-xs font-bold">Login →</div>
-        </div>
+      <div class="mb-4">
+        <label class="field-label" for="reg_password2">Konfirmasi Password</label>
+        <input type="password" id="reg_password2" class="login-input" autocomplete="new-password" placeholder="Ulangi password" enterkeyhint="go" onkeydown="if(event.key==='Enter')Auth.register()">
       </div>
-    </button>
+      <button type="button" id="reg_btn" onclick="Auth.register()" class="login-btn"><i class="fa-solid fa-user-plus mr-2"></i>Daftar</button>
+    </div>
 
-    <p class="text-red-200/70 text-[11px] text-center mt-8 max-w-xs leading-relaxed">
-      💡 Mode bisa diubah kapan saja dari menu <b>Sistem</b>
-    </p>
+    <!-- FORM FORGOT PASSWORD -->
+    <div id="forgot-form-box" class="login-card hidden">
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 leading-relaxed">Masukkan email akun Anda. Tautan reset password akan dikirim ke email tersebut.</p>
+      <div class="mb-4">
+        <label class="field-label" for="forgot_email">Email</label>
+        <input type="email" id="forgot_email" class="login-input" autocomplete="username" placeholder="nama@instansi.go.id" enterkeyhint="go" onkeydown="if(event.key==='Enter')Auth.forgot()">
+      </div>
+      <button type="button" id="forgot_btn" onclick="Auth.forgot()" class="login-btn"><i class="fa-solid fa-paper-plane mr-2"></i>Kirim Tautan Reset</button>
+    </div>
+
+    <p id="login-switch-login" class="login-switch">Belum punya akun? <button type="button" onclick="Auth.showRegister()">Daftar</button></p>
+    <p id="login-switch-register" class="login-switch hidden">Sudah punya akun? <button type="button" onclick="Auth.showLogin()">Masuk</button></p>
+
+    <p class="login-copy">&copy; 2026 DAMKARHUB</p>
   </div>
 </div>
-<!-- ===== /MODE SELECTION OVERLAY ===== -->
+<!-- ===== /LOGIN SCREEN ===== -->
+
+<!-- Hidden fields: engine Sync.login() membaca dari sini (objek Sync tidak diubah) -->
+<div class="hidden" aria-hidden="true"><input type="hidden" id="sync_email"><input type="hidden" id="sync_password"></div>
 
 <script>
 /* Chip navigasi form: tap = smooth scroll, highlight ikut posisi scroll, auto-hide saat scroll ke bawah */
