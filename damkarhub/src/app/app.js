@@ -174,7 +174,7 @@ const App = {
 
   navTap(view) {
     try {
-      Helpers.haptic(10);
+      // haptic sudah di switchView (satu titik)
       const s = this.settings || {};
       if (s.notif_sound !== false) UI.beep();
     } catch(e){}
@@ -182,7 +182,7 @@ const App = {
   },
   openAccountSettings() {
     try {
-      Helpers.haptic(10);
+      // haptic sudah di switchView (satu titik)
       const s = this.settings || {};
       if (s.notif_sound !== false) UI.beep();
     } catch(e){}
@@ -190,6 +190,7 @@ const App = {
     UI.switchSistemTab('akun');
   },
   switchView(view, pushHistory = true) {    if (pushHistory && view !== this.currentView) {
+      Helpers.haptic(10); // haptic navigasi — satu titik untuk semua view
       this._viewHistory.push(this.currentView);
       history.pushState({ view }, '', '');
     }
@@ -364,8 +365,8 @@ const App = {
     let giatHtml = '';
     if (recentGiat) {
       const typeInfo = this._detectType(recentGiat);
-      giatHtml = `<div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-start gap-3">
-        <div class="riwayat-badge ${typeInfo.bg}">${typeInfo.emoji}</div>
+      giatHtml = `<div onclick="App.openRiwayatItem('${typeInfo.type}','${recentGiat.id}')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-start gap-3 cursor-pointer active:scale-[.99]">
+        <div class="riwayat-badge ${typeInfo.bg}"><i class="${typeInfo.icon}"></i></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
             <span class="text-[10px] font-black uppercase tracking-widest ${typeInfo.textColor}">${typeInfo.label}</span>
@@ -374,26 +375,21 @@ const App = {
           <p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">${recentGiat.jenis || recentGiat.tempat || '-'}</p>
           <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5"><i class="fa-solid fa-location-dot mr-1"></i>${recentGiat.lokasiDetail || recentGiat.tempat || '-'}</p>
         </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 dark:text-gray-600 text-xs mt-1"></i>
       </div>`;
     } else {
-      giatHtml = `<div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-        <i class="fa-solid fa-inbox text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-        <p class="text-xs text-gray-400 font-medium">Belum ada aktivitas</p>
-      </div>`;
+      giatHtml = `<div class="dash-empty"><span class="dash-empty-ic"><i class="fa-solid fa-inbox"></i></span><p class="dash-empty-tx">Belum ada aktivitas</p><button type="button" onclick="App.openFab()" class="dash-empty-btn">Buat Laporan</button></div>`;
     }
     document.getElementById('beranda-recent-giat').innerHTML = giatHtml;
     const recent5 = sorted.slice(0, 5);
     const listEl = document.getElementById('beranda-recent-list');
     if (!recent5.length) {
-      listEl.innerHTML = `<div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-        <i class="fa-solid fa-folder-open text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-        <p class="text-xs text-gray-400 font-medium">Belum ada laporan</p>
-      </div>`;
+      listEl.innerHTML = `<div class="dash-empty"><span class="dash-empty-ic"><i class="fa-solid fa-folder-open"></i></span><p class="dash-empty-tx">Belum ada laporan</p><button type="button" onclick="App.openFab()" class="dash-empty-btn">Buat Laporan</button></div>`;
     } else {
       listEl.innerHTML = recent5.map(d => {
         const t = this._detectType(d);
         return `<div onclick="App.openRiwayatItem('${t.type}','${d.id}')" class="riwayat-item">
-          <div class="riwayat-badge ${t.bg}">${t.emoji}</div>
+          <div class="riwayat-badge ${t.bg}"><i class="${t.icon}"></i></div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2 mb-0.5">
               <span class="text-[10px] font-black uppercase tracking-widest ${t.textColor}">${t.label}</span>
@@ -409,9 +405,9 @@ const App = {
   },
 
   _detectType(d) {
-    if (Mod.k.data.some(x => x.id === d.id)) return { type:'k', label:'Kebakaran', emoji:'🔥', bg:'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400', textColor:'text-red-600 dark:text-red-400' };
-    if (Mod.nk.data.some(x => x.id === d.id)) return { type:'nk', label:'Penyelamatan', emoji:'🆘', bg:'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', textColor:'text-amber-600 dark:text-amber-400' };
-    return { type:'sos', label:'Sosialisasi', emoji:'📢', bg:'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400', textColor:'text-emerald-600 dark:text-emerald-400' };
+    if (Mod.k.data.some(x => x.id === d.id)) return { type:'k', label:'Kebakaran', icon:'fa-solid fa-fire', bg:'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400', textColor:'text-red-600 dark:text-red-400' };
+    if (Mod.nk.data.some(x => x.id === d.id)) return { type:'nk', label:'Penyelamatan', icon:'fa-solid fa-life-ring', bg:'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', textColor:'text-amber-600 dark:text-amber-400' };
+    return { type:'sos', label:'Sosialisasi', icon:'fa-solid fa-bullhorn', bg:'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400', textColor:'text-emerald-600 dark:text-emerald-400' };
   },
 
   openRiwayatItem(type, id) {
@@ -443,7 +439,7 @@ const App = {
       const t = this._detectType(d);
       const hasMap = d.koordinat && String(d.koordinat).trim();
       return `<div class="riwayat-item" onclick="App.openRiwayatItem('${t.type}','${d.id}')">
-        <div class="riwayat-badge ${t.bg}">${t.emoji}</div>
+        <div class="riwayat-badge ${t.bg}"><i class="${t.icon}"></i></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between gap-2 mb-0.5">
             <span class="text-[10px] font-black uppercase tracking-widest ${t.textColor}">${t.label}</span>
@@ -926,7 +922,7 @@ renderSistem() {
         <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a>
       </div>
 
-      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam 🔥</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam <i class="fa-solid fa-fire text-red-500"></i></p>
     </div>`;
     UI.openSheet('Tentang Aplikasi', content);
   },
