@@ -4,6 +4,22 @@ node_modules/
 .env
 .env.local
 dist/
-docs/
+# Agent docs (personal reference, gitignored)
+docs/00-README.md
+docs/01-brief-utama.md
+docs/02-arsitektur.md
+docs/03-design-system.md
+docs/04-scope-komando.md
+docs/05-scope-mobile.md
+docs/06-schema-database.md
+docs/07-api-contract.md
+docs/08-mock-data.md
+docs/09-aturan-koding.md
+docs/10-referensi-visual/
+docs/11-glosarium.md
+
+# Project docs (tracked, team reference)
+# - docs/BACKLOG.md
+# - docs/seed-*.sql
 .backups/
 .backups/
