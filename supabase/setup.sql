@@ -15,10 +15,23 @@ create table if not exists public.reports (
   deleted     boolean not null default false,         -- hapus lunak, agar penghapusan ikut tersebar
   owner       uuid not null default auth.uid() references auth.users(id),
   owner_email text default (auth.jwt() ->> 'email'),  -- memudahkan admin melihat siapa pembuat laporan
-  updated_at  timestamptz not null default now()
+  updated_at  timestamptz not null default now(),
+  -- Kolom integrasi Komando (sync schema live 3 Okt 2026).
+  -- TIDAK dipakai aplikasi Fireman (tetap baca/tulis kolom `data` jsonb).
+  tenant_id           uuid,                            -- tenant UPTD pemilik laporan
+  status              text,                            -- status workflow laporan (mis. DONE)
+  incident_at         timestamptz,                     -- waktu kejadian
+  report_received_at  timestamptz                      -- waktu laporan diterima
 );
+-- Sinkronisasi kolom integrasi Komando untuk database yang sudah ada (idempoten)
+alter table public.reports add column if not exists tenant_id           uuid;
+alter table public.reports add column if not exists status              text;
+alter table public.reports add column if not exists incident_at         timestamptz;
+alter table public.reports add column if not exists report_received_at  timestamptz;
+
 create index if not exists reports_updated_at_idx on public.reports (updated_at);
 create index if not exists reports_owner_idx      on public.reports (owner);
+create index if not exists reports_tenant_idx     on public.reports (tenant_id);
 
 -- 3) Waktu update selalu dari server (bukan jam HP) supaya sinkron akurat
 create or replace function public.touch_updated_at()
