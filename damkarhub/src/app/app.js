@@ -272,14 +272,14 @@ const App = {
   switchExportTab(mod) {
     Helpers.haptic(10);
     this.currentExportTab = mod;
-    document.querySelectorAll('#view-export .export-panel').forEach(el => el.classList.add('hidden'));
+    // direct children saja — inner .export-panel (hasil Builders.exportPanel) tidak ikut ke-hidden
+    document.querySelectorAll('#view-export > .export-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-export`).classList.remove('hidden');
     document.querySelectorAll('#view-export .module-tab').forEach(el => el.classList.remove('active','nk-active','sos-active'));
     const tab = document.getElementById(`extab-${mod}`);
     tab.classList.add('active');
     if (mod === 'nk') tab.classList.add('nk-active');
     if (mod === 'sos') tab.classList.add('sos-active');
-    Helpers.haptic(6);
   },
 
   saveExportCols(prefix) {
@@ -435,10 +435,10 @@ const App = {
     const emptyEl = document.getElementById('riwayat_empty');
     if (!all.length) { listEl.innerHTML = ''; emptyEl.classList.remove('hidden'); return; }
     emptyEl.classList.add('hidden');
-    listEl.innerHTML = all.map(d => {
+    listEl.innerHTML = all.map((d, idx) => {
       const t = this._detectType(d);
       const hasMap = d.koordinat && String(d.koordinat).trim();
-      return `<div class="riwayat-item" onclick="App.openRiwayatItem('${t.type}','${d.id}')">
+      return `<div class="riwayat-item dash-anim" style="animation-delay:${Math.min(idx, 7) * 55}ms" onclick="App.openRiwayatItem('${t.type}','${d.id}')">
         <div class="riwayat-badge ${t.bg}"><i class="${t.icon}"></i></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between gap-2 mb-0.5">
@@ -880,17 +880,21 @@ renderSistem() {
 
   showAbout() {
     Helpers.haptic(8);
-    const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-4">
-      <div class="flex items-center gap-3 -mt-1">
-        <div class="brand-mark" style="width:44px;height:44px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
-        <div>
-          <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">Fireman</span></p>
-          <p class="text-[11px] text-gray-400">Aplikasi Pelaporan Petugas Damkar</p>
+    const ver = (typeof Config !== 'undefined' && Config.APP_VERSION) || '1.3.0';
+    const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4';
+    const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-3">
+      <div class="${card}">
+        <div class="flex items-center gap-3">
+          <div class="brand-mark" style="width:48px;height:48px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
+          <div class="min-w-0">
+            <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">Fireman</span></p>
+            <p class="text-[11px] text-gray-400">Aplikasi Pelaporan Petugas Damkar</p>
+            <span class="inline-block mt-1 text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">v${ver}</span>
+          </div>
         </div>
       </div>
-      <p>Aplikasi ini membantu petugas mencatat setiap kejadian kebakaran, penyelamatan, dan kegiatan sosialisasi langsung dari lapangan, lalu menyusunnya menjadi laporan siap kirim ke pimpinan.</p>
 
-      <div>
+      <div class="${card}">
         <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-list-check mr-1.5 text-red-500"></i>Fungsi Utama</p>
         <ul class="space-y-1.5 text-[13px]">
           <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1 text-[10px]"></i><span>Catat laporan Kebakaran, Penyelamatan, dan Sosialisasi dalam format baku</span></li>
@@ -901,30 +905,29 @@ renderSistem() {
         </ul>
       </div>
 
-      <div>
-        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-seedling mr-1.5 text-red-500"></i>Latar Belakang</p>
-        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini sering ditulis manual di sela kesibukan bertugas, membuat formatnya tidak seragam antar petugas dan rawan tertunda sampai ke pimpinan. DAMKARHUB Fireman dibuat agar pencatatan lebih cepat, rapi, dan konsisten — langsung dari lokasi kejadian.</p>
+      <div class="${card}">
+        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-circle-question mr-1.5 text-red-500"></i>Kenapa Dibuat</p>
+        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini ditulis manual di sela kesibukan bertugas — format tidak seragam antar petugas, rawan tertunda sampai ke pimpinan, sinyal di lokasi tidak selalu stabil, dan data tersebar sehingga sulit direkap. DAMKARHUB Fireman dibuat agar pencatatan lebih cepat, rapi, dan konsisten, langsung dari lokasi kejadian.</p>
       </div>
 
-      <div>
-        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-mountain mr-1.5 text-red-500"></i>Tantangan</p>
-        <p class="text-[13px] leading-relaxed">Menyusun laporan di tengah situasi darurat butuh waktu, sinyal internet di lokasi kejadian tidak selalu stabil, dan data dari tiap petugas belum tersimpan di satu tempat yang sama sehingga sulit direkap untuk evaluasi.</p>
-      </div>
-
-      <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-xl text-xs border border-amber-200 dark:border-amber-900/40">
+      <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-2xl text-xs border border-amber-200 dark:border-amber-900/40">
         <p class="font-bold text-amber-800 dark:text-amber-300 mb-1"><i class="fa-solid fa-flask mr-1"></i> Status: Tahap Uji Coba</p>
         <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">Fireman adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
       </div>
 
-      <div class="bg-gray-50 dark:bg-white/5 p-3.5 rounded-xl text-xs border border-gray-100 dark:border-white/10">
-        <p class="font-bold text-gray-700 dark:text-gray-200 mb-1"><i class="fa-solid fa-user-gear mr-1"></i> Pengembang</p>
-        <p class="text-gray-600 dark:text-gray-300">AJI WIDAGDO</p>
-        <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a>
+      <div class="${card}">
+        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-circle-info mr-1.5 text-red-500"></i>Info</p>
+        <dl class="text-[13px] space-y-1.5">
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Pengembang</dt><dd class="font-bold text-gray-700 dark:text-gray-200 text-right">AJI WIDAGDO</dd></div>
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Kontak</dt><dd class="text-right"><a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a></dd></div>
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Versi</dt><dd class="font-bold text-gray-700 dark:text-gray-200">v${ver}</dd></div>
+        </dl>
       </div>
 
-      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam <i class="fa-solid fa-fire text-red-500"></i></p>
+      <p class="text-[11px] text-gray-400 dark:text-gray-500 text-center pt-1">© 2026 DAMKARHUB</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center">Motto: Pantang Pulang Sebelum Api Padam <i class="fa-solid fa-fire text-red-500"></i></p>
     </div>`;
-    UI.openSheet('Tentang Aplikasi', content);
+UI.openSheet('Tentang Aplikasi', content);
   },
 
   async saveSettings(e) {
@@ -1053,14 +1056,15 @@ renderSistem() {
 window.addEventListener('DOMContentLoaded', () => App.boot());
 
 /* ===================== PWA: SPLASH + SERVICE WORKER ===================== */
-// Fade out splash setelah app boot
+// Splash ignite sequence (±3.8s) lalu fade out — logic utuh, tanpa suara (butuh gesture)
+try { document.getElementById('splash-ver').textContent = 'v' + (Config.APP_VERSION || ''); } catch(e){}
 setTimeout(() => {
   const splash = document.getElementById('splash-screen');
   if (splash) {
     splash.style.opacity = '0';
     setTimeout(() => splash.remove(), 700);
   }
-}, 5000);
+}, 3800);
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {
