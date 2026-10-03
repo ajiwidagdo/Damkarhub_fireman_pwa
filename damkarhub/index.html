@@ -84,9 +84,10 @@
 }
 html:not(.dark) .brand-mark::before { opacity:1; animation: glowPulse 2.9s ease-in-out infinite; }
 .brand-mark svg {
-  width:23px; height:23px;
+  /* 57.5% dari container: header 40px -> 23px (identik), login 72px -> ~41px */
+  width:57.5%; height:57.5%;
   position: absolute; top: 50%; left: 50%;
-  margin: -11.5px 0 0 -11.5px;
+  margin: -28.75% 0 0 -28.75%;
   transition: opacity .45s ease, transform .55s cubic-bezier(.34,1.56,.64,1), filter .45s ease;
 }
 .bm-flame-outer, .bm-flame-inner { transform-origin: 50% 88%; }
@@ -1464,7 +1465,12 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 
 <!-- ===== LOGIN SCREEN (auth wajib) ===== -->
 <style>
-.login-bg { background: radial-gradient(120% 70% at 50% 30%, #a11b1c 0%, #6b1013 42%, #2a0508 100%); }
+.login-bg { background: radial-gradient(120% 70% at 50% 30%, #ef4444 0%, #b91c1c 45%, #7f1d1d 100%); }
+.login-bg::after { content:''; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(120% 70% at 50% 30%, #a11b1c 0%, #6b1013 42%, #2a0508 100%);
+  opacity:0; transition:opacity .35s ease; }
+html.dark .login-bg::after { opacity:1; }
+.login-inner { position:relative; z-index:1; }
 .login-sub { color:#ff5a4a; font-size:1.15rem; font-style:italic; font-weight:800; letter-spacing:.04em; text-shadow:0 2px 10px rgba(0,0,0,.5); margin-bottom:1.4rem; }
 .login-card { width:100%; max-width:24rem; background:rgba(255,255,255,.97); border-radius:1.4rem; padding:1.25rem; box-shadow:0 24px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.3); }
 .dark .login-card { background:rgba(31,41,55,.97); border-color:rgba(255,255,255,.1); }
@@ -1485,7 +1491,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 body.auth-locked .app-header, body.auth-locked main, body.auth-locked .bottom-nav { display:none !important; }
 </style>
 <div id="login-screen" class="login-bg fixed inset-0 z-[9990] hidden overflow-y-auto">
-  <div class="min-h-full flex flex-col items-center justify-center px-6 py-10">
+  <div class="login-inner min-h-full flex flex-col items-center justify-center px-6 py-10">
     <button type="button" id="login-fire" onclick="Auth.fireTap()" class="mb-4 active:scale-95 transition" aria-label="Ganti tema">
       <span class="brand-mark" style="width:72px;height:72px;border-radius:1.4rem;">
         <svg class="bm-flame bm-flame-outer" viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame-outer"/></svg>
