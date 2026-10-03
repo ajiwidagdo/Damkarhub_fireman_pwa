@@ -386,6 +386,7 @@ const App = {
   },
 
   renderBeranda() {
+    this._renderDispatchCard();
     const now = new Date();
     document.getElementById('beranda-date').innerText = Helpers.dayName(now.toISOString().slice(0,10)) + ', ' + Helpers.formatDate(now.toISOString().slice(0,10));
     const all = [...Mod.k.data, ...Mod.nk.data, ...Mod.sos.data];
@@ -996,6 +997,19 @@ UI.openSheet('Tentang Aplikasi', content);
     this.settings = { ...this.settings, [key]: on };
     try { await this._persistSettings(); }
     catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  /* Dispatch toggle di Beranda (Issue authfix #4) */
+  async toggleDispatch(btn) {
+    await this.toggleSetting(btn, 'petugas_dispatch_active');
+    this._renderDispatchCard();
+  },
+  _renderDispatchCard() {
+    const on = this.settings?.petugas_dispatch_active !== false;
+    const t = document.getElementById('beranda_dispatch_toggle');
+    if (t) t.setAttribute('aria-checked', on ? 'true' : 'false');
+    const st = document.getElementById('beranda_dispatch_status');
+    if (st) st.textContent = on ? 'Siap terima tugas' : 'Tidak menerima tugas';
   },
 
   _checkBackupReminder() {
