@@ -29,7 +29,6 @@ const App = {
 
   _defaultSettings() {
     return {
-      id:'global',
       instansi:'', daerah:'', kantor:'', pimpinan:'',
       petugas_nama:'', petugas_hp:'', petugas_jabatan:'',
       petugas_dispatch_active:true,
@@ -39,16 +38,53 @@ const App = {
     };
   },
 
+  /* ---------- Settings per-user (Issue authfix #1) ---------- */
+  _settingsId() {
+    try { const uid = (typeof Sync !== 'undefined' && Sync._session()?.uid) || 'anon'; return 'user:' + uid; }
+    catch (e) { return 'user:anon'; }
+  },
+  async _loadSettings() {
+    const id = this._settingsId();
+    let rec = null;
+    try {
+      const all = await DB.getAll(Config.STORES.settings);
+      rec = all.find(x => x.id === id) || null;
+      if (!rec) {
+        // Migrasi sekali: record 'global' lama → milik user pertama yang login
+        const g = all.find(x => x.id === 'global');
+        if (g && id !== 'user:anon') {
+          rec = { ...g, id };
+          try {
+            await DB.put(Config.STORES.settings, rec);
+            await DB.delete(Config.STORES.settings, 'global');
+          } catch (e) {}
+        }
+      }
+    } catch (e) {}
+    this.settings = { ...this._defaultSettings(), ...(rec || {}), id };
+  },
+  async _persistSettings() {
+    this.settings = { ...this.settings, id: this._settingsId() };
+    await DB.put(Config.STORES.settings, this.settings);
+  },
+  // Dipanggil saat user login/berganti/keluar
+  async _onUserChanged() {
+    await this._loadSettings();
+    try { this._loadSettingsToForm(); } catch (e) {}
+    try { this._renderDispatchCard(); } catch (e) {}
+    try { this.renderBeranda(); } catch (e) {}
+  },
+
   async boot() {
     try {
       await DB.init();
       await this._migrateLegacy();
-      const [k, nk, sos, settings, personil, regu] = await Promise.all([
+      const [k, nk, sos, personil, regu] = await Promise.all([
         DB.getAll(Config.STORES.k), DB.getAll(Config.STORES.nk), DB.getAll(Config.STORES.sos),
-        DB.getAll(Config.STORES.settings), DB.getAll(Config.STORES.personil), DB.getAll(Config.STORES.regu)
+        DB.getAll(Config.STORES.personil), DB.getAll(Config.STORES.regu)
       ]);
       Mod.k.setData(k); Mod.nk.setData(nk); Mod.sos.setData(sos);
-      this.settings = { ...this._defaultSettings(), ...(settings?.[0] || {}) };
+      await this._loadSettings();
       this.personil = personil || [];
       if (!regu || regu.length === 0) {
         this.regu = this._defaultRegu();
@@ -72,8 +108,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
-      // Sync hanya jalan kalau mode = auth (via Mode.check)
-      Mode.check();
+      // Auth wajib: guard sesi → tampilkan login screen bila belum login
+      await Auth.guard();
     } catch (err) {
       console.error('Boot error:', err);
       UI.toast('Gagal memuat aplikasi: ' + (err?.message || err), 'error');
@@ -350,6 +386,7 @@ const App = {
   },
 
   renderBeranda() {
+    this._renderDispatchCard();
     const now = new Date();
     document.getElementById('beranda-date').innerText = Helpers.dayName(now.toISOString().slice(0,10)) + ', ' + Helpers.formatDate(now.toISOString().slice(0,10));
     const all = [...Mod.k.data, ...Mod.nk.data, ...Mod.sos.data];
@@ -455,7 +492,6 @@ const App = {
   },
 
 renderSistem() {
-    if (window.Mode) Mode.updateUI();
     this._loadSettingsToForm();
     this.renderReguList();
     this.renderPersonilFilter();
@@ -934,13 +970,12 @@ UI.openSheet('Tentang Aplikasi', content);
     e.preventDefault();
     this.settings = {
       ...this.settings,
-      id:'global',
       instansi: document.getElementById('set_instansi').value,
       daerah: document.getElementById('set_daerah').value,
       kantor: document.getElementById('set_kantor').value,
       pimpinan: document.getElementById('set_pimpinan').value
     };
-    try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan disimpan!'); }
+    try { await this._persistSettings(); Helpers.haptic(20); UI.toast('Pengaturan disimpan!'); }
     catch { UI.toast('Gagal simpan', 'error'); }
   },
 
@@ -948,22 +983,33 @@ UI.openSheet('Tentang Aplikasi', content);
     e.preventDefault();
     this.settings = {
       ...this.settings,
-      id:'global',
       petugas_nama: document.getElementById('set_petugas_nama').value.trim(),
       petugas_hp: document.getElementById('set_petugas_hp').value.trim(),
-      petugas_jabatan: document.getElementById('set_petugas_jabatan').value.trim(),
-      petugas_dispatch_active: document.getElementById('set_dispatch_active').getAttribute('aria-checked') === 'true'
+      petugas_jabatan: document.getElementById('set_petugas_jabatan').value.trim()
     };
-    try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan akun disimpan!'); }
+    try { await this._persistSettings(); Helpers.haptic(20); UI.toast('Pengaturan akun disimpan!'); }
     catch { UI.toast('Gagal simpan', 'error'); }
   },
 
   async toggleSetting(btn, key) {
     const on = btn.getAttribute('aria-checked') !== 'true';
     btn.setAttribute('aria-checked', on ? 'true' : 'false');
-    this.settings = { ...this.settings, id:'global', [key]: on };
-    try { await DB.put(Config.STORES.settings, this.settings); }
+    this.settings = { ...this.settings, [key]: on };
+    try { await this._persistSettings(); }
     catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  /* Dispatch toggle di Beranda (Issue authfix #4) */
+  async toggleDispatch(btn) {
+    await this.toggleSetting(btn, 'petugas_dispatch_active');
+    this._renderDispatchCard();
+  },
+  _renderDispatchCard() {
+    const on = this.settings?.petugas_dispatch_active !== false;
+    const t = document.getElementById('beranda_dispatch_toggle');
+    if (t) t.setAttribute('aria-checked', on ? 'true' : 'false');
+    const st = document.getElementById('beranda_dispatch_status');
+    if (st) st.textContent = on ? 'Siap terima tugas' : 'Tidak menerima tugas';
   },
 
   _checkBackupReminder() {
@@ -990,7 +1036,7 @@ UI.openSheet('Tentang Aplikasi', content);
     const a = document.createElement('a');
     a.href = dataStr; a.download = `Damkarhub_Backup_${Date.now()}.json`;
     document.body.appendChild(a); a.click(); a.remove();
-    try { this.settings = { ...this.settings, id:'global', lastBackup: Date.now() }; DB.put(Config.STORES.settings, this.settings).catch(()=>{}); } catch(e){}
+    try { this.settings = { ...this.settings, lastBackup: Date.now() }; this._persistSettings().catch(()=>{}); } catch(e){}
     UI.toast('File backup diunduh! (Termasuk regu & personil)');
   },
 
@@ -1075,7 +1121,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* ---------- Mode → di-extract ke src/lib/mode.js ---------- */
 
 // Handle PWA shortcut actions (dari long-press icon di home screen)
 (function handleShortcut() {

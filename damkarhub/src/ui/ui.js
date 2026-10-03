@@ -50,7 +50,7 @@ showComingSoon(feature) {
     document.getElementById('toast-msg').innerText = msg;
     const styles = { success:'bg-gray-900 dark:bg-white text-white dark:text-gray-900', error:'bg-red-600 text-white', info:'bg-gray-800 dark:bg-gray-700 text-white border border-white/10' };
     const icons = { success:'fa-solid fa-check-circle text-green-400', error:'fa-solid fa-circle-exclamation', info:'fa-solid fa-info-circle text-amber-400' };
-    t.className = `fixed top-5 left-1/2 transform -translate-x-1/2 transition-all duration-300 px-6 py-3 rounded-full shadow-2xl z-[80] flex items-center gap-2 pointer-events-none text-sm font-bold w-max max-w-[90vw] ${styles[type]||styles.success}`;
+    t.className = `fixed top-5 left-1/2 transform -translate-x-1/2 transition-all duration-300 px-6 py-3 rounded-full shadow-2xl z-[10000] flex items-center gap-2 pointer-events-none text-sm font-bold w-max max-w-[90vw] ${styles[type]||styles.success}`;
     document.getElementById('toast-icon').className = icons[type] || icons.success;
     t.classList.remove('-translate-y-20','opacity-0');
     setTimeout(() => t.classList.add('-translate-y-20','opacity-0'), 3000);
