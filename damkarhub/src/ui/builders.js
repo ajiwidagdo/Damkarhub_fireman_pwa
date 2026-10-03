@@ -1,14 +1,11 @@
 export const Builders = {
-  dashCard({ icon, iconColor, label, value, valueClass = 'text-gray-800 dark:text-white', size = 'lg', compact = false }) {
-    if (compact) return `<div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-      <div class="absolute bottom-0 right-0 p-1.5 opacity-10"><i class="${icon} text-4xl ${iconColor}"></i></div>
-      <p class="text-[9px] font-bold text-gray-400 uppercase mb-1 tracking-wider leading-tight min-h-[22px] relative z-10">${label}</p>
-      <h3 class="text-lg md:text-xl font-black ${valueClass} relative z-10">${value}</h3>
-    </div>`;
-    return `<div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-      <div class="absolute top-0 right-0 p-3 opacity-10"><i class="${icon} text-5xl ${iconColor}"></i></div>
-      <p class="text-[10px] font-bold text-gray-400 uppercase mb-1.5 tracking-widest relative z-10">${label}</p>
-      <h3 class="${size === 'lg' ? 'text-xl md:text-2xl' : 'text-lg md:text-xl'} font-black ${valueClass} relative z-10">${value}</h3>
+  dashCard({ icon, iconColor, label, value, valueClass = 'text-gray-800 dark:text-white' }) {
+    return `<div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <p class="text-[9px] font-bold text-gray-400 uppercase mb-1.5 tracking-wider leading-tight min-h-[22px]">${label}</p>
+      <div class="flex items-center justify-between gap-2">
+        <h3 class="text-lg font-black ${valueClass} leading-none">${value}</h3>
+        <span class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700/60 ${iconColor} flex items-center justify-center text-sm shrink-0"><i class="${icon}"></i></span>
+      </div>
     </div>`;
   },
   inputNum(id, label, value, attrs='') { return `<div><label class="field-label">${label}</label><input type="number" id="${id}" value="${value}" ${attrs}></div>`; },
@@ -98,42 +95,46 @@ export const Builders = {
     const saved = (() => { try { return JSON.parse(localStorage.getItem('export_cols_' + prefix) || 'null'); } catch { return null; } })();
     const defaults = (Config.DEFAULT_EXPORT_COLS && Config.DEFAULT_EXPORT_COLS[prefix]) || columns;
     const isChecked = (c) => saved ? saved.includes(c) : defaults.includes(c);
-    const colChecks = columns.map(c => `<label class="flex items-center text-xs dark:text-gray-300 py-1"><input type="checkbox" value="${c}" ${isChecked(c) ? 'checked' : ''} class="mr-2 cb-custom export-col-cb" data-prefix="${prefix}" onchange="App.saveExportCols('${prefix}')"> ${c}</label>`).join('');
+    const colChecks = columns.map(c => `<label class="flex items-center text-[13px] dark:text-gray-300 py-1"><input type="checkbox" value="${c}" ${isChecked(c) ? 'checked' : ''} class="mr-2 cb-custom export-col-cb" data-prefix="${prefix}" onchange="App.saveExportCols('${prefix}')"> ${c}</label>`).join('');
     const monthOpts = Config.MONTHS.map((m,i) => `<option value="${i}">${m}</option>`).join('');
-    return `<div class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
-      <h3 class="text-sm font-bold mb-3">1. Pilih Periode</h3>
-      <div class="flex flex-wrap gap-2 mb-5">
-        <select id="${prefix}_ex_period" class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 text-xs bg-gray-50 dark:bg-gray-700 font-bold" onchange="App.updateExFilters('${prefix}')"><option value="month">Bulan</option><option value="year">Tahun</option><option value="all">Semua</option></select>
-        <select id="${prefix}_ex_month" class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 text-xs bg-gray-50 dark:bg-gray-700 font-bold">${monthOpts}</select>
-        <select id="${prefix}_ex_year" class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 text-xs bg-gray-50 dark:bg-gray-700 font-bold"></select>
+    const onChg = `App.updateExFilters('${prefix}');App.updateExportCount('${prefix}')`;
+    return `<div class="export-panel bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div class="flex items-center gap-2.5 mb-3"><span class="step-badge">1</span><h3 class="text-sm font-bold">Pilih Periode</h3></div>
+      <div class="flex gap-2 mb-5">
+        <select id="${prefix}_ex_period" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 bg-gray-50 dark:bg-gray-700 font-bold" onchange="${onChg}"><option value="month">Bulan</option><option value="year">Tahun</option><option value="all">Semua</option></select>
+        <select id="${prefix}_ex_month" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 bg-gray-50 dark:bg-gray-700 font-bold" onchange="App.updateExportCount('${prefix}')">${monthOpts}</select>
+        <select id="${prefix}_ex_year" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 rounded-lg p-2.5 bg-gray-50 dark:bg-gray-700 font-bold" onchange="App.updateExportCount('${prefix}')"></select>
       </div>
       <div class="flex items-center justify-between mb-3 border-t border-gray-100 dark:border-gray-700 pt-4">
-        <h3 class="text-sm font-bold">2. Pilih Kolom Data</h3>
+        <div class="flex items-center gap-2.5"><span class="step-badge">2</span><h3 class="text-sm font-bold">Pilih Kolom</h3></div>
         <div class="flex gap-1.5">
           <button type="button" onclick="App.toggleAllExportCols('${prefix}', true)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 active:scale-95">✓ Semua</button>
           <button type="button" onclick="App.toggleAllExportCols('${prefix}', false)" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 active:scale-95">✕ Hapus</button>
         </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5" id="${prefix}_col_checks">${colChecks}</div>
-      <div class="flex flex-col gap-2 border-t border-gray-100 dark:border-gray-700 pt-4">
-        <button onclick="Export.generate('${prefix}','excel')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-file-excel mr-2"></i> Unduh Excel (CSV)</button>
-        <button onclick="Export.generate('${prefix}','pdf')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-file-pdf mr-2"></i> Cetak PDF (A4)</button>
+      <div class="grid grid-cols-2 gap-x-3 gap-y-1 mb-5" id="${prefix}_col_checks">${colChecks}</div>
+      <div class="border-t border-gray-100 dark:border-gray-700 pt-4">
+        <p id="${prefix}_ex_count" class="ex-count"><i class="fa-solid fa-chart-column"></i><span>Memuat…</span></p>
+        <div class="flex flex-col gap-2">
+          <button id="${prefix}_ex_btn_csv" type="button" onclick="App.exportWithFeedback('${prefix}','excel')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-file-excel mr-2"></i> Unduh Excel (CSV)</button>
+          <button id="${prefix}_ex_btn_pdf" type="button" onclick="App.exportWithFeedback('${prefix}','pdf')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-file-pdf mr-2"></i> Cetak PDF (A4)</button>
+        </div>
       </div>
     </div>`;
   },
   timeSlotAndLeaderboard(prefix) {
     return `<div class="space-y-4">
       <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fa-solid fa-clock text-blue-500 mr-2"></i> Rasio Waktu Pelayanan</h3>
+        <h3 class="dash-sec-title" style="--accent:#3b82f6"><i class="fa-solid fa-clock text-blue-500"></i>Rasio Waktu Pelayanan</h3>
         <div id="${prefix}_statTimeSlot" class="space-y-3"></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fa-solid fa-trophy text-amber-500 mr-2"></i> Leaderboard Regu</h3>
+          <h3 class="dash-sec-title" style="--accent:#f59e0b"><i class="fa-solid fa-trophy text-amber-500"></i>Leaderboard Regu</h3>
           <div id="${prefix}_statReguRank" class="space-y-2"></div>
         </div>
         <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3"><i class="fa-solid fa-medal text-indigo-500 mr-2"></i> Leaderboard Personil</h3>
+          <h3 class="dash-sec-title" style="--accent:#6366f1"><i class="fa-solid fa-medal text-indigo-500"></i>Leaderboard Personil</h3>
           <div id="${prefix}_statPersonilRank" class="space-y-2"></div>
         </div>
       </div>

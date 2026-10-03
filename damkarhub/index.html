@@ -449,6 +449,31 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     .hero-stats { max-width:520px; }
   }
   @media (prefers-reduced-motion: reduce) { .splash-embers, .splash-logo { animation:none !important; } }
+
+/* ===== Polish Dashboard + Export ===== */
+.dash-filter select, .export-panel select { font-size:16px; }
+@media (min-width:1024px) { .dash-filter select, .export-panel select { font-size:14px; } }
+.dash-sec-title { display:flex; align-items:center; gap:.5rem; font-size:.72rem; font-weight:800; color:#9ca3af; text-transform:uppercase; letter-spacing:.12em; margin-bottom:.75rem; padding-left:.65rem; position:relative; }
+.dash-sec-title::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:1.05rem; border-radius:999px; background:var(--accent,#dc2626); }
+.dash-sec-title i { font-size:.8rem; }
+.dark .dash-sec-title { color:#6b7280; }
+.dash-anim { animation:dashFadeUp .38s cubic-bezier(.16,1,.3,1) both; }
+@keyframes dashFadeUp { from { opacity:0; transform:translateY(8px); } }
+.dash-empty { text-align:center; padding:1.25rem .5rem; }
+.dash-empty-ic { width:2.75rem; height:2.75rem; margin:0 auto .5rem; border-radius:1rem; background:#f3f4f6; color:#9ca3af; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.dark .dash-empty-ic { background:rgba(255,255,255,.06); }
+.dash-empty-tx { font-size:.75rem; color:#9ca3af; margin-bottom:.65rem; font-weight:600; }
+.dash-empty-btn { font-size:.72rem; font-weight:800; color:#fff; background:var(--grad-red); padding:.55rem 1.1rem; border-radius:.75rem; box-shadow:0 8px 16px -8px rgba(220,38,38,.7); }
+.dash-empty-btn:active { transform:scale(.96); }
+.step-badge { width:1.4rem; height:1.4rem; border-radius:999px; background:var(--grad-red); color:#fff; font-size:.72rem; font-weight:900; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 6px 14px -6px rgba(220,38,38,.7); }
+.ex-count { display:flex; align-items:center; gap:.5rem; font-size:.75rem; font-weight:700; color:#6b7280; margin-bottom:.8rem; }
+.dark .ex-count { color:#9ca3af; }
+.ex-count > i { color:#10b981; font-size:.85rem; }
+.ex-count.zero > i { color:#d1d5db; }
+.dark .ex-count.zero > i { color:#4b5563; }
+.ex-count .ex-cta { margin-left:auto; font-size:.7rem; font-weight:800; color:#fff; background:var(--grad-red); padding:.45rem .9rem; border-radius:.7rem; }
+.ex-count .ex-cta:active { transform:scale(.96); }
+@media (prefers-reduced-motion: reduce) { .dash-anim { animation:none !important; } }
 </style>
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
@@ -618,30 +643,30 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   </div>
 
   <div id="view-k-dashboard" class="dash-panel">
-    <div class="mb-4 flex gap-2 sm:justify-end">
-      <select id="k_dash_period" class="w-auto flex-1 min-w-0 sm:flex-none sm:w-36 border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
-      <select id="k_dash_month" class="w-auto flex-1 min-w-0 sm:flex-none sm:w-36 border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"></select>
-      <select id="k_dash_year" class="w-auto flex-1 min-w-0 sm:flex-none sm:w-36 border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"></select>
+    <div class="dash-filter mb-4 flex gap-2">
+      <select id="k_dash_period" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
+      <select id="k_dash_month" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"></select>
+      <select id="k_dash_year" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.k.updateDashboard()"></select>
     </div>
     <div id="k_dash_cards"></div>
     <div id="k_dash_stats"></div>
   </div>
 
   <div id="view-nk-dashboard" class="dash-panel hidden">
-    <div class="mb-4 flex flex-wrap justify-end gap-2">
-      <select id="nk_dash_period" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
-      <select id="nk_dash_month" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"></select>
-      <select id="nk_dash_year" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"></select>
+    <div class="dash-filter mb-4 flex gap-2">
+      <select id="nk_dash_period" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
+      <select id="nk_dash_month" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"></select>
+      <select id="nk_dash_year" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.nk.updateDashboard()"></select>
     </div>
     <div id="nk_dash_cards"></div>
     <div id="nk_dash_stats"></div>
   </div>
 
   <div id="view-sos-dashboard" class="dash-panel hidden">
-    <div class="mb-4 flex flex-wrap justify-end gap-2">
-      <select id="sos_dash_period" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
-      <select id="sos_dash_month" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"></select>
-      <select id="sos_dash_year" class="border border-gray-200 dark:border-gray-600 text-xs px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"></select>
+    <div class="dash-filter mb-4 flex gap-2">
+      <select id="sos_dash_period" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="all">Semua</option></select>
+      <select id="sos_dash_month" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"></select>
+      <select id="sos_dash_year" class="flex-1 min-w-0 border border-gray-200 dark:border-gray-600 px-2.5 py-2 rounded-xl bg-white dark:bg-gray-700 font-bold" onchange="Mod.sos.updateDashboard()"></select>
     </div>
     <div id="sos_dash_cards"></div>
     <div id="sos_dash_stats"></div>
