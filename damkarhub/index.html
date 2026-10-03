@@ -356,6 +356,8 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   .qaction { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; padding:.95rem .35rem .85rem; border-radius:1.15rem; background:var(--surface); border:1px solid var(--line); transition:all .15s; cursor:pointer; box-shadow:var(--shadow); }
   .qaction:active { transform:scale(.95); background:var(--surface-2); }
   .qaction-icon { width:46px; height:46px; border-radius:1rem; display:flex; align-items:center; justify-content:center; font-size:1.1rem; box-shadow:inset 0 0 0 1px rgba(255,255,255,.35); }
+  .qaction > span { min-height:2.3em; display:flex; align-items:center; justify-content:center; }
+  .hero-stat p:last-child { font-variant-numeric:tabular-nums; }
 
   .module-tab { padding:.65rem 1rem; border-radius:.85rem; font-size:.8125rem; font-weight:700; white-space:nowrap; transition:all .15s; border:1px solid transparent; }
   .module-tab.active { background:var(--grad-red); color:white; box-shadow:0 8px 18px -8px rgba(220,38,38,.7); }
@@ -587,7 +589,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     <img class="hero-art" src="assets/hero.webp" alt="" aria-hidden="true">
     <div class="relative">
       <p class="hero-kicker" id="beranda-date">-</p>
-      <h2 class="hero-title">Halo, Satria Biru 👋</h2>
+      <h2 class="hero-title">Halo, Satria Biru</h2>
       <p class="hero-sub">Siap bertugas hari ini?</p>
     </div>
     <div class="hero-stats">
@@ -598,12 +600,12 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   </div>
 
   <div class="mb-5">
-    <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">Pintasan Cepat</h3>
+    <h3 class="dash-sec-title" style="--accent:#ef4444"><i class="fa-solid fa-bolt text-red-500"></i>Pintasan Cepat</h3>
     <div class="grid grid-cols-3 gap-2.5">
-      <button onclick="App.openFab()" class="qaction"><div class="qaction-icon bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"><i class="fa-solid fa-plus"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Buat<br>Laporan</span></button>
+      <button onclick="App.openFab()" class="qaction"><div class="qaction-icon bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"><i class="fa-solid fa-plus"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Buat Laporan</span></button>
       <button onclick="App.switchView('dashboard')" class="qaction"><div class="qaction-icon bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"><i class="fa-solid fa-chart-pie"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Dashboard</span></button>
       <button onclick="App.switchView('riwayat')" class="qaction"><div class="qaction-icon bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"><i class="fa-solid fa-clock-rotate-left"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Riwayat</span></button>
-      <button onclick="App.switchView('export')" class="qaction"><div class="qaction-icon bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-file-export"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Ekspor<br>Laporan</span></button>
+      <button onclick="App.switchView('export')" class="qaction"><div class="qaction-icon bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-file-export"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Ekspor Laporan</span></button>
       <button onclick="App.switchView('sistem')" class="qaction"><div class="qaction-icon bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"><i class="fa-solid fa-gear"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Sistem</span></button>
       <button onclick="App.showAbout()" class="qaction"><div class="qaction-icon bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"><i class="fa-solid fa-circle-info"></i></div><span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 text-center leading-tight">Tentang</span></button>
     </div>
@@ -617,13 +619,13 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   </div>
 
   <div class="mb-5">
-    <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">Giat Terkini</h3>
+    <h3 class="dash-sec-title" style="--accent:#f59e0b"><i class="fa-solid fa-star text-amber-500"></i>Giat Terkini</h3>
     <div id="beranda-recent-giat"></div>
   </div>
 
   <div class="mb-5">
     <div class="flex items-center justify-between mb-3 px-1">
-      <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest">Aktivitas Terbaru</h3>
+      <h3 class="dash-sec-title" style="--accent:#3b82f6;margin-bottom:0"><i class="fa-solid fa-clock-rotate-left text-blue-500"></i>Aktivitas Terbaru</h3>
       <button onclick="App.switchView('riwayat')" class="text-[11px] font-bold text-red-600 dark:text-red-400 active:scale-95">Lihat Semua <i class="fa-solid fa-chevron-right text-[9px]"></i></button>
     </div>
     <div id="beranda-recent-list" class="space-y-2.5"></div>
@@ -686,9 +688,9 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 
   <div class="flex gap-2 mb-4 overflow-x-auto hide-scrollbar pb-1">
     <button onclick="App.setRiwayatFilter('all')" data-filter="all" class="filter-pill active">Semua</button>
-    <button onclick="App.setRiwayatFilter('k')" data-filter="k" class="filter-pill">🔥 Kebakaran</button>
-    <button onclick="App.setRiwayatFilter('nk')" data-filter="nk" class="filter-pill">🆘 Penyelamatan</button>
-    <button onclick="App.setRiwayatFilter('sos')" data-filter="sos" class="filter-pill">📢 Sosialisasi</button>
+    <button onclick="App.setRiwayatFilter('k')" data-filter="k" class="filter-pill"><i class="fa-solid fa-fire mr-1"></i>Kebakaran</button>
+    <button onclick="App.setRiwayatFilter('nk')" data-filter="nk" class="filter-pill"><i class="fa-solid fa-life-ring mr-1"></i>Penyelamatan</button>
+    <button onclick="App.setRiwayatFilter('sos')" data-filter="sos" class="filter-pill"><i class="fa-solid fa-bullhorn mr-1"></i>Sosialisasi</button>
   </div>
 
   <div id="riwayat_list" class="space-y-2.5"></div>
