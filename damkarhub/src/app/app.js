@@ -77,7 +77,13 @@ const App = {
 
   async boot() {
     try {
-      await DB.init();
+      try {
+        await DB.init();
+      } catch (e) {
+        // DEFENSIVE: jangan boot dengan data kosong — tampilkan blocking warning
+        this._showStorageError();
+        return;
+      }
       await this._migrateLegacy();
       const [k, nk, sos, personil, regu] = await Promise.all([
         DB.getAll(Config.STORES.k), DB.getAll(Config.STORES.nk), DB.getAll(Config.STORES.sos),
@@ -158,6 +164,13 @@ const App = {
       const eY = document.getElementById(`${p}_ex_year`); if (eY) eY.innerHTML = yearOpts;
       const eM = document.getElementById(`${p}_ex_month`); if (eM) eM.value = m;
     });
+  },
+
+  _showStorageError() {
+    try {
+      document.body.classList.add('auth-locked'); // sembunyikan app shell
+      document.getElementById('storage-error-screen')?.classList.remove('hidden');
+    } catch (e) {}
   },
 
   _loadSettingsToForm() {
