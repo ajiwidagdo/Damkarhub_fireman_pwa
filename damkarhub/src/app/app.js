@@ -939,8 +939,9 @@ renderSistem() {
         <div class="flex items-center gap-3">
           <div class="brand-mark" style="width:48px;height:48px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
           <div class="min-w-0">
-            <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">Fireman</span></p>
-            <p class="text-[11px] text-gray-400">Aplikasi Pelaporan Petugas Damkar</p>
+            <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">SATRIA</span></p>
+            <p class="text-[11px] text-gray-400">Satuan Responder Insiden Api</p>
+            <p class="text-[11px] text-gray-400 italic">"Siap bergerak di setiap insiden"</p>
             <span class="inline-block mt-1 text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">v${ver}</span>
           </div>
         </div>
@@ -959,12 +960,12 @@ renderSistem() {
 
       <div class="${card}">
         <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-circle-question mr-1.5 text-red-500"></i>Kenapa Dibuat</p>
-        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini ditulis manual di sela kesibukan bertugas — format tidak seragam antar petugas, rawan tertunda sampai ke pimpinan, sinyal di lokasi tidak selalu stabil, dan data tersebar sehingga sulit direkap. DAMKARHUB Fireman dibuat agar pencatatan lebih cepat, rapi, dan konsisten, langsung dari lokasi kejadian.</p>
+        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini ditulis manual di sela kesibukan bertugas — format tidak seragam antar petugas, rawan tertunda sampai ke pimpinan, sinyal di lokasi tidak selalu stabil, dan data tersebar sehingga sulit direkap. DAMKARHUB SATRIA dibuat agar pencatatan lebih cepat, rapi, dan konsisten, langsung dari lokasi kejadian.</p>
       </div>
 
       <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-2xl text-xs border border-amber-200 dark:border-amber-900/40">
         <p class="font-bold text-amber-800 dark:text-amber-300 mb-1"><i class="fa-solid fa-flask mr-1"></i> Status: Tahap Uji Coba</p>
-        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">Fireman adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
+        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">SATRIA adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
       </div>
 
       <div class="${card}">

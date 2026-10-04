@@ -17,7 +17,7 @@ create table if not exists public.reports (
   owner_email text default (auth.jwt() ->> 'email'),  -- memudahkan admin melihat siapa pembuat laporan
   updated_at  timestamptz not null default now(),
   -- Kolom integrasi Komando (sync schema live 3 Okt 2026).
-  -- TIDAK dipakai aplikasi Fireman (tetap baca/tulis kolom `data` jsonb).
+  -- TIDAK dipakai aplikasi SATRIA (tetap baca/tulis kolom `data` jsonb).
   tenant_id           uuid,                            -- tenant UPTD pemilik laporan
   status              text,                            -- status workflow laporan (mis. DONE)
   incident_at         timestamptz,                     -- waktu kejadian

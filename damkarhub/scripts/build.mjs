@@ -1,4 +1,4 @@
-// Build DAMKARHUB Fireman → folder dist/ (siap Vercel / Cloudflare Pages / Capacitor `webDir`)
+// Build DAMKARHUB SATRIA → folder dist/ (siap Vercel / Cloudflare Pages / Capacitor `webDir`)
 // - Tailwind dikompilasi jadi CSS statis (tanpa CDN, tanpa JIT di HP)
 // - FontAwesome, jsPDF, jsPDF-AutoTable disalin dari node_modules ke dist/vendor
 // - index.html: blok <!-- CDN:START --> … <!-- CDN:END --> diganti aset lokal

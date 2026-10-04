@@ -1,4 +1,4 @@
-# BACKLOG — Damkarhub Fireman
+# BACKLOG — Damkarhub SATRIA
 
 ## [🔴 HIGH] Rotate JWT Secret (anon + service_role)
 - Trigger: Sebelum Play Store publish
@@ -9,10 +9,10 @@
 ## Post-presentasi: integrasi kolom Komando ke app
 - Kolom `reports.tenant_id`, `status`, `incident_at`, `report_received_at` sudah ada di live DB
   (sync `supabase/setup.sql`, 3 Okt 2026).
-- Sejak syncfix2 (4 Okt 2026) app Fireman MENGIRIM saat push: `owner` (uid sesi),
+- Sejak syncfix2 (4 Okt 2026) app SATRIA MENGIRIM saat push: `owner` (uid sesi),
   `tenant_id`, `status='DONE'`, `incident_at` (tanggal+pukul WIB),
   `report_received_at` (tglTerima+jamTerima, fallback tglMulai/SOS tanggal — WIB).
-- App Fireman tetap baca/tulis kolom `data` jsonb (jangan ubah).
+- App SATRIA tetap baca/tulis kolom `data` jsonb (jangan ubah).
 - Saat integrasi Komando dimulai, tentukan:
   - RLS policy untuk tenant (saat ini policy berbasis `owner`).
 

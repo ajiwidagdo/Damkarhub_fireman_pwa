@@ -163,7 +163,7 @@ if (!values.length) {
 }
 
 const sql = `-- =====================================================
--- DAMKARHUB FIREMAN — SEED DUMMY DATA (dari CSV)
+-- DAMKARHUB SATRIA — SEED DUMMY DATA (dari CSV)
 -- Dibuat: ${today} via scripts/csv-to-sql.mjs
 -- ${counts.k} Kebakaran, ${counts.nk} Penyelamatan, ${counts.sos} Sosialisasi
 -- Tenant: ${TENANT_ID}

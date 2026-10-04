@@ -1,12 +1,12 @@
 -- =====================================================
--- DAMKARHUB FIREMAN — SEED DATA DEMO
+-- DAMKARHUB SATRIA — SEED DATA DEMO
 -- 8 laporan bulan September 2026 (3 Kebakaran, 3 Penyelamatan, 2 Sosialisasi)
 -- Tenant: 06622c4b-2610-427e-9ee4-cce5a80ad1f1 (UPTD Banjar)
 -- Owner : petugas@damkarhub.id
 --
 -- CARA PAKAI: Supabase Dashboard → SQL Editor → Paste → Run
 -- CATATAN : kolom status/incident_at/report_received_at/tenant_id
---           untuk integrasi Komando (app Fireman tetap pakai kolom `data`)
+--           untuk integrasi Komando (app SATRIA tetap pakai kolom `data`)
 --           Script idempoten: aman dijalankan ulang (ON CONFLICT DO UPDATE)
 -- =====================================================
 
