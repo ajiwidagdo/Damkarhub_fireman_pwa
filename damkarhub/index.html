@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#dc2626" id="meta-theme">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,8 +20,6 @@
 <!-- CDN:START — dipakai bila index.html dibuka langsung tanpa build. `npm run build` mengganti blok ini dengan aset lokal (folder dist/) -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script>
   tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ damkar:'#dc2626', rescue:'#f59e0b', sos:'#10b981', gray:{50:'#faf7f6',100:'#f4eeed',200:'#e8dfde',300:'#d4c7c6',400:'#a89b9b',500:'#7a6c6d',600:'#574849',700:'#3a2b2d',800:'#251719',900:'#170d0f',950:'#0d0708'} } } } };
 </script>
@@ -454,7 +452,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 
 /* ===== Polish Dashboard + Export ===== */
 .dash-filter select, .export-panel select { font-size:16px; }
-@media (min-width:1024px) { .dash-filter select, .export-panel select { font-size:14px; } }
+@media (min-width:1024px) { .dash-filter select, .export-panel select { font-size:16px; } }
 .dash-sec-title { display:flex; align-items:center; gap:.5rem; font-size:.72rem; font-weight:800; color:#9ca3af; text-transform:uppercase; letter-spacing:.12em; margin-bottom:.75rem; padding-left:.65rem; position:relative; }
 .dash-sec-title::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:1.05rem; border-radius:999px; background:var(--accent,#dc2626); }
 .dash-sec-title i { font-size:.8rem; }
@@ -521,7 +519,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
         <svg class="splash-flame-inner" viewBox="0 0 48 48"><use href="#ic-flame-inner"/></svg>
       </div>
       <div class="splash-logo">
-        <img src="icons/icon-512.png" alt="DAMKARHUB">
+        <img src="icons/icon-512.webp" alt="DAMKARHUB">
       </div>
     </div>
     <div class="text-center">

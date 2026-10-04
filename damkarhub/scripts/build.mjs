@@ -58,10 +58,10 @@ const re = /<!-- CDN:START[\s\S]*?<!-- CDN:END -->\n?/;
 if (!re.test(html)) { console.error('✗ Penanda <!-- CDN:START --> / <!-- CDN:END --> tidak ada di index.html'); process.exit(1); }
 html = html.replace(re, [
   '<link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">',
-  '<script src="vendor/jspdf.umd.min.js"></script>',
-  '<script src="vendor/jspdf.plugin.autotable.min.js"></script>',
   ''
 ].join('\n'));
+// NOTE: jsPDF + AutoTable TIDAK di-inject di <head> — di-lazy-load oleh
+// Export._ensureJsPDF() dari vendor/ saat tombol Cetak PDF diklik (perf).
 // Tailwind di paling akhir <head> agar urutannya sama dengan perilaku CDN sebelumnya (utilitas menimpa CSS kustom)
 if (!html.includes('</head>')) { console.error('✗ </head> tidak ditemukan'); process.exit(1); }
 html = html.replace('</head>', '<link rel="stylesheet" href="tailwind.css">\n</head>');
