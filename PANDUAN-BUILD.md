@@ -1,4 +1,4 @@
-# Panduan Build & Deploy DAMKARHUB Fireman (tanpa PC)
+# Panduan Build & Deploy DAMKARHUB SATRIA (tanpa PC)
 
 Sejak versi ini, aset CDN (Tailwind, FontAwesome, jsPDF) **tidak lagi diambil dari internet**.
 Semuanya dibuat otomatis saat *build* dan ikut ter-cache untuk offline.

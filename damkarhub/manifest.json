@@ -1,7 +1,7 @@
 {
-  "name": "DAMKARHUB Fireman",
-  "short_name": "DAMKARHUB",
-  "description": "Pantang Pulang Sebelum Api Padam - Aplikasi Pelaporan Petugas Damkar",
+  "name": "DAMKARHUB SATRIA",
+  "short_name": "SATRIA",
+  "description": "Satuan Responder Insiden Api - Aplikasi Pelaporan Petugas Damkar",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

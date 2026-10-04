@@ -29,7 +29,6 @@ const App = {
 
   _defaultSettings() {
     return {
-      id:'global',
       instansi:'', daerah:'', kantor:'', pimpinan:'',
       petugas_nama:'', petugas_hp:'', petugas_jabatan:'',
       petugas_dispatch_active:true,
@@ -39,16 +38,59 @@ const App = {
     };
   },
 
+  /* ---------- Settings per-user (Issue authfix #1) ---------- */
+  _settingsId() {
+    try { const uid = (typeof Sync !== 'undefined' && Sync._session()?.uid) || 'anon'; return 'user:' + uid; }
+    catch (e) { return 'user:anon'; }
+  },
+  async _loadSettings() {
+    const id = this._settingsId();
+    let rec = null;
+    try {
+      const all = await DB.getAll(Config.STORES.settings);
+      rec = all.find(x => x.id === id) || null;
+      if (!rec) {
+        // Migrasi sekali: record 'global' lama → milik user pertama yang login
+        const g = all.find(x => x.id === 'global');
+        if (g && id !== 'user:anon') {
+          rec = { ...g, id };
+          try {
+            await DB.put(Config.STORES.settings, rec);
+            await DB.delete(Config.STORES.settings, 'global');
+          } catch (e) {}
+        }
+      }
+    } catch (e) {}
+    this.settings = { ...this._defaultSettings(), ...(rec || {}), id };
+  },
+  async _persistSettings() {
+    this.settings = { ...this.settings, id: this._settingsId() };
+    await DB.put(Config.STORES.settings, this.settings);
+  },
+  // Dipanggil saat user login/berganti/keluar
+  async _onUserChanged() {
+    await this._loadSettings();
+    try { this._loadSettingsToForm(); } catch (e) {}
+    try { this._renderDispatchCard(); } catch (e) {}
+    try { this.renderBeranda(); } catch (e) {}
+  },
+
   async boot() {
     try {
-      await DB.init();
+      try {
+        await DB.init();
+      } catch (e) {
+        // DEFENSIVE: jangan boot dengan data kosong — tampilkan blocking warning
+        this._showStorageError();
+        return;
+      }
       await this._migrateLegacy();
-      const [k, nk, sos, settings, personil, regu] = await Promise.all([
+      const [k, nk, sos, personil, regu] = await Promise.all([
         DB.getAll(Config.STORES.k), DB.getAll(Config.STORES.nk), DB.getAll(Config.STORES.sos),
-        DB.getAll(Config.STORES.settings), DB.getAll(Config.STORES.personil), DB.getAll(Config.STORES.regu)
+        DB.getAll(Config.STORES.personil), DB.getAll(Config.STORES.regu)
       ]);
       Mod.k.setData(k); Mod.nk.setData(nk); Mod.sos.setData(sos);
-      this.settings = { ...this._defaultSettings(), ...(settings?.[0] || {}) };
+      await this._loadSettings();
       this.personil = personil || [];
       if (!regu || regu.length === 0) {
         this.regu = this._defaultRegu();
@@ -58,6 +100,7 @@ const App = {
       UI.initTheme();
       this._initFireToggle();
       renderLayouts();
+      this._populateDates(); // isi opsi bulan/tahun filter (dashboard + export)
       this._loadSettingsToForm();
       this._checkBackupReminder();
       Mod.k.addKorban();
@@ -71,8 +114,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
-      // Sync hanya jalan kalau mode = auth (via Mode.check)
-      Mode.check();
+      // Auth wajib: guard sesi → tampilkan login screen bila belum login
+      await Auth.guard();
     } catch (err) {
       console.error('Boot error:', err);
       UI.toast('Gagal memuat aplikasi: ' + (err?.message || err), 'error');
@@ -121,6 +164,13 @@ const App = {
       const eY = document.getElementById(`${p}_ex_year`); if (eY) eY.innerHTML = yearOpts;
       const eM = document.getElementById(`${p}_ex_month`); if (eM) eM.value = m;
     });
+  },
+
+  _showStorageError() {
+    try {
+      document.body.classList.add('auth-locked'); // sembunyikan app shell
+      document.getElementById('storage-error-screen')?.classList.remove('hidden');
+    } catch (e) {}
   },
 
   _loadSettingsToForm() {
@@ -173,7 +223,7 @@ const App = {
 
   navTap(view) {
     try {
-      Helpers.haptic(10);
+      // haptic sudah di switchView (satu titik)
       const s = this.settings || {};
       if (s.notif_sound !== false) UI.beep();
     } catch(e){}
@@ -181,7 +231,7 @@ const App = {
   },
   openAccountSettings() {
     try {
-      Helpers.haptic(10);
+      // haptic sudah di switchView (satu titik)
       const s = this.settings || {};
       if (s.notif_sound !== false) UI.beep();
     } catch(e){}
@@ -189,6 +239,7 @@ const App = {
     UI.switchSistemTab('akun');
   },
   switchView(view, pushHistory = true) {    if (pushHistory && view !== this.currentView) {
+      Helpers.haptic(10); // haptic navigasi — satu titik untuk semua view
       this._viewHistory.push(this.currentView);
       history.pushState({ view }, '', '');
     }
@@ -249,6 +300,7 @@ const App = {
   editLaporan(mod, id) { Mod[mod].edit(id); },
 
   switchDashTab(mod) {
+    Helpers.haptic(10);
     this.currentDashTab = mod;
     document.querySelectorAll('.dash-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-dashboard`).classList.remove('hidden');
@@ -267,15 +319,16 @@ const App = {
   },
 
   switchExportTab(mod) {
+    Helpers.haptic(10);
     this.currentExportTab = mod;
-    document.querySelectorAll('#view-export .export-panel').forEach(el => el.classList.add('hidden'));
+    // direct children saja — inner .export-panel (hasil Builders.exportPanel) tidak ikut ke-hidden
+    document.querySelectorAll('#view-export > .export-panel').forEach(el => el.classList.add('hidden'));
     document.getElementById(`view-${mod}-export`).classList.remove('hidden');
     document.querySelectorAll('#view-export .module-tab').forEach(el => el.classList.remove('active','nk-active','sos-active'));
     const tab = document.getElementById(`extab-${mod}`);
     tab.classList.add('active');
     if (mod === 'nk') tab.classList.add('nk-active');
     if (mod === 'sos') tab.classList.add('sos-active');
-    Helpers.haptic(6);
   },
 
   saveExportCols(prefix) {
@@ -297,7 +350,59 @@ const App = {
     document.getElementById(`${prefix}_ex_month`).classList.toggle('hidden', p !== 'month');
   },
 
+  // Hitung baris yang akan diekspor (mirror filter Export.generate — read-only)
+  _exportRowCount(prefix) {
+    try {
+      const m = (typeof Mod !== 'undefined' && Mod[prefix]) || null;
+      if (!m) return 0;
+      const p = document.getElementById(`${prefix}_ex_period`)?.value || 'all';
+      const mIdx = parseInt(document.getElementById(`${prefix}_ex_month`)?.value);
+      const y = parseInt(document.getElementById(`${prefix}_ex_year`)?.value);
+      if (p === 'all') return m.data.length;
+      if (isNaN(mIdx) || isNaN(y)) return 0;
+      return m.data.filter(d => {
+        const dt = new Date(d.tanggal + 'T00:00:00');
+        if (isNaN(dt.getTime())) return false;
+        return p === 'month' ? dt.getMonth() === mIdx && dt.getFullYear() === y : dt.getFullYear() === y;
+      }).length;
+    } catch(e){ return 0; }
+  },
+
+  // Preview jumlah baris (display-only) + enable/disable tombol export
+  updateExportCount(prefix) {
+    try {
+      const n = this._exportRowCount(prefix);
+      const el = document.getElementById(`${prefix}_ex_count`);
+      if (!el) return;
+      const btns = [document.getElementById(`${prefix}_ex_btn_csv`), document.getElementById(`${prefix}_ex_btn_pdf`)].filter(Boolean);
+      if (n > 0) {
+        el.classList.remove('zero');
+        el.innerHTML = `<i class="fa-solid fa-chart-column"></i><span>${n} laporan siap diekspor</span>`;
+        btns.forEach(b => { b.disabled = false; b.classList.remove('opacity-40','pointer-events-none'); });
+      } else {
+        el.classList.add('zero');
+        el.innerHTML = `<i class="fa-solid fa-chart-column"></i><span>Tidak ada laporan untuk periode ini</span><button type="button" onclick="App.openInputForm('${prefix}')" class="ex-cta">Buat Laporan</button>`;
+        btns.forEach(b => { b.disabled = true; b.classList.add('opacity-40','pointer-events-none'); });
+      }
+    } catch(e){}
+  },
+
+  // Wrapper export: haptic + loading toast + panggil Export.generate (export.js TIDAK disentuh)
+  exportWithFeedback(prefix, kind) {
+    try {
+      Helpers.haptic(12);
+      const n = this._exportRowCount(prefix);
+      if (!n) { UI.toast('Tidak ada laporan untuk periode ini', 'error'); return; }
+      UI.toast(kind === 'pdf' ? 'Menyiapkan PDF…' : 'Menyiapkan CSV…', 'info');
+      if (typeof Export !== 'undefined' && Export.generate) {
+        // generate() async (lazy-load jsPDF) — tangkap rejection agar tidak unhandled
+        Promise.resolve(Export.generate(prefix, kind)).catch(e => console.error('[export]', e));
+      }
+    } catch(e){}
+  },
+
   renderBeranda() {
+    this._renderDispatchCard();
     const now = new Date();
     document.getElementById('beranda-date').innerText = Helpers.dayName(now.toISOString().slice(0,10)) + ', ' + Helpers.formatDate(now.toISOString().slice(0,10));
     const all = [...Mod.k.data, ...Mod.nk.data, ...Mod.sos.data];
@@ -313,8 +418,8 @@ const App = {
     let giatHtml = '';
     if (recentGiat) {
       const typeInfo = this._detectType(recentGiat);
-      giatHtml = `<div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-start gap-3">
-        <div class="riwayat-badge ${typeInfo.bg}">${typeInfo.emoji}</div>
+      giatHtml = `<div onclick="App.openRiwayatItem('${typeInfo.type}','${recentGiat.id}')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-start gap-3 cursor-pointer active:scale-[.99]">
+        <div class="riwayat-badge ${typeInfo.bg}"><i class="${typeInfo.icon}"></i></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
             <span class="text-[10px] font-black uppercase tracking-widest ${typeInfo.textColor}">${typeInfo.label}</span>
@@ -323,26 +428,21 @@ const App = {
           <p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">${recentGiat.jenis || recentGiat.tempat || '-'}</p>
           <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5"><i class="fa-solid fa-location-dot mr-1"></i>${recentGiat.lokasiDetail || recentGiat.tempat || '-'}</p>
         </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 dark:text-gray-600 text-xs mt-1"></i>
       </div>`;
     } else {
-      giatHtml = `<div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-        <i class="fa-solid fa-inbox text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-        <p class="text-xs text-gray-400 font-medium">Belum ada aktivitas</p>
-      </div>`;
+      giatHtml = `<div class="dash-empty"><span class="dash-empty-ic"><i class="fa-solid fa-inbox"></i></span><p class="dash-empty-tx">Belum ada aktivitas</p><button type="button" onclick="App.openFab()" class="dash-empty-btn">Buat Laporan</button></div>`;
     }
     document.getElementById('beranda-recent-giat').innerHTML = giatHtml;
     const recent5 = sorted.slice(0, 5);
     const listEl = document.getElementById('beranda-recent-list');
     if (!recent5.length) {
-      listEl.innerHTML = `<div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-        <i class="fa-solid fa-folder-open text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-        <p class="text-xs text-gray-400 font-medium">Belum ada laporan</p>
-      </div>`;
+      listEl.innerHTML = `<div class="dash-empty"><span class="dash-empty-ic"><i class="fa-solid fa-folder-open"></i></span><p class="dash-empty-tx">Belum ada laporan</p><button type="button" onclick="App.openFab()" class="dash-empty-btn">Buat Laporan</button></div>`;
     } else {
       listEl.innerHTML = recent5.map(d => {
         const t = this._detectType(d);
         return `<div onclick="App.openRiwayatItem('${t.type}','${d.id}')" class="riwayat-item">
-          <div class="riwayat-badge ${t.bg}">${t.emoji}</div>
+          <div class="riwayat-badge ${t.bg}"><i class="${t.icon}"></i></div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2 mb-0.5">
               <span class="text-[10px] font-black uppercase tracking-widest ${t.textColor}">${t.label}</span>
@@ -358,9 +458,9 @@ const App = {
   },
 
   _detectType(d) {
-    if (Mod.k.data.some(x => x.id === d.id)) return { type:'k', label:'Kebakaran', emoji:'🔥', bg:'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400', textColor:'text-red-600 dark:text-red-400' };
-    if (Mod.nk.data.some(x => x.id === d.id)) return { type:'nk', label:'Penyelamatan', emoji:'🆘', bg:'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', textColor:'text-amber-600 dark:text-amber-400' };
-    return { type:'sos', label:'Sosialisasi', emoji:'📢', bg:'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400', textColor:'text-emerald-600 dark:text-emerald-400' };
+    if (Mod.k.data.some(x => x.id === d.id)) return { type:'k', label:'Kebakaran', icon:'fa-solid fa-fire', bg:'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400', textColor:'text-red-600 dark:text-red-400' };
+    if (Mod.nk.data.some(x => x.id === d.id)) return { type:'nk', label:'Penyelamatan', icon:'fa-solid fa-life-ring', bg:'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', textColor:'text-amber-600 dark:text-amber-400' };
+    return { type:'sos', label:'Sosialisasi', icon:'fa-solid fa-bullhorn', bg:'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400', textColor:'text-emerald-600 dark:text-emerald-400' };
   },
 
   openRiwayatItem(type, id) {
@@ -388,11 +488,11 @@ const App = {
     const emptyEl = document.getElementById('riwayat_empty');
     if (!all.length) { listEl.innerHTML = ''; emptyEl.classList.remove('hidden'); return; }
     emptyEl.classList.add('hidden');
-    listEl.innerHTML = all.map(d => {
+    listEl.innerHTML = all.map((d, idx) => {
       const t = this._detectType(d);
       const hasMap = d.koordinat && String(d.koordinat).trim();
-      return `<div class="riwayat-item" onclick="App.openRiwayatItem('${t.type}','${d.id}')">
-        <div class="riwayat-badge ${t.bg}">${t.emoji}</div>
+      return `<div class="riwayat-item dash-anim" style="animation-delay:${Math.min(idx, 7) * 55}ms" onclick="App.openRiwayatItem('${t.type}','${d.id}')">
+        <div class="riwayat-badge ${t.bg}"><i class="${t.icon}"></i></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between gap-2 mb-0.5">
             <span class="text-[10px] font-black uppercase tracking-widest ${t.textColor}">${t.label}</span>
@@ -408,7 +508,6 @@ const App = {
   },
 
 renderSistem() {
-    if (window.Mode) Mode.updateUI();
     this._loadSettingsToForm();
     this.renderReguList();
     this.renderPersonilFilter();
@@ -833,17 +932,22 @@ renderSistem() {
 
   showAbout() {
     Helpers.haptic(8);
-    const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-4">
-      <div class="flex items-center gap-3 -mt-1">
-        <div class="brand-mark" style="width:44px;height:44px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
-        <div>
-          <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">Fireman</span></p>
-          <p class="text-[11px] text-gray-400">Aplikasi Pelaporan Petugas Damkar</p>
+    const ver = (typeof Config !== 'undefined' && Config.APP_VERSION) || '1.3.0';
+    const card = 'bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4';
+    const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-3">
+      <div class="${card}">
+        <div class="flex items-center gap-3">
+          <div class="brand-mark" style="width:48px;height:48px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
+          <div class="min-w-0">
+            <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">SATRIA</span></p>
+            <p class="text-[11px] text-gray-400">Satuan Responder Insiden Api</p>
+            <p class="text-[11px] text-gray-400 italic">"Siap bergerak di setiap insiden"</p>
+            <span class="inline-block mt-1 text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">v${ver}</span>
+          </div>
         </div>
       </div>
-      <p>Aplikasi ini membantu petugas mencatat setiap kejadian kebakaran, penyelamatan, dan kegiatan sosialisasi langsung dari lapangan, lalu menyusunnya menjadi laporan siap kirim ke pimpinan.</p>
 
-      <div>
+      <div class="${card}">
         <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-list-check mr-1.5 text-red-500"></i>Fungsi Utama</p>
         <ul class="space-y-1.5 text-[13px]">
           <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1 text-[10px]"></i><span>Catat laporan Kebakaran, Penyelamatan, dan Sosialisasi dalam format baku</span></li>
@@ -854,43 +958,41 @@ renderSistem() {
         </ul>
       </div>
 
-      <div>
-        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-seedling mr-1.5 text-red-500"></i>Latar Belakang</p>
-        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini sering ditulis manual di sela kesibukan bertugas, membuat formatnya tidak seragam antar petugas dan rawan tertunda sampai ke pimpinan. DAMKARHUB Fireman dibuat agar pencatatan lebih cepat, rapi, dan konsisten — langsung dari lokasi kejadian.</p>
+      <div class="${card}">
+        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-circle-question mr-1.5 text-red-500"></i>Kenapa Dibuat</p>
+        <p class="text-[13px] leading-relaxed">Pelaporan kejadian selama ini ditulis manual di sela kesibukan bertugas — format tidak seragam antar petugas, rawan tertunda sampai ke pimpinan, sinyal di lokasi tidak selalu stabil, dan data tersebar sehingga sulit direkap. DAMKARHUB SATRIA dibuat agar pencatatan lebih cepat, rapi, dan konsisten, langsung dari lokasi kejadian.</p>
       </div>
 
-      <div>
-        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-mountain mr-1.5 text-red-500"></i>Tantangan</p>
-        <p class="text-[13px] leading-relaxed">Menyusun laporan di tengah situasi darurat butuh waktu, sinyal internet di lokasi kejadian tidak selalu stabil, dan data dari tiap petugas belum tersimpan di satu tempat yang sama sehingga sulit direkap untuk evaluasi.</p>
-      </div>
-
-      <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-xl text-xs border border-amber-200 dark:border-amber-900/40">
+      <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-2xl text-xs border border-amber-200 dark:border-amber-900/40">
         <p class="font-bold text-amber-800 dark:text-amber-300 mb-1"><i class="fa-solid fa-flask mr-1"></i> Status: Tahap Uji Coba</p>
-        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">Fireman adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
+        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">SATRIA adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
       </div>
 
-      <div class="bg-gray-50 dark:bg-white/5 p-3.5 rounded-xl text-xs border border-gray-100 dark:border-white/10">
-        <p class="font-bold text-gray-700 dark:text-gray-200 mb-1"><i class="fa-solid fa-user-gear mr-1"></i> Pengembang</p>
-        <p class="text-gray-600 dark:text-gray-300">AJI WIDAGDO</p>
-        <a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a>
+      <div class="${card}">
+        <p class="section-title !mb-2 !text-[11px]"><i class="fa-solid fa-circle-info mr-1.5 text-red-500"></i>Info</p>
+        <dl class="text-[13px] space-y-1.5">
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Pengembang</dt><dd class="font-bold text-gray-700 dark:text-gray-200 text-right">AJI WIDAGDO</dd></div>
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Kontak</dt><dd class="text-right"><a href="mailto:ajiwidagdo7@gmail.com" class="text-red-600 dark:text-red-400 font-medium">damkarhub@gmail.com</a></dd></div>
+          <div class="flex justify-between gap-3"><dt class="text-gray-400 font-semibold">Versi</dt><dd class="font-bold text-gray-700 dark:text-gray-200">v${ver}</dd></div>
+        </dl>
       </div>
 
-      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center pt-1">Motto: Pantang Pulang Sebelum Api Padam 🔥</p>
+      <p class="text-[11px] text-gray-400 dark:text-gray-500 text-center pt-1">© 2026 DAMKARHUB</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 italic text-center">Motto: Pantang Pulang Sebelum Api Padam <i class="fa-solid fa-fire text-red-500"></i></p>
     </div>`;
-    UI.openSheet('Tentang Aplikasi', content);
+UI.openSheet('Tentang Aplikasi', content);
   },
 
   async saveSettings(e) {
     e.preventDefault();
     this.settings = {
       ...this.settings,
-      id:'global',
       instansi: document.getElementById('set_instansi').value,
       daerah: document.getElementById('set_daerah').value,
       kantor: document.getElementById('set_kantor').value,
       pimpinan: document.getElementById('set_pimpinan').value
     };
-    try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan disimpan!'); }
+    try { await this._persistSettings(); Helpers.haptic(20); UI.toast('Pengaturan disimpan!'); }
     catch { UI.toast('Gagal simpan', 'error'); }
   },
 
@@ -898,22 +1000,33 @@ renderSistem() {
     e.preventDefault();
     this.settings = {
       ...this.settings,
-      id:'global',
       petugas_nama: document.getElementById('set_petugas_nama').value.trim(),
       petugas_hp: document.getElementById('set_petugas_hp').value.trim(),
-      petugas_jabatan: document.getElementById('set_petugas_jabatan').value.trim(),
-      petugas_dispatch_active: document.getElementById('set_dispatch_active').getAttribute('aria-checked') === 'true'
+      petugas_jabatan: document.getElementById('set_petugas_jabatan').value.trim()
     };
-    try { await DB.put(Config.STORES.settings, this.settings); Helpers.haptic(20); UI.toast('Pengaturan akun disimpan!'); }
+    try { await this._persistSettings(); Helpers.haptic(20); UI.toast('Pengaturan akun disimpan!'); }
     catch { UI.toast('Gagal simpan', 'error'); }
   },
 
   async toggleSetting(btn, key) {
     const on = btn.getAttribute('aria-checked') !== 'true';
     btn.setAttribute('aria-checked', on ? 'true' : 'false');
-    this.settings = { ...this.settings, id:'global', [key]: on };
-    try { await DB.put(Config.STORES.settings, this.settings); }
+    this.settings = { ...this.settings, [key]: on };
+    try { await this._persistSettings(); }
     catch { UI.toast('Gagal simpan', 'error'); }
+  },
+
+  /* Dispatch toggle di Beranda (Issue authfix #4) */
+  async toggleDispatch(btn) {
+    await this.toggleSetting(btn, 'petugas_dispatch_active');
+    this._renderDispatchCard();
+  },
+  _renderDispatchCard() {
+    const on = this.settings?.petugas_dispatch_active !== false;
+    const t = document.getElementById('beranda_dispatch_toggle');
+    if (t) t.setAttribute('aria-checked', on ? 'true' : 'false');
+    const st = document.getElementById('beranda_dispatch_status');
+    if (st) st.textContent = on ? 'Siap terima tugas' : 'Tidak menerima tugas';
   },
 
   _checkBackupReminder() {
@@ -940,7 +1053,7 @@ renderSistem() {
     const a = document.createElement('a');
     a.href = dataStr; a.download = `Damkarhub_Backup_${Date.now()}.json`;
     document.body.appendChild(a); a.click(); a.remove();
-    try { this.settings = { ...this.settings, id:'global', lastBackup: Date.now() }; DB.put(Config.STORES.settings, this.settings).catch(()=>{}); } catch(e){}
+    try { this.settings = { ...this.settings, lastBackup: Date.now() }; this._persistSettings().catch(()=>{}); } catch(e){}
     UI.toast('File backup diunduh! (Termasuk regu & personil)');
   },
 
@@ -1006,14 +1119,15 @@ renderSistem() {
 window.addEventListener('DOMContentLoaded', () => App.boot());
 
 /* ===================== PWA: SPLASH + SERVICE WORKER ===================== */
-// Fade out splash setelah app boot
+// Splash ignite sequence (±3.8s) lalu fade out — logic utuh, tanpa suara (butuh gesture)
+try { document.getElementById('splash-ver').textContent = 'v' + (Config.APP_VERSION || ''); } catch(e){}
 setTimeout(() => {
   const splash = document.getElementById('splash-screen');
   if (splash) {
     splash.style.opacity = '0';
     setTimeout(() => splash.remove(), 700);
   }
-}, 5000);
+}, 3800);
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {
@@ -1024,7 +1138,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-/* ---------- Mode → di-extract ke src/lib/mode.js ---------- */
 
 // Handle PWA shortcut actions (dari long-press icon di home screen)
 (function handleShortcut() {

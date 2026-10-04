@@ -1,4 +1,4 @@
-/* DAMKARHUB Fireman — Service Worker (nama cache diisi otomatis saat `npm run build`) */
+/* DAMKARHUB SATRIA — Service Worker (nama cache diisi otomatis saat `npm run build`) */
 const CACHE_NAME = 'damkarhub-v1.2.0';
 const RUNTIME_CACHE = 'damkarhub-runtime-v1';
 

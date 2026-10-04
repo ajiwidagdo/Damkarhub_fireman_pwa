@@ -100,7 +100,7 @@ export const ModNkcfg = {
     const koorRow = d.koordinat ? P.row('Koordinat', `${d.koordinat} <button onclick="Helpers.openMaps('${String(d.koordinat).replace(/'/g,"\\'")}')" class="ml-1 text-blue-500 text-[10px] font-bold underline">Buka Maps</button>`) : '';
     const mulaiStr = d.jamMulai ? `${d.tglMulai ? Helpers.formatDate(d.tglMulai) : (d.tglTerima ? Helpers.formatDate(d.tglTerima) : tglIndo)} ${d.jamMulai} WIB` : '-';
     const selesaiStr = d.jamSelesai ? `${d.tglSelesai ? Helpers.formatDate(d.tglSelesai) : (d.tglMulai ? Helpers.formatDate(d.tglMulai) : tglIndo)} ${d.jamSelesai} WIB` : '-';
-    return P.header('LAPORAN PENYELAMATAN', '🆘', 'from-amber-500 to-orange-600 shadow-amber-500/20') +
+    return P.header('LAPORAN PENYELAMATAN', '<i class="fa-solid fa-life-ring"></i>', 'from-amber-500 to-orange-600 shadow-amber-500/20') +
       P.section('A. Identitas Laporan', 'fa-file-lines',
         P.row('Hari/Tgl', `${hari}, ${tglIndo}`) + P.row('Pukul', `${d.pukul || '-'} WIB`) + P.row('Jenis', d.jenis || '-'), 'text-amber-600') +
       P.section('B. Waktu Penanganan', 'fa-stopwatch',

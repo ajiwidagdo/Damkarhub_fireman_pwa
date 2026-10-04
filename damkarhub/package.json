@@ -1,8 +1,8 @@
 {
   "name": "damkarhub-fireman",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
-  "description": "DAMKARHUB Fireman — PWA laporan petugas (offline-first)",
+  "description": "DAMKARHUB SATRIA — PWA laporan petugas (offline-first)",
   "scripts": {
     "build": "node scripts/build.mjs"
   },
