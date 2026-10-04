@@ -2,10 +2,36 @@
    Di-extract dari index.html (const Export, 173 baris). Logic 100% identik.
    Dipakai oleh: tombol di panel ekspor (Builders.exportPanel) via onclick
    "Export.generate('<prefix>','excel'|'pdf'") — di-resolve saat runtime.
-   Global: Mod, Helpers, UI, window.jspdf (CDN/vendor).
+   Global: Mod, Helpers, UI.
+   jsPDF + AutoTable di-LAZY-LOAD saat export PDF pertama kali
+   (hemat ~400 KB blocking di <head>). Lihat _ensureJsPDF().
    ========================================================================= */
 export const Export = {
-  generate(module, type) {
+  _jspdfPromise: null,
+  _loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src; s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('Gagal memuat ' + src));
+      document.head.appendChild(s);
+    });
+  },
+  _ensureJsPDF() {
+    if (window.jspdf) return Promise.resolve();
+    if (this._jspdfPromise) return this._jspdfPromise;
+    const local = ['vendor/jspdf.umd.min.js', 'vendor/jspdf.plugin.autotable.min.js'];
+    const cdn = ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js'];
+    const loadPair = (pair) => this._loadScript(pair[0]).then(() => this._loadScript(pair[1]));
+    // Coba lokal (dist/production) dulu, fallback ke CDN (dev)
+    this._jspdfPromise = loadPair(local).catch(() => loadPair(cdn)).catch((e) => {
+      this._jspdfPromise = null; // boleh coba lagi
+      throw e;
+    });
+    return this._jspdfPromise;
+  },
+  async generate(module, type) {
     const m = Mod[module];
     const p = document.getElementById(`${module}_ex_period`).value;
     const mIdx = parseInt(document.getElementById(`${module}_ex_month`).value);
@@ -29,7 +55,7 @@ export const Export = {
     const title = module === 'k' ? 'DATA KEBAKARAN' : module === 'nk' ? 'DATA NON KEBAKARAN' : 'DATA SOSIALISASI';
     const fileName = `Laporan_${module.toUpperCase()}_${Date.now()}`;
     if (type === 'excel') this._toCSV(title, periodText, head, rows, fileName);
-    else this._toPDF(title, periodText, head, rows, fileName);
+    else await this._toPDF(title, periodText, head, rows, fileName);
   },
   _buildTable(module, filtered, cols) {
     if (module === 'k') return this._buildK(filtered, cols);
@@ -161,7 +187,12 @@ export const Export = {
     document.body.appendChild(a); a.click(); a.remove();
     UI.toast('Berhasil Ekspor Excel (CSV)!');
   },
-  _toPDF(title, periodText, head, rows, fileName) {
+  async _toPDF(title, periodText, head, rows, fileName) {
+    if (!window.jspdf) {
+      UI.toast('Menyiapkan PDF...', 'info');
+      try { await this._ensureJsPDF(); }
+      catch { return UI.toast('Gagal memuat library PDF. Cek koneksi internet.', 'error'); }
+    }
     if (!window.jspdf) return UI.toast('Library PDF belum siap.', 'info');
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });

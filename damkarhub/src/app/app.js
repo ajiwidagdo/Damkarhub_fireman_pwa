@@ -394,7 +394,10 @@ const App = {
       const n = this._exportRowCount(prefix);
       if (!n) { UI.toast('Tidak ada laporan untuk periode ini', 'error'); return; }
       UI.toast(kind === 'pdf' ? 'Menyiapkan PDF…' : 'Menyiapkan CSV…', 'info');
-      if (typeof Export !== 'undefined' && Export.generate) Export.generate(prefix, kind);
+      if (typeof Export !== 'undefined' && Export.generate) {
+        // generate() async (lazy-load jsPDF) — tangkap rejection agar tidak unhandled
+        Promise.resolve(Export.generate(prefix, kind)).catch(e => console.error('[export]', e));
+      }
     } catch(e){}
   },
 
