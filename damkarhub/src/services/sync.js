@@ -13,7 +13,32 @@ export const Sync = {
     if (owner) row.owner = owner;
     const tenant = this._tenantId();
     if (tenant) row.tenant_id = tenant;
+    // syncfix2: kirim status + timestamp (Komando butuh) — hanya untuk upsert
+    if (!deleted) {
+      row.status = 'DONE';
+      const iat = this._ts(data.tanggal, data.pukul);
+      if (iat) row.incident_at = iat;
+      const rat = this._receivedTs(module, data);
+      if (rat) row.report_received_at = rat;
+    }
     return row;
+  },
+  // 'YYYY-MM-DD' + 'HH:MM' -> 'YYYY-MM-DD HH:MM:00+07' (WIB) atau null
+  _ts(tgl, jam) {
+    if (!tgl) return null;
+    const t = String(tgl).slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(t)) return null;
+    let j = String(jam || '00:00').slice(0, 5);
+    if (!/^\d{2}:\d{2}$/.test(j)) j = '00:00';
+    return `${t} ${j}:00+07`;
+  },
+  // report_received_at per kategori + fallback (data lama -> null, no crash)
+  _receivedTs(module, d) {
+    if (!d) return null;
+    if (module === 'sos') return this._ts(d.tanggal, d.pukul);
+    return this._ts(d.tglTerima, d.jamTerima)
+        || this._ts(d.tglMulai, d.jamMulai)
+        || this._ts(d.tanggal, d.pukul);
   },
   _busy: false, _timer: null, _deb: null, _lastError: '', _lastSync: null,
 
