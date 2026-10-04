@@ -79,3 +79,13 @@ create policy "ubah milik sendiri atau admin" on public.reports
 -- 6) Jadikan akun tertentu sebagai admin (ganti email, jalankan SETELAH akun dibuat di Authentication → Users)
 -- insert into public.admins (user_id)
 --   select id from auth.users where email = 'admin@contoh.go.id';
+
+-- =====================================================================
+-- 7) MULTI-TENANT (4 Okt 2026) — untuk setup FRESH, jalankan file ini
+--    DULU lalu lanjutkan ke:
+--      supabase/migrations/20261004-multi-tenant.sql
+--    File migrasi tersebut idempoten dan mencakup: tabel tenants,
+--    profiles, transfer_log, kolom baru reports, RLS hierarki
+--    (kota → provinsi → nasional), RPC my_reports & transfer_report,
+--    dan seed tenant Kota Banjar.
+-- =====================================================================

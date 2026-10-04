@@ -47,7 +47,8 @@ Satu tabel ini menyelesaikan 3 masalah: isolasi data, penentuan wilayah otomatis
 ```sql
 create table public.profiles (
   user_id   uuid primary key references auth.users(id) on delete cascade,
-  tenant_id uuid references public.tenants(id),   -- null untuk nasional
+  tenant_id uuid references public.tenants(id),   -- null untuk nasional / admin_provinsi
+  provinsi  text,                                 -- diisi untuk admin_provinsi (mis. 'Jawa Barat')
   peran     text not null check (peran in ('petugas','admin_kota','admin_provinsi','nasional')),
   regu      text,                                  -- 'Regu 1' dst (petugas)
   created_at timestamptz not null default now()
@@ -167,7 +168,30 @@ MVP: lapis 1 + 2 + 4.
 
 ---
 
-## 9. Backlog / Belum Didesain Detail
+## 9. Penyimpanan Foto — Cloudinary (keputusan 4 Okt 2026)
+
+**Keputusan:** foto disimpan di Cloudinary, bukan Supabase. Supabase hanya simpan URL string di `photo_urls text[]` — DB bersih, hanya data laporan.
+
+**Alasan:** free tier puluhan GB (usage ~belasan MB/bulan, sangat aman); thumbnail via transform URL tanpa code tambahan; media terpisah dari DB.
+
+**Alur (offline-first):**
+1. Foto diambil → kompres client-side → antre di IndexedDB
+2. Online → upload ke Cloudinary (unsigned preset; folder `damkarhub/{tenant_id}/{report_id}/`; batas: image only, maks 5 MB)
+3. URL masuk `photo_urls`; report di-push ke Supabase
+
+**Thumbnail gratis (tanpa code canvas):**
+```
+.../w_300/foto.jpg   → list/riwayat
+.../w_1200/foto.jpg  → detail laporan
+```
+
+**Dampak SATRIA:** rewrite alur foto (hapus base64 dari JSONB), sync 2 tahap (upload foto → push report), view baca URL, export PDF fetch URL. Estimasi 1–2 hari. SUAR (baru) langsung pakai pola ini dari awal.
+
+**Data lama: CLEAN BREAK.** SATRIA belum resmi digunakan → data + foto lama boleh hilang. Tidak ada dual support, tidak ada migrasi foto lama. Skema baru tanpa backward compatibility.
+
+---
+
+## 10. Backlog / Belum Didesain Detail
 
 - Retensi & PII: berapa lama data warga disimpan; maskir PII di export CSV/PDF.
 - Pemeliharaan bbox: proses update batas wilayah berkala.
@@ -177,15 +201,36 @@ MVP: lapis 1 + 2 + 4.
 
 ---
 
-## 10. Estimasi
+## 11. Estimasi
 
 | Pekerjaan | Estimasi |
 |---|---|
 | Tabel `tenants` + `profiles` + `transfer_log` + RLS | 1 hari |
+| Setup Cloudinary (preset + folder + panduan) | 0,5 hari |
+| SATRIA: rewrite foto → Cloudinary | 1–2 hari |
 | Clustering (DB + SUAR prompt + Komando gabung) | 1–2 hari |
 | Anti-prank MVP (rate limit + triase + sanitas) | 1 hari |
 | Anon RLS (policy + RPC + device_id) | 0,5–1 hari |
 | Transfer UI Komando + audit | 0,5 hari |
-| **Total** | **~4–5 hari** |
+| **Total** | **~5–7 hari** |
 
 Paralel dengan seed data real Banjar (independen).
+
+---
+
+## 12. Strategi Anti Lock-in / Portabilitas (keputusan 4 Okt 2026)
+
+**Prinsip:** escape hatch murah > abstraksi mahal.
+
+**Database — Postgres murni.** `pg_dump` kapan pun → restore ke Postgres mana pun (self-host, VPS, RDS, Neon). Asuransi nyata = **backup terjadwal** (cron mingguan) disimpan di luar Supabase, bukan abstraksi code.
+
+**Auth — catatan skala.** Saat ini 8 user internal (undang ulang = 10 menit, non-issue). Jika tumbuh ke 1000+:
+- Password hash Supabase = **bcrypt → exportable** (`auth.users`) dan dapat diimpor ke sebagian besar sistem auth. Bukan dead-end.
+- Tabel `profiles` di schema `public` = direktori user yang portable; **email sebagai join key stabil** antar sistem.
+- Hindari fitur auth eksotis GoTrue; pakai email/password + OAuth standar saja.
+- Hati-hati MFA: secret TOTP sulit dimigrasi → user mungkin perlu re-enroll saat pindah provider. Dokumentasikan sejak awal.
+- Runbook migrasi auth: export users → import hash → re-link `profiles` via email → user re-login (sesi lama hangus, acceptable).
+
+**Foto (Cloudinary).** `photo_urls` = URL penuh → migrasi = download massal via Admin API → upload ke provider baru → update kolom via script sekali jalan. Folder `damkarhub/{tenant_id}/{report_id}/` membuat bulk download terstruktur. Thumbnail via **satu helper** `photoUrl(url, size)` — ganti provider = ubah 1 fungsi, bukan 50 file.
+
+**Disiplin code.** Satu lapisan data-access per app (SATRIA: modul `Sync`; SUAR/KOMANDO wajib ikut). Tidak perlu abstraksi multi-backend generik — over-engineering.
