@@ -1031,25 +1031,15 @@ UI.openSheet('Tentang Aplikasi', content);
     if (st) st.textContent = on ? 'Siap terima tugas' : 'Tidak menerima tugas';
   },
 
-  /* Detail sync via bottom sheet (dari badge Beranda) */
-  showSyncDetail() {
+  /* Aksi 1-tap dari badge sync Beranda: langsung eksekusi, tanpa sheet.
+     Aman: sync tidak pernah menimpa perubahan lokal (pending lokal selalu menang). */
+  syncNow() {
     Helpers.haptic(8);
-    const s = (typeof Sync !== 'undefined' && Sync._session()) ? Sync._session() : null;
-    const t = document.getElementById('syncBadgeTitle')?.textContent || '-';
-    const sub = document.getElementById('syncBadgeSub')?.textContent || '';
-    let action;
     if (typeof Sync === 'undefined' || !Sync.enabled()) {
-      action = '<p class="text-xs text-gray-400">Sinkronisasi belum dikonfigurasi di perangkat ini. Aplikasi berjalan lokal.</p>';
-    } else if (!s) {
-      action = '<button type="button" onclick="UI.closeSheet();Auth.showLogin()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl active:scale-[.98]"><i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk Akun</button>';
-    } else {
-      action = '<button type="button" onclick="UI.closeSheet();Sync.run({manual:true})" class="w-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 active:scale-[.98]"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>';
+      UI.toast('Sinkronisasi belum dikonfigurasi di perangkat ini.', 'info'); return;
     }
-    UI.openSheet('Status Sinkron',
-      '<div class="text-left space-y-2 text-[13px] mb-4">'
-      + '<div class="flex justify-between gap-3"><span class="text-gray-400">Status</span><span class="font-bold text-gray-800 dark:text-gray-100 text-right">' + t + '</span></div>'
-      + (sub ? '<div class="flex justify-between gap-3"><span class="text-gray-400">Info</span><span class="font-bold text-gray-800 dark:text-gray-100 text-right truncate max-w-[60%]">' + sub + '</span></div>' : '')
-      + '</div>' + action);
+    if (!Sync.isLoggedIn()) { Auth.showLogin(); return; }
+    Sync.run({ manual: true });
   },
 
   _checkBackupReminder() {
