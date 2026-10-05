@@ -9,6 +9,7 @@
 --     sebelum menjalankan file ini.
 --
 -- ISI:
+--   0. Backup darurat (tabel duplikat, karena free tier tanpa backup manual)
 --   1. Tabel tenants (+ seed Kota Banjar)
 --   2. Tabel profiles (user → tenant + peran)
 --   3. Tabel transfer_log (audit pemindahan laporan)
@@ -20,6 +21,16 @@
 --   9. CLEAN BREAK: hapus data demo lama
 --  10. Template profiles untuk 8 user Banjar (isi manual)
 -- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 0) BACKUP DARURAT — duplikat tabel sebelum migrasi.
+--     Free tier tidak punya backup manual dashboard; tabel ini jadi
+--     jaring pengaman. HAPUS setelah go-live stabil:
+--       drop table public.reports_backup_20251005;
+--       drop table public.admins_backup_20251005;
+-- ---------------------------------------------------------------------
+create table if not exists public.reports_backup_20251005 as select * from public.reports;
+create table if not exists public.admins_backup_20251005 as select * from public.admins;
 
 -- ---------------------------------------------------------------------
 -- 1) Tabel tenants — direktori wilayah (public, dibaca anon juga)
