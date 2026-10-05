@@ -120,7 +120,7 @@ create policy "ubah profil oleh admin" on public.profiles
 -- ---------------------------------------------------------------------
 create table if not exists public.transfer_log (
   id          uuid primary key default gen_random_uuid(),
-  report_id   text not null references public.reports(id) on delete cascade,
+  report_id   uuid not null references public.reports(id) on delete cascade,
   dari_tenant uuid not null references public.tenants(id),
   ke_tenant   uuid not null references public.tenants(id),
   alasan      text not null,
@@ -144,7 +144,7 @@ create policy "tulis log transfer oleh admin" on public.transfer_log
 -- ---------------------------------------------------------------------
 -- 4) Kolom baru di reports
 -- ---------------------------------------------------------------------
-alter table public.reports add column if not exists parent_id      text references public.reports(id);
+alter table public.reports add column if not exists parent_id      uuid references public.reports(id);
 alter table public.reports add column if not exists device_id      text;
 alter table public.reports add column if not exists tracking_token uuid not null default gen_random_uuid();
 alter table public.reports add column if not exists is_verified   boolean not null default false;
@@ -267,7 +267,7 @@ grant execute on function public.my_reports(text) to anon, authenticated;
 
 -- 7b) Transfer laporan antar wilayah + audit otomatis.
 create or replace function public.transfer_report(
-  p_report_id text, p_ke_tenant uuid, p_alasan text)
+  p_report_id uuid, p_ke_tenant uuid, p_alasan text)
 returns void
 language plpgsql security definer set search_path = public as $$
 declare v_dari uuid; v_uid uuid := auth.uid();
@@ -292,8 +292,8 @@ begin
   insert into public.transfer_log (report_id, dari_tenant, ke_tenant, alasan, oleh)
     values (p_report_id, v_dari, p_ke_tenant, trim(p_alasan), v_uid);
 end $$;
-revoke all on function public.transfer_report(text, uuid, text) from public;
-grant execute on function public.transfer_report(text, uuid, text) to authenticated;
+revoke all on function public.transfer_report(uuid, uuid, text) from public;
+grant execute on function public.transfer_report(uuid, uuid, text) to authenticated;
 
 -- 7c) join_tenant: user masuk via kode → dapat tenant_id + auto-provision profiles.
 --     Dipakai SATRIA saat login (SyncConfig.DEFAULT_TENANT_CODE).
