@@ -937,7 +937,7 @@ renderSistem() {
     const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-3">
       <div class="${card}">
         <div class="flex items-center gap-3">
-          <div class="brand-mark" style="width:48px;height:48px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
+          <div style="width:48px;height:48px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.15);"><img src="icons/icon-192.png" alt="SATRIA" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="min-w-0">
             <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">SATRIA</span></p>
             <p class="text-[11px] text-gray-400">Satuan Responder Insiden Api</p>
