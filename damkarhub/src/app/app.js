@@ -114,6 +114,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
+      // Splash hilang segera setelah UI inti siap (lebih cepat dari timer 3.8s)
+      this._hideSplash();
       // Auth wajib: guard sesi → tampilkan login screen bila belum login
       await Auth.guard();
     } catch (err) {
@@ -170,6 +172,18 @@ const App = {
     try {
       document.body.classList.add('auth-locked'); // sembunyikan app shell
       document.getElementById('storage-error-screen')?.classList.remove('hidden');
+    } catch (e) {}
+  },
+
+  // Sembunyikan splash — dipanggil saat boot selesai; aman dipanggil berulang (idempoten)
+  _hideSplash() {
+    try {
+      const splash = document.getElementById('splash-screen');
+      if (splash && !splash.dataset.hiding) {
+        splash.dataset.hiding = '1';
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 700);
+      }
     } catch (e) {}
   },
 
@@ -1132,15 +1146,9 @@ UI.openSheet('Tentang Aplikasi', content);
 window.addEventListener('DOMContentLoaded', () => App.boot());
 
 /* ===================== PWA: SPLASH + SERVICE WORKER ===================== */
-// Splash ignite sequence (±3.8s) lalu fade out — logic utuh, tanpa suara (butuh gesture)
+// Splash: hilang saat boot selesai (App._hideSplash); timer 3.8s ini fallback bila boot gagal/lama
 try { document.getElementById('splash-ver').textContent = 'v' + (Config.APP_VERSION || ''); } catch(e){}
-setTimeout(() => {
-  const splash = document.getElementById('splash-screen');
-  if (splash) {
-    splash.style.opacity = '0';
-    setTimeout(() => splash.remove(), 700);
-  }
-}, 3800);
+setTimeout(() => { try { App._hideSplash(); } catch (e) {} }, 3800);
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {

@@ -33,9 +33,17 @@ cpSync(path.join(root, 'manifest.json'), out('manifest.json'));
 cpSync(path.join(root, 'icons'), out('icons'), { recursive: true });
 if (existsSync(path.join(root, 'assets'))) cpSync(path.join(root, 'assets'), out('assets'), { recursive: true });
 
-console.log('→ Menyalin src/ (modul ES: builders.js, dll)');
-if (existsSync(path.join(root, 'src'))) cpSync(path.join(root, 'src'), out('src'), { recursive: true });
-else { console.error('✗ Folder src/ tidak ada — index.html memuat src/ui/builders.js'); process.exit(1); }
+console.log('→ Bundling JS (esbuild: 15 modul → 1 file)');
+const esb = need(nm('esbuild', 'bin', 'esbuild'), 'Jalankan `npm install` dulu.');
+mkdirSync(out('assets'), { recursive: true });
+execFileSync(esb, [
+  path.join(root, 'src', 'entry.js'),
+  '--bundle', '--minify', '--format=esm', '--target=es2020',
+  '--outfile=' + out('assets', 'app.bundle.js'),
+], { cwd: root, stdio: 'inherit' });
+// config.js tetap classic script terpisah (dibutuhkan inline script saat parse)
+mkdirSync(out('src', 'lib'), { recursive: true });
+cpSync(path.join(root, 'src', 'lib', 'config.js'), out('src', 'lib', 'config.js'));
 
 console.log('→ Kompilasi Tailwind');
 const tw = need(nm('tailwindcss', 'lib', 'cli.js'), 'Jalankan `npm install` dulu.');
