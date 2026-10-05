@@ -51,7 +51,7 @@ class ReportModule {
     const s = this.cfg.computeStats(filtered, prevFiltered);
     const reguRank = {};
     filtered.forEach(d => {
-      if (d.regu) d.regu.split('\n').filter(r => r.trim()).forEach(r => {
+      if (d.regu) d.regu.split(/[,\n|]/).filter(r => r.trim()).forEach(r => {
         const nm = r.trim().toUpperCase();
         reguRank[nm] = (reguRank[nm] || 0) + 1;
       });
