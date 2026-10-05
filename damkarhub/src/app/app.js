@@ -23,7 +23,7 @@ const App = {
       { id:'regu-a',   nama:'Regu A',   urutan:1 },
       { id:'regu-b',   nama:'Regu B',   urutan:2 },
       { id:'regu-c',   nama:'Regu C',   urutan:3 },
-      { id:'regu-non', nama:'Non Regu', urutan:4 }
+      { id:'regu-non', nama:'Administrasi', urutan:4 }
     ];
   },
 
