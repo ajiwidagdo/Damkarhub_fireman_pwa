@@ -314,25 +314,31 @@ export const Sync = {
 
   /* ---------- Tampilan kartu di tab Sistem ---------- */
   async updateUI() {
-    const st = document.getElementById('syncStatus'); if (!st) return;
-    const login = document.getElementById('syncLoginBox'), act = document.getElementById('syncActionBox');
+    const badge = document.getElementById('syncBadge'); if (!badge) return;
+    const icon = document.getElementById('syncBadgeIcon'),
+          title = document.getElementById('syncBadgeTitle'),
+          sub = document.getElementById('syncBadgeSub'),
+          time = document.getElementById('syncBadgeTime');
+    const fmtT = d => (d ? d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '');
+    const set = (ic, t, s, tm) => {
+      icon.textContent = ic; title.textContent = t;
+      sub.textContent = s || ''; sub.style.display = s ? '' : 'none';
+      time.textContent = tm || '';
+    };
     if (!this.enabled()) {
-      st.textContent = 'Belum dikonfigurasi. Aplikasi berjalan lokal (data hanya tersimpan di perangkat ini).';
-      login?.classList.add('hidden'); act?.classList.add('hidden'); return;
+      set('📴', 'Mode Lokal', 'Data hanya di perangkat ini', ''); return;
     }
     const s = this._session();
     if (!s) {
-      st.textContent = this._lastError || 'Belum masuk. Login agar laporan otomatis terkirim ke server pusat.';
-      login?.classList.remove('hidden'); act?.classList.add('hidden'); return;
+      set('🔒', 'Belum masuk akun', this._lastError || 'Tap untuk login', ''); return;
     }
     let pending = 0;
     try { pending = (await DB.getAll(Config.STORES.sync)).length; } catch {}
-    const lines = ['Masuk sebagai ' + (s.email || 'petugas')];
-    lines.push(this._busy ? 'Sedang sinkron…' : (pending ? pending + ' laporan menunggu terkirim' : 'Semua laporan sudah tersinkron'));
-    if (this._lastSync && !this._busy) lines.push('Terakhir: ' + this._lastSync.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
-    if (this._lastError) lines.push('⚠ ' + this._lastError);
-    st.textContent = lines.join('\n');
-    login?.classList.add('hidden'); act?.classList.remove('hidden');
+    const email = s.email || 'petugas', tm = fmtT(this._lastSync);
+    if (this._lastError)      set('⚠️', 'Gangguan sinkron', this._lastError, tm);
+    else if (this._busy)      set('🔄', 'Sedang sinkron…', email, tm);
+    else if (pending)         set('⚠️', pending + ' laporan menunggu', email, tm);
+    else                      set('🔄', 'Sinkron Aktif', email, tm);
   }
 };
 globalThis.Sync = Sync;

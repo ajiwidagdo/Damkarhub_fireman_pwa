@@ -615,6 +615,19 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     </div>
   </div>
 
+  <!-- Sync compact badge -->
+  <div class="mb-5">
+    <button type="button" id="syncBadge" onclick="App.syncNow()" class="w-full bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm px-4 py-3 flex items-center gap-3 text-left active:scale-[.99]" aria-label="Sinkron sekarang">
+      <span id="syncBadgeIcon" class="text-lg leading-none w-6 text-center shrink-0">🔄</span>
+      <span class="min-w-0 flex-1">
+        <span id="syncBadgeTitle" class="block text-[13px] font-bold text-gray-800 dark:text-gray-100 truncate">Memuat…</span>
+        <span id="syncBadgeSub" class="block text-[11px] text-gray-400 truncate"></span>
+      </span>
+      <span id="syncBadgeTime" class="text-[11px] text-gray-400 shrink-0"></span>
+      <i class="fa-solid fa-chevron-right text-gray-300 dark:text-gray-600 text-xs shrink-0"></i>
+    </button>
+  </div>
+
   <div class="mb-5">
     <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
       <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center mb-3">Status Layanan</p>
@@ -1237,7 +1250,6 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     <button type="button" class="chip-nav-btn is-active" data-stab="umum" onclick="UI.switchSistemTab('umum')">Umum</button>
     <button type="button" class="chip-nav-btn" data-stab="akun" onclick="UI.switchSistemTab('akun')">Akun</button>
     <button type="button" class="chip-nav-btn" data-stab="tim" onclick="UI.switchSistemTab('tim')">Tim</button>
-    <button type="button" class="chip-nav-btn" data-stab="sinkron" onclick="UI.switchSistemTab('sinkron')">Sinkron</button>
     <button type="button" class="chip-nav-btn" data-stab="notifikasi" onclick="UI.switchSistemTab('notifikasi')">Notifikasi</button>
     <button type="button" class="chip-nav-btn" data-stab="backup" onclick="UI.switchSistemTab('backup')">Backup</button>
   </nav>
@@ -1309,17 +1321,6 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
     <div id="personil-empty" class="hidden text-center py-6 text-gray-400">
       <i class="fa-solid fa-user-slash text-3xl mb-2"></i>
       <p class="text-xs">Belum ada personil. Tap "+ Personil" untuk menambah.</p>
-    </div>
-    </div>
-  </div>
-
-  <!-- 4. Sinkron -->
-  <div class="sys-panel hidden" data-spanel="sinkron" id="syncCard">
-    <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
-    <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase text-center mb-4">Sinkronisasi Pusat</p>
-    <p id="syncStatus" class="text-xs text-gray-500 dark:text-gray-400 mb-3 whitespace-pre-line">Memuat...</p>
-      <div id="syncActionBox" class="hidden">
-      <button type="button" onclick="Sync.run({manual:true})" class="w-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 active:scale-[.98]"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>
     </div>
     </div>
   </div>

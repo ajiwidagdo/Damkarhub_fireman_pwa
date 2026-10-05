@@ -937,7 +937,7 @@ renderSistem() {
     const content = `<div class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-300 space-y-3">
       <div class="${card}">
         <div class="flex items-center gap-3">
-          <div class="brand-mark" style="width:48px;height:48px;flex-shrink:0;"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#ic-flame"/></svg></div>
+          <div style="width:48px;height:48px;flex-shrink:0;border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.15);"><img src="icons/icon-192.png" alt="SATRIA" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="min-w-0">
             <p class="font-black text-gray-800 dark:text-white leading-tight">DAMKARHUB <span class="text-red-600 dark:text-red-400 italic">SATRIA</span></p>
             <p class="text-[11px] text-gray-400">Satuan Responder Insiden Api</p>
@@ -965,7 +965,7 @@ renderSistem() {
 
       <div class="bg-amber-50 dark:bg-amber-900/20 p-3.5 rounded-2xl text-xs border border-amber-200 dark:border-amber-900/40">
         <p class="font-bold text-amber-800 dark:text-amber-300 mb-1"><i class="fa-solid fa-flask mr-1"></i> Status: Tahap Uji Coba</p>
-        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">SATRIA adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB Mobile</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
+        <p class="text-amber-800/90 dark:text-amber-300/90 leading-relaxed">SATRIA adalah satu dari tiga aplikasi yang saling terhubung — bersama <strong>DAMKARHUB Komando</strong> dan <strong>DAMKARHUB SUAR</strong>. Selama tahap uji coba, sebagian alur (seperti penugasan otomatis dari Komando) belum aktif sampai ketiganya terhubung penuh.</p>
       </div>
 
       <div class="${card}">
@@ -1019,6 +1019,8 @@ UI.openSheet('Tentang Aplikasi', content);
   /* Dispatch toggle di Beranda (Issue authfix #4) */
   async toggleDispatch(btn) {
     await this.toggleSetting(btn, 'petugas_dispatch_active');
+    const on = this.settings?.petugas_dispatch_active !== false;
+    Helpers.haptic(on ? [10, 30, 10] : [30]); // ON: "siap" · OFF: tegas
     this._renderDispatchCard();
   },
   _renderDispatchCard() {
@@ -1027,6 +1029,17 @@ UI.openSheet('Tentang Aplikasi', content);
     if (t) t.setAttribute('aria-checked', on ? 'true' : 'false');
     const st = document.getElementById('beranda_dispatch_status');
     if (st) st.textContent = on ? 'Siap terima tugas' : 'Tidak menerima tugas';
+  },
+
+  /* Aksi 1-tap dari badge sync Beranda: langsung eksekusi, tanpa sheet.
+     Aman: sync tidak pernah menimpa perubahan lokal (pending lokal selalu menang). */
+  syncNow() {
+    Helpers.haptic(8);
+    if (typeof Sync === 'undefined' || !Sync.enabled()) {
+      UI.toast('Sinkronisasi belum dikonfigurasi di perangkat ini.', 'info'); return;
+    }
+    if (!Sync.isLoggedIn()) { Auth.showLogin(); return; }
+    Sync.run({ manual: true });
   },
 
   _checkBackupReminder() {
