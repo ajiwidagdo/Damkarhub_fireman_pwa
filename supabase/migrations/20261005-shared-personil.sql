@@ -155,30 +155,26 @@ create trigger trg_report_history
   for each row execute function public.log_report_history();
 
 -- ---------------------------------------------------------------------
--- 5) RLS reports: hapus (soft delete) hanya admin
---    Non-admin tidak boleh mengubah flag `deleted`
+-- 5) Hapus (soft delete) hanya admin — via trigger (OLD/NEW tersedia)
+--    RLS WITH CHECK tidak bisa referensi OLD, jadi pakai trigger.
 -- ---------------------------------------------------------------------
-drop policy if exists "ubah sesuai wilayah" on public.reports;
-create policy "ubah sesuai wilayah" on public.reports
-  for update to authenticated
-  using (
-    public.is_admin()
-    or tenant_id = public.my_tenant_id()
-    or (public.my_peran() = 'admin_provinsi'
-        and tenant_id in (select id from public.tenants
-                          where provinsi = public.my_provinsi()))
-  )
-  with check (
-    -- Non-admin dilarang mengubah flag deleted (baik hapus maupun un-hapus)
-    (public.is_admin() or OLD.deleted is not distinct from NEW.deleted)
-    and (
-      public.is_admin()
-      or tenant_id = public.my_tenant_id()
-      or (public.my_peran() = 'admin_provinsi'
-          and tenant_id in (select id from public.tenants
-                            where provinsi = public.my_provinsi()))
-    )
-  );
+create or replace function public.check_delete_admin()
+returns trigger as $$
+begin
+  if OLD.deleted is distinct from NEW.deleted and not public.is_admin() then
+    raise exception 'Hanya admin yang dapat menghapus/mengembalikan laporan';
+  end if;
+  return NEW;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists trg_check_delete_admin on public.reports;
+create trigger trg_check_delete_admin
+  before update on public.reports
+  for each row
+  when (OLD.deleted is distinct from NEW.deleted)
+  execute function public.check_delete_admin();
+-- (Policy "ubah sesuai wilayah" tetap seperti semula — tidak diubah)
 
 -- ---------------------------------------------------------------------
 -- 6) Template: set 2 akun admin Banjar
@@ -196,5 +192,6 @@ create policy "ubah sesuai wilayah" on public.reports
 --   select * from public.regu limit 1;       -- tabel ada
 --   select * from public.report_history limit 1; -- tabel ada
 --   select trigger_name from information_schema.triggers
---     where event_object_table in ('reports'); -- 2 trigger aktif
+--     where event_object_table in ('reports'); -- 3 trigger aktif
+--     (trg_report_audit, trg_report_history, trg_check_delete_admin)
 -- ============================================================================
