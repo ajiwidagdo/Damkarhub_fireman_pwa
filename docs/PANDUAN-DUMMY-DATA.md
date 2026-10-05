@@ -5,7 +5,7 @@ Cara membuat data dummy banyak sekaligus untuk testing/demo, tanpa input manual 
 ## Alur singkat
 
 ```
-Isi CSV → node scripts/csv-to-sql.mjs → docs/seed-dummy-YYYY-MM-DD.sql → paste ke Supabase SQL Editor → Run
+Isi CSV → node scripts/csv-to-sql.mjs --tenant <UUID> --owner-email <email> → docs/seed-dummy-YYYY-MM-DD.sql → paste ke Supabase SQL Editor → Run
 ```
 
 ## 1. Ambil template CSV
@@ -51,12 +51,21 @@ Field wajib (baris tanpa ini di-skip dengan warning):
 Butuh **Node.js** (v18+). Di terminal, dari root repo:
 
 ```bash
-node scripts/csv-to-sql.mjs
+# Untuk data Banjar (tenant + owner wajib diisi):
+node scripts/csv-to-sql.mjs \
+  --tenant a499d44d-b620-4fcd-b402-7d8f4823310b \
+  --owner-email damkarbjr@gmail.com
 ```
+
+Parameter:
+- `--tenant <UUID>` — Tenant ID tujuan (wajib)
+- `--owner-email <email>` — Email pemilik data, harus ada di auth.users (wajib)
+- `--input <dir>` — Folder CSV (default: docs/)
+- `--output <file>` — File SQL output (default: docs/seed-dummy-YYYY-MM-DD.sql)
 
 Output:
 ```
-OK: 3 row (1 k / 1 nk / 1 sos) → docs/seed-dummy-2026-10-04.sql
+OK: 3 row (1 k / 1 nk / 1 sos) → docs/seed-dummy-2026-10-05.sql
 ```
 
 File SQL berisi `BEGIN;` → guard akun → `INSERT ... ON CONFLICT (id) DO UPDATE` → `COMMIT;` + verify query. **Idempoten** — aman dijalankan ulang.
