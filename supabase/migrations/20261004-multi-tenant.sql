@@ -9,6 +9,7 @@
 --     sebelum menjalankan file ini.
 --
 -- ISI:
+--   0. Backup darurat (tabel duplikat, karena free tier tanpa backup manual)
 --   1. Tabel tenants (+ seed Kota Banjar)
 --   2. Tabel profiles (user → tenant + peran)
 --   3. Tabel transfer_log (audit pemindahan laporan)
@@ -20,6 +21,30 @@
 --   9. CLEAN BREAK: hapus data demo lama
 --  10. Template profiles untuk 8 user Banjar (isi manual)
 -- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 0) BACKUP DARURAT — duplikat tabel sebelum migrasi.
+--     Free tier tidak punya backup manual dashboard; tabel ini jadi
+--     jaring pengaman. HAPUS setelah go-live stabil:
+--       drop table public.reports_backup_20251005;
+--       drop table public.admins_backup_20251005;
+-- ---------------------------------------------------------------------
+create table if not exists public.reports_backup_20251005 as select * from public.reports;
+create table if not exists public.admins_backup_20251005 as select * from public.admins;
+create table if not exists public.tenants_backup_20251005 as select * from public.tenants;
+-- (tabel eksperimen ber-FK ke tenants ikut aman: hanya constraint-nya yang ikut ter-drop di bawah)
+create table if not exists public.account_tenants_backup_20251005 as select * from public.account_tenants;
+create table if not exists public.regu_backup_20251005 as select * from public.regu;
+create table if not exists public.personil_backup_20251005 as select * from public.personil;
+
+-- ---------------------------------------------------------------------
+-- 0b) Tabel tenants LAMA (skema demo: tenant_id/parent_tenant_id/level)
+--     tidak kompatibel dengan skema final. Sudah di-backup di atas.
+--     CASCADE: ikut melepas FK dari tabel eksperimen (account_tenants,
+--     regu, personil, admins, reports) — datanya TIDAK ikut terhapus.
+--     DROP agar CREATE di bawah berjalan bersih.
+-- ---------------------------------------------------------------------
+drop table if exists public.tenants cascade;
 
 -- ---------------------------------------------------------------------
 -- 1) Tabel tenants — direktori wilayah (public, dibaca anon juga)
@@ -35,6 +60,7 @@ create table if not exists public.tenants (
   bbox_max_lng    double precision,
   is_active       boolean not null default false,
   emergency_phone text,
+  code            text unique, -- kode join (mis. 'DAMKARHUB.BANJAR113'), dipakai SyncConfig.DEFAULT_TENANT_CODE
   created_at      timestamptz not null default now()
 );
 
@@ -51,15 +77,16 @@ create policy "direktori wilayah publik" on public.tenants
 insert into public.tenants
   (id, nama, tipe, provinsi,
    bbox_min_lat, bbox_max_lat, bbox_min_lng, bbox_max_lng,
-   is_active, emergency_phone)
+   is_active, emergency_phone, code)
 values
   ('a499d44d-b620-4fcd-b402-7d8f4823310b',
    'Kota Banjar', 'kota', 'Jawa Barat',
    -7.43, -7.31, 108.47, 108.62,
-   true, '113')
+   true, '113', 'DAMKARHUB.BANJAR113')
 on conflict (id) do update set
   nama = excluded.nama, tipe = excluded.tipe, provinsi = excluded.provinsi,
-  is_active = excluded.is_active, emergency_phone = excluded.emergency_phone;
+  is_active = excluded.is_active, emergency_phone = excluded.emergency_phone,
+  code = excluded.code;
 
 -- ---------------------------------------------------------------------
 -- 2) Tabel profiles — user → tenant + peran
@@ -73,63 +100,9 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
-alter table public.profiles enable row level security;
-grant select, insert, update on public.profiles to authenticated;
-drop policy if exists "profil milik sendiri atau admin" on public.profiles;
-create policy "profil milik sendiri atau admin" on public.profiles
-  for select to authenticated
-  using (user_id = auth.uid() or public.is_admin());
-drop policy if exists "kelola profil oleh admin" on public.profiles;
-create policy "kelola profil oleh admin" on public.profiles
-  for insert to authenticated with check (public.is_admin());
-drop policy if exists "ubah profil oleh admin" on public.profiles;
-create policy "ubah profil oleh admin" on public.profiles
-  for update to authenticated
-  using (public.is_admin()) with check (public.is_admin());
--- Bootstrap awal tetap via SQL Editor (bypass RLS).
 
 -- ---------------------------------------------------------------------
--- 3) Tabel transfer_log — audit pemindahan laporan antar wilayah
--- ---------------------------------------------------------------------
-create table if not exists public.transfer_log (
-  id          uuid primary key default gen_random_uuid(),
-  report_id   text not null references public.reports(id) on delete cascade,
-  dari_tenant uuid not null references public.tenants(id),
-  ke_tenant   uuid not null references public.tenants(id),
-  alasan      text not null,
-  oleh        uuid not null references auth.users(id),
-  created_at  timestamptz not null default now()
-);
-
-alter table public.transfer_log enable row level security;
-grant select, insert on public.transfer_log to authenticated;
-drop policy if exists "baca log transfer sewilayah" on public.transfer_log;
-create policy "baca log transfer sewilayah" on public.transfer_log
-  for select to authenticated
-  using (public.is_admin()
-     or dari_tenant = public.my_tenant_id()
-     or ke_tenant = public.my_tenant_id());
-drop policy if exists "tulis log transfer oleh admin" on public.transfer_log;
-create policy "tulis log transfer oleh admin" on public.transfer_log
-  for insert to authenticated with check (public.is_admin());
--- (transfer normal lewat RPC transfer_report di bawah)
-
--- ---------------------------------------------------------------------
--- 4) Kolom baru di reports
--- ---------------------------------------------------------------------
-alter table public.reports add column if not exists parent_id      text references public.reports(id);
-alter table public.reports add column if not exists device_id      text;
-alter table public.reports add column if not exists tracking_token uuid not null default gen_random_uuid();
-alter table public.reports add column if not exists is_verified   boolean not null default false;
-alter table public.reports add column if not exists verified_by   uuid references auth.users(id);
-alter table public.reports add column if not exists verified_at   timestamptz;
-alter table public.reports add column if not exists photo_urls    text[] not null default '{}';
-
--- Laporan anon (SUAR tanpa login): owner boleh null.
-alter table public.reports alter column owner drop not null;
-
--- ---------------------------------------------------------------------
--- 5) Fungsi helper
+-- 2b) Fungsi helper (setelah tabel profiles, sebelum policy)
 -- ---------------------------------------------------------------------
 create or replace function public.my_tenant_id()
 returns uuid language sql security definer set search_path = public stable as $$
@@ -161,6 +134,61 @@ begin
   end if;
   return c < 3;
 end $$;
+
+alter table public.profiles enable row level security;
+grant select, insert, update on public.profiles to authenticated;
+drop policy if exists "profil milik sendiri atau admin" on public.profiles;
+create policy "profil milik sendiri atau admin" on public.profiles
+  for select to authenticated
+  using (user_id = auth.uid() or public.is_admin());
+drop policy if exists "kelola profil oleh admin" on public.profiles;
+create policy "kelola profil oleh admin" on public.profiles
+  for insert to authenticated with check (public.is_admin());
+drop policy if exists "ubah profil oleh admin" on public.profiles;
+create policy "ubah profil oleh admin" on public.profiles
+  for update to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+-- Bootstrap awal tetap via SQL Editor (bypass RLS).
+
+-- ---------------------------------------------------------------------
+-- 3) Tabel transfer_log — audit pemindahan laporan antar wilayah
+-- ---------------------------------------------------------------------
+create table if not exists public.transfer_log (
+  id          uuid primary key default gen_random_uuid(),
+  report_id   uuid not null references public.reports(id) on delete cascade,
+  dari_tenant uuid not null references public.tenants(id),
+  ke_tenant   uuid not null references public.tenants(id),
+  alasan      text not null,
+  oleh        uuid not null references auth.users(id),
+  created_at  timestamptz not null default now()
+);
+
+alter table public.transfer_log enable row level security;
+grant select, insert on public.transfer_log to authenticated;
+drop policy if exists "baca log transfer sewilayah" on public.transfer_log;
+create policy "baca log transfer sewilayah" on public.transfer_log
+  for select to authenticated
+  using (public.is_admin()
+     or dari_tenant = public.my_tenant_id()
+     or ke_tenant = public.my_tenant_id());
+drop policy if exists "tulis log transfer oleh admin" on public.transfer_log;
+create policy "tulis log transfer oleh admin" on public.transfer_log
+  for insert to authenticated with check (public.is_admin());
+-- (transfer normal lewat RPC transfer_report di bawah)
+
+-- ---------------------------------------------------------------------
+-- 4) Kolom baru di reports
+-- ---------------------------------------------------------------------
+alter table public.reports add column if not exists parent_id      uuid references public.reports(id);
+alter table public.reports add column if not exists device_id      text;
+alter table public.reports add column if not exists tracking_token uuid not null default gen_random_uuid();
+alter table public.reports add column if not exists is_verified   boolean not null default false;
+alter table public.reports add column if not exists verified_by   uuid references auth.users(id);
+alter table public.reports add column if not exists verified_at   timestamptz;
+alter table public.reports add column if not exists photo_urls    text[] not null default '{}';
+
+-- Laporan anon (SUAR tanpa login): owner boleh null.
+alter table public.reports alter column owner drop not null;
 
 -- ---------------------------------------------------------------------
 -- 6) RLS baru untuk reports — hierarki kota → provinsi → nasional
@@ -240,7 +268,7 @@ grant execute on function public.my_reports(text) to anon, authenticated;
 
 -- 7b) Transfer laporan antar wilayah + audit otomatis.
 create or replace function public.transfer_report(
-  p_report_id text, p_ke_tenant uuid, p_alasan text)
+  p_report_id uuid, p_ke_tenant uuid, p_alasan text)
 returns void
 language plpgsql security definer set search_path = public as $$
 declare v_dari uuid; v_uid uuid := auth.uid();
@@ -265,8 +293,27 @@ begin
   insert into public.transfer_log (report_id, dari_tenant, ke_tenant, alasan, oleh)
     values (p_report_id, v_dari, p_ke_tenant, trim(p_alasan), v_uid);
 end $$;
-revoke all on function public.transfer_report(text, uuid, text) from public;
-grant execute on function public.transfer_report(text, uuid, text) to authenticated;
+revoke all on function public.transfer_report(uuid, uuid, text) from public;
+grant execute on function public.transfer_report(uuid, uuid, text) to authenticated;
+
+-- 7c) join_tenant: user masuk via kode → dapat tenant_id + auto-provision profiles.
+--     Dipakai SATRIA saat login (SyncConfig.DEFAULT_TENANT_CODE).
+--     Tidak menimpa profiles yang sudah ada (admin aman).
+create or replace function public.join_tenant(p_code text)
+returns uuid
+language plpgsql security definer set search_path = public as $$
+declare v_id uuid;
+begin
+  if auth.uid() is null then raise exception 'wajib login'; end if;
+  select id into v_id from public.tenants where code = p_code and is_active = true;
+  if not found then raise exception 'kode tenant tidak valid'; end if;
+  insert into public.profiles (user_id, tenant_id, peran)
+    values (auth.uid(), v_id, 'petugas')
+    on conflict (user_id) do nothing;
+  return v_id;
+end $$;
+revoke all on function public.join_tenant(text) from public;
+grant execute on function public.join_tenant(text) to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 8) Index
