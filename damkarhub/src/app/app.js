@@ -114,6 +114,8 @@ const App = {
       this._setupBackButton();
       this.switchView('beranda');
       this.renderBeranda();
+      // Splash hilang segera setelah UI inti siap (lebih cepat dari timer 3.8s)
+      this._hideSplash();
       // Auth wajib: guard sesi → tampilkan login screen bila belum login
       await Auth.guard();
     } catch (err) {
@@ -170,6 +172,22 @@ const App = {
     try {
       document.body.classList.add('auth-locked'); // sembunyikan app shell
       document.getElementById('storage-error-screen')?.classList.remove('hidden');
+    } catch (e) {}
+  },
+
+  // Sembunyikan splash — dipanggil saat boot selesai; aman dipanggil berulang (idempoten)
+  _hideSplash() {
+    try {
+      const splash = document.getElementById('splash-screen');
+      if (!splash || splash.dataset.hiding) return;
+      splash.dataset.hiding = '1';
+      // Durasi minimum splash 3.8s (layer favorit) — sembunyi saat boot selesai ATAU 3.8s, mana yang lebih lama
+      const elapsed = Date.now() - (App._splashStart || Date.now());
+      const wait = Math.max(0, 3800 - elapsed);
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.remove(), 700);
+      }, wait);
     } catch (e) {}
   },
 
@@ -1132,15 +1150,10 @@ UI.openSheet('Tentang Aplikasi', content);
 window.addEventListener('DOMContentLoaded', () => App.boot());
 
 /* ===================== PWA: SPLASH + SERVICE WORKER ===================== */
-// Splash ignite sequence (±3.8s) lalu fade out — logic utuh, tanpa suara (butuh gesture)
+// Tandai waktu bundle dievaluasi → acuan durasi minimum splash
+try { App._splashStart = Date.now(); } catch (e) {}
 try { document.getElementById('splash-ver').textContent = 'v' + (Config.APP_VERSION || ''); } catch(e){}
-setTimeout(() => {
-  const splash = document.getElementById('splash-screen');
-  if (splash) {
-    splash.style.opacity = '0';
-    setTimeout(() => splash.remove(), 700);
-  }
-}, 3800);
+setTimeout(() => { try { App._hideSplash(); } catch (e) {} }, 3800);
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {

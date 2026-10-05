@@ -11,5 +11,8 @@
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.5.31",
     "tailwindcss": "3.4.19"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
