@@ -31,6 +31,14 @@
 -- ---------------------------------------------------------------------
 create table if not exists public.reports_backup_20251005 as select * from public.reports;
 create table if not exists public.admins_backup_20251005 as select * from public.admins;
+create table if not exists public.tenants_backup_20251005 as select * from public.tenants;
+
+-- ---------------------------------------------------------------------
+-- 0b) Tabel tenants LAMA (skema demo: tenant_id/parent_tenant_id/level)
+--     tidak kompatibel dengan skema final. Sudah di-backup di atas,
+--     DROP agar CREATE di bawah berjalan bersih.
+-- ---------------------------------------------------------------------
+drop table if exists public.tenants;
 
 -- ---------------------------------------------------------------------
 -- 1) Tabel tenants — direktori wilayah (public, dibaca anon juga)
