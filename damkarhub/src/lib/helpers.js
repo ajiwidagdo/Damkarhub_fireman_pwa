@@ -343,23 +343,33 @@ export const Helpers = {
   formatAddress(dusun, rtrw, kel, kec, kabkota) {
     return [dusun && `Lingk/Dusun ${dusun}`, rtrw && `RT/RW ${rtrw}`, kel && `Kel/Desa ${kel}`, kec && `Kec. ${kec}`, kabkota && `${kabkota}`].filter(Boolean).join(', ') || '-';
   },
+  // Foto → kompres → upload Cloudinary (URL). Offline/gagal → base64 lokal (pending).
   compressImage(input, hiddenId) {
     if (!input.files?.[0]) return;
-    const r = new FileReader();
-    r.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX = 800; let w = img.width, h = img.height;
-        if (w > h) { if (w > MAX) { h *= MAX/w; w = MAX; } } else { if (h > MAX) { w *= MAX/h; h = MAX; } }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        document.getElementById(hiddenId).value = canvas.toDataURL('image/jpeg', 0.6);
-        Helpers.haptic(15);
+    const file = input.files[0];
+    const hidden = document.getElementById(hiddenId);
+    if (!hidden) return;
+    hidden.value = ''; hidden.dataset.cloud = '';
+    UI.toast('Memproses foto…', 'info');
+    Cloudinary.compressToBlob(file).then(blob => {
+      // fallback base64 dari blob terkompres (untuk mode offline)
+      const r = new FileReader();
+      r.onload = e => {
+        const b64 = e.target.result;
+        // coba upload; gagal → simpan base64 lokal sebagai pending
+        const tenantId = (typeof Sync !== 'undefined' && Sync._tenantId) ? Sync._tenantId() : null;
+        Cloudinary.uploadFoto(blob, tenantId).then(url => {
+          hidden.value = url; hidden.dataset.cloud = '1';
+          Helpers.haptic(15);
+          UI.toast('Foto terupload ✓', 'success');
+        }).catch(() => {
+          hidden.value = b64; hidden.dataset.cloud = '0';
+          Helpers.haptic(15);
+          UI.toast('Foto tersimpan lokal — diupload saat online', 'info');
+        });
       };
-      img.src = e.target.result;
-    };
-    r.readAsDataURL(input.files[0]);
+      r.readAsDataURL(blob);
+    }).catch(() => UI.toast('Foto gagal diproses.', 'error'));
   },
   calcDist(c1, c2) {
     try {
