@@ -88,7 +88,7 @@ const App = {
     } catch (e) { console.warn('Gagal ambil peran:', e.message); }
   },
 
-  isAdmin() { return this.userRole === 'admin' || this.userRole === 'admin_provinsi'; },
+  isAdmin() { return ['admin_kota', 'admin_provinsi', 'nasional'].includes(this.userRole); },
 
   async boot() {
     try {
