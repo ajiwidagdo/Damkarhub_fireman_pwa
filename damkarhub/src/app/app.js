@@ -1019,6 +1019,8 @@ UI.openSheet('Tentang Aplikasi', content);
   /* Dispatch toggle di Beranda (Issue authfix #4) */
   async toggleDispatch(btn) {
     await this.toggleSetting(btn, 'petugas_dispatch_active');
+    const on = this.settings?.petugas_dispatch_active !== false;
+    Helpers.haptic(on ? [10, 30, 10] : [30]); // ON: "siap" · OFF: tegas
     this._renderDispatchCard();
   },
   _renderDispatchCard() {
