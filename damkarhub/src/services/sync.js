@@ -228,6 +228,7 @@ export const Sync = {
     try {
       const p = await this._push();
       const pulled = await this._pull();
+      await this._pullMaster(); // personil & regu shared per tenant
       this._lastSync = new Date();
       if (p.failed) this._lastError = 'Sebagian laporan ditolak server (lihat konsol / hubungi admin).';
       if (opts.manual && (typeof App === 'undefined' || !App.settings || App.settings.notif_sync !== false)) {
@@ -332,6 +333,60 @@ export const Sync = {
     else mod.data.push(d);
     await DB.put(store, d);
     return 1;
+  },
+
+  /* ---------- Master data: personil & regu (1 data bersama per tenant) ---------- */
+  _isUuid(id) { return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || ''); },
+
+  async _pullMaster() {
+    const tenantId = this._tenantId();
+    if (!tenantId || !this.enabled()) return 0;
+    let changed = 0;
+    try {
+      // Pull regu → ganti lokal (clean break)
+      const rr = await this._req('GET', `regu?select=id,nama,urutan&tenant_id=eq.${tenantId}&order=urutan.asc`);
+      if (rr.ok) {
+        const rows = await rr.json();
+        if (rows.length) {
+          for (const e of await DB.getAll(Config.STORES.regu)) await DB.delete(Config.STORES.regu, e.id);
+          for (const r of rows) await DB.put(Config.STORES.regu, { id: r.id, nama: r.nama, urutan: r.urutan });
+          App.regu = rows.map(r => ({ id: r.id, nama: r.nama, urutan: r.urutan }));
+          changed += rows.length;
+        }
+      }
+      // Pull personil → ganti lokal (clean break)
+      const pr = await this._req('GET', `personil?select=id,nama,regu_id&tenant_id=eq.${tenantId}&order=nama.asc`);
+      if (pr.ok) {
+        const rows = await pr.json();
+        if (rows.length) {
+          for (const e of await DB.getAll(Config.STORES.personil)) await DB.delete(Config.STORES.personil, e.id);
+          for (const p of rows) await DB.put(Config.STORES.personil, { id: p.id, nama: p.nama, regu: p.regu_id, aktif: true });
+          App.personil = rows.map(p => ({ id: p.id, nama: p.nama, regu: p.regu_id, aktif: true }));
+          changed += rows.length;
+        }
+      }
+      if (changed > 0 && typeof App !== 'undefined') {
+        try { App.renderReguList(); App.renderPersonilList(); App.renderPersonilFilter(); } catch {}
+      }
+    } catch (e) { console.warn('Pull master gagal:', e.message); }
+    return changed;
+  },
+
+  async _pushMaster(type, item, op) {
+    const tenantId = this._tenantId();
+    if (!tenantId || !this.enabled()) return false;
+    try {
+      if (op === 'delete') {
+        const res = await this._req('DELETE', `${type}?id=eq.${item.id}&tenant_id=eq.${tenantId}`);
+        return res.ok;
+      }
+      const body = type === 'regu'
+        ? { id: item.id, tenant_id: tenantId, nama: item.nama, urutan: item.urutan || 0 }
+        : { id: item.id, tenant_id: tenantId, nama: item.nama, regu_id: item.regu || null };
+      const res = await this._req('POST', `${type}`, { body, prefer: 'resolution=merge-duplicates' });
+      if (!res.ok) console.warn('Push master gagal:', await this._errMsg(res));
+      return res.ok;
+    } catch (e) { console.warn('Push master gagal:', e.message); return false; }
   },
   _eq(a, b) {
     if (a === b) return true;
