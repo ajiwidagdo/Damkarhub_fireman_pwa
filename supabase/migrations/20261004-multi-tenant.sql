@@ -89,7 +89,20 @@ on conflict (id) do update set
   code = excluded.code;
 
 -- ---------------------------------------------------------------------
--- 2a) Fungsi helper (dipindah ke depan: dipakai policy profiles)
+-- 2) Tabel profiles — user → tenant + peran
+-- ---------------------------------------------------------------------
+create table if not exists public.profiles (
+  user_id   uuid primary key references auth.users(id) on delete cascade,
+  tenant_id uuid references public.tenants(id),
+  provinsi  text, -- diisi untuk admin_provinsi, mis. 'Jawa Barat'
+  peran     text not null check (peran in ('petugas','admin_kota','admin_provinsi','nasional')),
+  regu      text,
+  created_at timestamptz not null default now()
+);
+
+
+-- ---------------------------------------------------------------------
+-- 2b) Fungsi helper (setelah tabel profiles, sebelum policy)
 -- ---------------------------------------------------------------------
 create or replace function public.my_tenant_id()
 returns uuid language sql security definer set search_path = public stable as $$
@@ -121,18 +134,6 @@ begin
   end if;
   return c < 3;
 end $$;
-
--- ---------------------------------------------------------------------
--- 2) Tabel profiles — user → tenant + peran
--- ---------------------------------------------------------------------
-create table if not exists public.profiles (
-  user_id   uuid primary key references auth.users(id) on delete cascade,
-  tenant_id uuid references public.tenants(id),
-  provinsi  text, -- diisi untuk admin_provinsi, mis. 'Jawa Barat'
-  peran     text not null check (peran in ('petugas','admin_kota','admin_provinsi','nasional')),
-  regu      text,
-  created_at timestamptz not null default now()
-);
 
 alter table public.profiles enable row level security;
 grant select, insert, update on public.profiles to authenticated;
