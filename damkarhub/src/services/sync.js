@@ -7,6 +7,7 @@ export const Sync = {
   _ownerId() { try { return this._session()?.uid || null; } catch (e) { return null; } },
   _tenantId() { try { return localStorage.getItem(this.TENANT_KEY) || null; } catch (e) { return null; } },
   // DEFENSIVE (Fix 3): sertakan owner + tenant_id agar lolos RLS
+  // Cloudinary: foto dikirim sebagai URL di kolom photo_urls; base64 pending TIDAK dikirim.
   _row(rid, module, data, deleted) {
     const row = { id: rid, module, data, deleted };
     const owner = this._ownerId();
@@ -20,8 +21,35 @@ export const Sync = {
       if (iat) row.incident_at = iat;
       const rat = this._receivedTs(module, data);
       if (rat) row.report_received_at = rat;
+      // foto: URL → photo_urls; base64 pending dibuang dari payload (tetap lokal)
+      const urls = [];
+      const clean = { ...data };
+      for (const k of ['foto1', 'foto2']) {
+        const v = clean[k];
+        if (typeof Cloudinary !== 'undefined' && Cloudinary.isUrl(v)) urls.push(v);
+        else if (typeof Cloudinary !== 'undefined' && Cloudinary.isBase64(v)) delete clean[k];
+      }
+      row.data = clean;
+      if (urls.length) row.photo_urls = urls;
     }
     return row;
+  },
+  // Upload foto base64 pending ke Cloudinary → ganti jadi URL di data lokal (+IDB).
+  // Gagal → base64 tetap lokal, dicoba lagi di sync berikutnya.
+  async _uploadPendingFotos(module, d) {
+    if (typeof Cloudinary === 'undefined' || !Cloudinary.enabled || !navigator.onLine) return;
+    let changed = false;
+    for (const k of ['foto1', 'foto2']) {
+      const v = d[k];
+      if (!Cloudinary.isBase64(v)) continue;
+      try {
+        const url = await Cloudinary.uploadFoto(Cloudinary.b64ToBlob(v), this._tenantId());
+        d[k] = url; changed = true;
+      } catch (e) { console.warn('Sync: upload foto pending gagal, dicoba lagi nanti', e); }
+    }
+    if (changed) {
+      try { await DB.put(Config.STORES[module], d); } catch (e) {}
+    }
   },
   // 'YYYY-MM-DD' + 'HH:MM' -> 'YYYY-MM-DD HH:MM:00+07' (WIB) atau null
   _ts(tgl, jam) {
@@ -235,6 +263,8 @@ export const Sync = {
         await this._markFail(it, 'Laporan tidak ditemukan di perangkat — outbox dipertahankan');
         continue;
       }
+      // Cloudinary: upload foto base64 pending → ganti jadi URL sebelum push
+      await this._uploadPendingFotos(it.module, d);
       items.push({ it, row: this._row(it.rid, it.module, d, false) });
     }
     let sent = 0, failed = 0;
@@ -267,7 +297,7 @@ export const Sync = {
     const pending = new Set((await DB.getAll(Config.STORES.sync)).map(x => x.id));
     let changed = 0, guard = 0;
     while (guard++ < 500) {
-      const path = `reports?select=id,module,data,deleted,updated_at&updated_at=gte.${encodeURIComponent(cursor)}&order=updated_at.asc,id.asc&limit=${SyncConfig.PAGE}`;
+      const path = `reports?select=id,module,data,deleted,updated_at,photo_urls&updated_at=gte.${encodeURIComponent(cursor)}&order=updated_at.asc,id.asc&limit=${SyncConfig.PAGE}`;
       const res = await this._req('GET', path);
       if (!res.ok) throw new Error(await this._errMsg(res));
       const rows = await res.json();
@@ -293,6 +323,11 @@ export const Sync = {
     }
     const d = r.data;
     if (!d || !d.id) return 0;
+    // Cloudinary: petakan photo_urls → foto1/foto2 agar render existing jalan
+    if (Array.isArray(r.photo_urls) && r.photo_urls.length) {
+      if (!d.foto1) d.foto1 = r.photo_urls[0] || '';
+      if (!d.foto2 && r.photo_urls[1]) d.foto2 = r.photo_urls[1];
+    }
     if (idx > -1) { if (this._eq(mod.data[idx], d)) return 0; mod.data[idx] = d; }
     else mod.data.push(d);
     await DB.put(store, d);
@@ -314,25 +349,31 @@ export const Sync = {
 
   /* ---------- Tampilan kartu di tab Sistem ---------- */
   async updateUI() {
-    const st = document.getElementById('syncStatus'); if (!st) return;
-    const login = document.getElementById('syncLoginBox'), act = document.getElementById('syncActionBox');
+    const badge = document.getElementById('syncBadge'); if (!badge) return;
+    const icon = document.getElementById('syncBadgeIcon'),
+          title = document.getElementById('syncBadgeTitle'),
+          sub = document.getElementById('syncBadgeSub'),
+          time = document.getElementById('syncBadgeTime');
+    const fmtT = d => (d ? d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '');
+    const set = (ic, t, s, tm) => {
+      icon.textContent = ic; title.textContent = t;
+      sub.textContent = s || ''; sub.style.display = s ? '' : 'none';
+      time.textContent = tm || '';
+    };
     if (!this.enabled()) {
-      st.textContent = 'Belum dikonfigurasi. Aplikasi berjalan lokal (data hanya tersimpan di perangkat ini).';
-      login?.classList.add('hidden'); act?.classList.add('hidden'); return;
+      set('📴', 'Mode Lokal', 'Data hanya di perangkat ini', ''); return;
     }
     const s = this._session();
     if (!s) {
-      st.textContent = this._lastError || 'Belum masuk. Login agar laporan otomatis terkirim ke server pusat.';
-      login?.classList.remove('hidden'); act?.classList.add('hidden'); return;
+      set('🔒', 'Belum masuk akun', this._lastError || 'Tap untuk login', ''); return;
     }
     let pending = 0;
     try { pending = (await DB.getAll(Config.STORES.sync)).length; } catch {}
-    const lines = ['Masuk sebagai ' + (s.email || 'petugas')];
-    lines.push(this._busy ? 'Sedang sinkron…' : (pending ? pending + ' laporan menunggu terkirim' : 'Semua laporan sudah tersinkron'));
-    if (this._lastSync && !this._busy) lines.push('Terakhir: ' + this._lastSync.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
-    if (this._lastError) lines.push('⚠ ' + this._lastError);
-    st.textContent = lines.join('\n');
-    login?.classList.add('hidden'); act?.classList.remove('hidden');
+    const email = s.email || 'petugas', tm = fmtT(this._lastSync);
+    if (this._lastError)      set('⚠️', 'Gangguan sinkron', this._lastError, tm);
+    else if (this._busy)      set('🔄', 'Sedang sinkron…', email, tm);
+    else if (pending)         set('⚠️', pending + ' laporan menunggu', email, tm);
+    else                      set('🔄', 'Sinkron Aktif', email, tm);
   }
 };
 globalThis.Sync = Sync;
