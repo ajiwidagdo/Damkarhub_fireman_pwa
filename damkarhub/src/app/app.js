@@ -70,10 +70,25 @@ const App = {
   // Dipanggil saat user login/berganti/keluar
   async _onUserChanged() {
     await this._loadSettings();
+    try { await this._loadUserRole(); } catch (e) {}
     try { this._loadSettingsToForm(); } catch (e) {}
     try { this._renderDispatchCard(); } catch (e) {}
     try { this.renderBeranda(); } catch (e) {}
   },
+
+  // Ambil peran user dari profiles (untuk sembunyikan tombol hapus laporan bila bukan admin)
+  async _loadUserRole() {
+    this.userRole = null;
+    try {
+      const res = await Sync._req('GET', 'profiles?select=peran&limit=1');
+      if (res.ok) {
+        const rows = await res.json();
+        this.userRole = rows[0]?.peran || null;
+      }
+    } catch (e) { console.warn('Gagal ambil peran:', e.message); }
+  },
+
+  isAdmin() { return this.userRole === 'admin' || this.userRole === 'admin_provinsi'; },
 
   async boot() {
     try {
@@ -547,13 +562,19 @@ renderSistem() {
   async saveRegu(id) {
     const nama = (document.getElementById('regu_nama_input')?.value || '').trim();
     if (!nama) return UI.toast('Nama regu wajib diisi', 'error');
+    let r;
     if (!id) {
-      const r = { id:'regu-' + Date.now(), nama, urutan: this.regu.length + 1 };
+      r = { id: crypto.randomUUID(), nama, urutan: this.regu.length + 1 };
       await DB.put(Config.STORES.regu, r); this.regu.push(r);
     } else {
-      const r = this.regu.find(x => x.id === id); if (!r) return;
+      r = this.regu.find(x => x.id === id); if (!r) return;
+      if (!Sync._isUuid(r.id)) {
+        await DB.delete(Config.STORES.regu, r.id);
+        r.id = crypto.randomUUID();
+      }
       r.nama = nama; await DB.put(Config.STORES.regu, r);
     }
+    Sync._pushMaster('regu', r, 'upsert'); // fire & forget
     UI.closeSheet(); Helpers.haptic(20); UI.toast('Regu disimpan!');
     this.renderReguList(); this.renderPersonilFilter();
   },
@@ -564,6 +585,7 @@ renderSistem() {
     UI.confirm(async () => {
       this.regu = this.regu.filter(x => x.id !== id);
       await DB.delete(Config.STORES.regu, id);
+      Sync._pushMaster('regu', { id }, 'delete'); // fire & forget
       Helpers.haptic([10,50,10]); UI.toast('Regu dihapus');
       this.renderReguList(); this.renderPersonilFilter();
     });
@@ -626,14 +648,21 @@ renderSistem() {
     const regu = document.getElementById('personil_regu_input')?.value || '';
     if (!nama) return UI.toast('Nama wajib diisi', 'error');
     if (!regu) return UI.toast('Regu wajib dipilih', 'error');
+    let p;
     if (!id) {
-      const p = { id:'p-' + Date.now() + '-' + Math.random().toString(36).slice(2,7), nama, regu, aktif:true };
+      p = { id: crypto.randomUUID(), nama, regu, aktif: true };
       await DB.put(Config.STORES.personil, p); this.personil.push(p);
     } else {
-      const p = this.personil.find(x => x.id === id); if (!p) return;
+      p = this.personil.find(x => x.id === id); if (!p) return;
+      // ID lokal lama (non-UUID) → ganti UUID agar bisa sync
+      if (!Sync._isUuid(p.id)) {
+        await DB.delete(Config.STORES.personil, p.id);
+        p.id = crypto.randomUUID();
+      }
       p.nama = nama; p.regu = regu;
       await DB.put(Config.STORES.personil, p);
     }
+    Sync._pushMaster('personil', p, 'upsert'); // fire & forget
     UI.closeSheet(); Helpers.haptic(20); UI.toast('Personil disimpan!');
     this.renderReguList(); this.renderPersonilList();
   },
@@ -642,6 +671,7 @@ renderSistem() {
     UI.confirm(async () => {
       this.personil = this.personil.filter(x => x.id !== id);
       await DB.delete(Config.STORES.personil, id);
+      Sync._pushMaster('personil', { id }, 'delete'); // fire & forget
       Helpers.haptic([10,50,10]); UI.toast('Personil dihapus');
       this.renderReguList(); this.renderPersonilList();
     });
