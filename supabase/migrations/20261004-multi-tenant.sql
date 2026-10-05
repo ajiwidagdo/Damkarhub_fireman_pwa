@@ -32,13 +32,19 @@
 create table if not exists public.reports_backup_20251005 as select * from public.reports;
 create table if not exists public.admins_backup_20251005 as select * from public.admins;
 create table if not exists public.tenants_backup_20251005 as select * from public.tenants;
+-- (tabel eksperimen ber-FK ke tenants ikut aman: hanya constraint-nya yang ikut ter-drop di bawah)
+create table if not exists public.account_tenants_backup_20251005 as select * from public.account_tenants;
+create table if not exists public.regu_backup_20251005 as select * from public.regu;
+create table if not exists public.personil_backup_20251005 as select * from public.personil;
 
 -- ---------------------------------------------------------------------
 -- 0b) Tabel tenants LAMA (skema demo: tenant_id/parent_tenant_id/level)
---     tidak kompatibel dengan skema final. Sudah di-backup di atas,
+--     tidak kompatibel dengan skema final. Sudah di-backup di atas.
+--     CASCADE: ikut melepas FK dari tabel eksperimen (account_tenants,
+--     regu, personil, admins, reports) — datanya TIDAK ikut terhapus.
 --     DROP agar CREATE di bawah berjalan bersih.
 -- ---------------------------------------------------------------------
-drop table if exists public.tenants;
+drop table if exists public.tenants cascade;
 
 -- ---------------------------------------------------------------------
 -- 1) Tabel tenants — direktori wilayah (public, dibaca anon juga)
