@@ -89,6 +89,40 @@ on conflict (id) do update set
   code = excluded.code;
 
 -- ---------------------------------------------------------------------
+-- 2a) Fungsi helper (dipindah ke depan: dipakai policy profiles)
+-- ---------------------------------------------------------------------
+create or replace function public.my_tenant_id()
+returns uuid language sql security definer set search_path = public stable as $$
+  select tenant_id from public.profiles where user_id = auth.uid();
+$$;
+
+create or replace function public.my_peran()
+returns text language sql security definer set search_path = public stable as $$
+  select peran from public.profiles where user_id = auth.uid();
+$$;
+
+create or replace function public.my_provinsi()
+returns text language sql security definer set search_path = public stable as $$
+  select provinsi from public.profiles where user_id = auth.uid();
+$$;
+
+-- Rate limit: maks 3 laporan/jam per user (login) atau per device (anon).
+create or replace function public.report_rate_ok(p_device_id text)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare c int;
+begin
+  if auth.uid() is not null then
+    select count(*) into c from public.reports
+      where owner = auth.uid() and updated_at > now() - interval '1 hour';
+  else
+    if p_device_id is null then return false; end if;
+    select count(*) into c from public.reports
+      where device_id = p_device_id and updated_at > now() - interval '1 hour';
+  end if;
+  return c < 3;
+end $$;
+
+-- ---------------------------------------------------------------------
 -- 2) Tabel profiles — user → tenant + peran
 -- ---------------------------------------------------------------------
 create table if not exists public.profiles (
@@ -154,40 +188,6 @@ alter table public.reports add column if not exists photo_urls    text[] not nul
 
 -- Laporan anon (SUAR tanpa login): owner boleh null.
 alter table public.reports alter column owner drop not null;
-
--- ---------------------------------------------------------------------
--- 5) Fungsi helper
--- ---------------------------------------------------------------------
-create or replace function public.my_tenant_id()
-returns uuid language sql security definer set search_path = public stable as $$
-  select tenant_id from public.profiles where user_id = auth.uid();
-$$;
-
-create or replace function public.my_peran()
-returns text language sql security definer set search_path = public stable as $$
-  select peran from public.profiles where user_id = auth.uid();
-$$;
-
-create or replace function public.my_provinsi()
-returns text language sql security definer set search_path = public stable as $$
-  select provinsi from public.profiles where user_id = auth.uid();
-$$;
-
--- Rate limit: maks 3 laporan/jam per user (login) atau per device (anon).
-create or replace function public.report_rate_ok(p_device_id text)
-returns boolean language plpgsql security definer set search_path = public as $$
-declare c int;
-begin
-  if auth.uid() is not null then
-    select count(*) into c from public.reports
-      where owner = auth.uid() and updated_at > now() - interval '1 hour';
-  else
-    if p_device_id is null then return false; end if;
-    select count(*) into c from public.reports
-      where device_id = p_device_id and updated_at > now() - interval '1 hour';
-  end if;
-  return c < 3;
-end $$;
 
 -- ---------------------------------------------------------------------
 -- 6) RLS baru untuk reports — hierarki kota → provinsi → nasional
