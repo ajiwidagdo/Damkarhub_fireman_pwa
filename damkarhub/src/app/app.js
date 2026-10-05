@@ -179,11 +179,15 @@ const App = {
   _hideSplash() {
     try {
       const splash = document.getElementById('splash-screen');
-      if (splash && !splash.dataset.hiding) {
-        splash.dataset.hiding = '1';
+      if (!splash || splash.dataset.hiding) return;
+      splash.dataset.hiding = '1';
+      // Durasi minimum splash 3.8s (layer favorit) — sembunyi saat boot selesai ATAU 3.8s, mana yang lebih lama
+      const elapsed = Date.now() - (App._splashStart || Date.now());
+      const wait = Math.max(0, 3800 - elapsed);
+      setTimeout(() => {
         splash.style.opacity = '0';
         setTimeout(() => splash.remove(), 700);
-      }
+      }, wait);
     } catch (e) {}
   },
 
@@ -1146,7 +1150,8 @@ UI.openSheet('Tentang Aplikasi', content);
 window.addEventListener('DOMContentLoaded', () => App.boot());
 
 /* ===================== PWA: SPLASH + SERVICE WORKER ===================== */
-// Splash: hilang saat boot selesai (App._hideSplash); timer 3.8s ini fallback bila boot gagal/lama
+// Tandai waktu bundle dievaluasi → acuan durasi minimum splash
+try { App._splashStart = Date.now(); } catch (e) {}
 try { document.getElementById('splash-ver').textContent = 'v' + (Config.APP_VERSION || ''); } catch(e){}
 setTimeout(() => { try { App._hideSplash(); } catch (e) {} }, 3800);
 
