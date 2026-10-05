@@ -36,6 +36,7 @@ create table public.tenants (
   bbox_max_lng    double precision,
   is_active       boolean not null default false,  -- sudah pakai Komando?
   emergency_phone text,                       -- nomor damkar setempat
+  code            text unique,                -- kode join (mis. 'DAMKARHUB.BANJAR113')
   created_at      timestamptz not null default now()
 );
 ```

@@ -35,6 +35,7 @@ create table if not exists public.tenants (
   bbox_max_lng    double precision,
   is_active       boolean not null default false,
   emergency_phone text,
+  code            text unique, -- kode join (mis. 'DAMKARHUB.BANJAR113'), dipakai SyncConfig.DEFAULT_TENANT_CODE
   created_at      timestamptz not null default now()
 );
 
@@ -51,15 +52,16 @@ create policy "direktori wilayah publik" on public.tenants
 insert into public.tenants
   (id, nama, tipe, provinsi,
    bbox_min_lat, bbox_max_lat, bbox_min_lng, bbox_max_lng,
-   is_active, emergency_phone)
+   is_active, emergency_phone, code)
 values
   ('a499d44d-b620-4fcd-b402-7d8f4823310b',
    'Kota Banjar', 'kota', 'Jawa Barat',
    -7.43, -7.31, 108.47, 108.62,
-   true, '113')
+   true, '113', 'DAMKARHUB.BANJAR113')
 on conflict (id) do update set
   nama = excluded.nama, tipe = excluded.tipe, provinsi = excluded.provinsi,
-  is_active = excluded.is_active, emergency_phone = excluded.emergency_phone;
+  is_active = excluded.is_active, emergency_phone = excluded.emergency_phone,
+  code = excluded.code;
 
 -- ---------------------------------------------------------------------
 -- 2) Tabel profiles — user → tenant + peran
@@ -267,6 +269,25 @@ begin
 end $$;
 revoke all on function public.transfer_report(text, uuid, text) from public;
 grant execute on function public.transfer_report(text, uuid, text) to authenticated;
+
+-- 7c) join_tenant: user masuk via kode → dapat tenant_id + auto-provision profiles.
+--     Dipakai SATRIA saat login (SyncConfig.DEFAULT_TENANT_CODE).
+--     Tidak menimpa profiles yang sudah ada (admin aman).
+create or replace function public.join_tenant(p_code text)
+returns uuid
+language plpgsql security definer set search_path = public as $$
+declare v_id uuid;
+begin
+  if auth.uid() is null then raise exception 'wajib login'; end if;
+  select id into v_id from public.tenants where code = p_code and is_active = true;
+  if not found then raise exception 'kode tenant tidak valid'; end if;
+  insert into public.profiles (user_id, tenant_id, peran)
+    values (auth.uid(), v_id, 'petugas')
+    on conflict (user_id) do nothing;
+  return v_id;
+end $$;
+revoke all on function public.join_tenant(text) from public;
+grant execute on function public.join_tenant(text) to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 8) Index
