@@ -129,6 +129,14 @@ export const Helpers = {
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
 },
+  chainTime(prefix, fromId, toId) {
+  // Demo form sederhana: isi otomatis field berikutnya jika masih kosong
+  const from = document.getElementById(fromId);
+  const to = document.getElementById(toId);
+  if (!from?.value || !to || to.value) return;
+  to.value = from.value;
+  to.dispatchEvent(new Event('change', { bubbles: true }));
+},
   autoFillMulai(prefix) {
   if (prefix !== 'k') return;
   const jamTibaEl = document.getElementById('k_jamTiba');
