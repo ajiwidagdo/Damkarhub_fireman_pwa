@@ -344,13 +344,14 @@ export const Sync = {
     let changed = 0;
     try {
       // Pull regu → ganti lokal (clean break)
-      const rr = await this._req('GET', `regu?select=id,nama,urutan&tenant_id=eq.${tenantId}&order=urutan.asc`);
+      // Catatan: kolom `urutan` tidak ada di DB live — jangan select/order pakai itu
+      const rr = await this._req('GET', `regu?select=id,nama&tenant_id=eq.${tenantId}&order=nama.asc`);
       if (rr.ok) {
         const rows = await rr.json();
         if (rows.length) {
           for (const e of await DB.getAll(Config.STORES.regu)) await DB.delete(Config.STORES.regu, e.id);
-          for (const r of rows) await DB.put(Config.STORES.regu, { id: r.id, nama: r.nama, urutan: r.urutan });
-          App.regu = rows.map(r => ({ id: r.id, nama: r.nama, urutan: r.urutan }));
+          for (const r of rows) await DB.put(Config.STORES.regu, { id: r.id, nama: r.nama, urutan: 0 });
+          App.regu = rows.map(r => ({ id: r.id, nama: r.nama, urutan: 0 }));
           changed += rows.length;
         }
       }
@@ -381,7 +382,7 @@ export const Sync = {
         return res.ok;
       }
       const body = type === 'regu'
-        ? { id: item.id, tenant_id: tenantId, nama: item.nama, urutan: item.urutan || 0 }
+        ? { id: item.id, tenant_id: tenantId, nama: item.nama }
         : { id: item.id, tenant_id: tenantId, nama: item.nama, regu_id: item.regu || null };
       const res = await this._req('POST', `${type}`, { body, prefer: 'resolution=merge-duplicates' });
       if (!res.ok) console.warn('Push master gagal:', await this._errMsg(res));
