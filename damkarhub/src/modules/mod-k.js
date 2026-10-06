@@ -98,7 +98,7 @@ const ModKcfg = {
       <button type="button" onclick="this.closest('.korban-item').remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Hapus kartu"><i class="fa-solid fa-times"></i></button>
       <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="mb-3">
-        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Pemilik Aset Terdampak</p>
+        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Pemilik Aset dan Korban</p>
       </div>
       <div class="mb-2">
         <label class="field-label">Nama Pemilik</label>
@@ -107,51 +107,43 @@ const ModKcfg = {
           <button type="button" onclick="Helpers.startSpeech('${uid}_nama', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
         </div>
       </div>
-      <!-- Field opsional di-collapse (demo form sederhana) -->
+      <!-- Toggle alamat sama dengan lokasi kejadian -->
+      <div class="mb-2 flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-3 py-2">
+        <label class="text-xs font-bold text-gray-700 dark:text-gray-300 flex-1">Alamat sama dengan lokasi kejadian</label>
+        <button type="button" onclick="Mod.k.toggleAlamatKorban(this, '${uid}')" class="k_alamatSamaBtn w-10 h-6 rounded-full bg-emerald-500 relative transition-colors" aria-label="Alamat sama">
+          <span class="toggle-dot absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform" style="transform: translateX(16px)"></span>
+        </button>
+      </div>
+      <div class="mb-2 k_alamatOtomatis">
+        <input type="text" class="k_kAlamatFull w-full bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300" readonly value="${data?.alamatFull || ''}" placeholder="Otomatis dari lokasi kejadian">
+      </div>
+      <div class="mb-2 k_alamatManual hidden">
+        <label class="field-label">Alamat Pemilik</label>
+        <input type="text" class="k_kAlamatManual w-full" value="${data?.alamatManual || ''}" placeholder="Lingk/Dusun, RT/RW, Kel/Desa, Kec, Kab/Kota">
+      </div>
+      <!-- Field opsional di-collapse -->
       <div data-disclosure class="disclosure">
-        <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Data Opsional (NIK, KK, Jiwa)</button>
+        <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Data Opsional</button>
         <div class="disclosure-body hidden">
-          <div class="mb-2">
-            <label class="field-label">NIK (Opsional)</label>
-            <div class="flex items-center gap-2">
-              <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
-              <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
-            </div>
-          </div>
           <div class="grid grid-cols-2 gap-3 mb-2">
             <div>
-              <label class="field-label">Jumlah KK</label>
-              <input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1">
+              <label class="field-label">Jenis Kelamin</label>
+              <select class="k_kJK"><option value="-" ${data?.jk==='-'?'selected':''}>-</option><option ${data?.jk==='Pria'?'selected':''}>Pria</option><option ${data?.jk==='Wanita'?'selected':''}>Wanita</option></select>
             </div>
-            <div>
-              <label class="field-label">Jumlah Jiwa</label>
-              <input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4">
-            </div>
+            <div><label class="field-label">Usia (Thn)</label><input type="text" inputmode="numeric" class="k_kUsia w-full" value="${data?.usia || ''}"></div>
+          </div>
+          <div class="mb-2">
+            <label class="field-label">NIK</label>
+            <input type="text" class="k_kNIK w-full" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-2">
+            <div><label class="field-label">Jumlah KK</label><input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1"></div>
+            <div><label class="field-label">Jumlah Jiwa</label><input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4"></div>
           </div>
         </div>
-      </div>
-      <div data-disclosure class="disclosure">
-      <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Detail Usia & Alamat</button>
-      <div class="disclosure-body">
-      <div class="grid grid-cols-2 gap-3 mb-2">
-        <div>
-          <label class="field-label">Jenis Kelamin</label>
-          <select class="k_kJK"><option value="-" ${data?.jk==='-'?'selected':''}>-</option><option ${data?.jk==='Pria'?'selected':''}>Pria</option><option ${data?.jk==='Wanita'?'selected':''}>Wanita</option></select>
-        </div>
-        <div><label class="field-label">Usia (Thn)</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="${uid}_usia" class="k_kUsia flex-1 min-w-0" value="${data?.usia || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_usia', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      </div>
-      <label class="field-label mt-2">Alamat Korban</label>
-      <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_dusun" class="k_kDusun flex-1 min-w-0" placeholder="Lingk/Dusun" value="${data?.dusun || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_dusun', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
-        <div><input type="text" enterkeyhint="next" class="k_kRtrw" placeholder="RT/RW" value="${data?.rtrw || ''}"></div>
-        <div class="col-span-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kel" class="k_kKel flex-1 min-w-0" placeholder="Kel/Desa" value="${data?.kel || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kel', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      </div>
-      <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kec" class="k_kKec flex-1 min-w-0" placeholder="Kecamatan" value="${data?.kec || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kec', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      <div class="mb-2"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="${uid}_kabkota" class="k_kKabkota flex-1 min-w-0" placeholder="Kab/Kota" value="${data?.kabkota || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_kabkota', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-      </div>
       </div>`;
     c.appendChild(div);
-    this.autofillKorbanAlamat();
+    this.refreshSemuaAlamatKorban();
   },
   calcAsetTerselamatkan() {
     const nilai = parseFloat(document.getElementById('k_nilaiAset')?.value) || 0;
@@ -160,25 +152,42 @@ const ModKcfg = {
     const field = document.getElementById('k_asetSelamat');
     if (field) field.value = selamat || '';
   },
-  autofillKorbanAlamat() {
-    const pairs = [['k_dusun','.k_kDusun'],['k_rtrw','.k_kRtrw'],['k_kel','.k_kKel'],['k_kec','.k_kKec'],['k_kabkota','.k_kKabkota']];
-    const c = document.getElementById('k_korbanListContainer'); if (!c) return;
-    [...c.children].forEach(card => {
-      pairs.forEach(([srcId, sel]) => {
-        const sEl = document.getElementById(srcId), d = card.querySelector(sel);
-        if (sEl && d && !(d.value || '').trim() && (sEl.value || '').trim()) d.value = sEl.value;
-      });
+  /* Toggle alamat korban: ON = gabung dari lokasi kejadian (1 baris), OFF = input manual */
+  toggleAlamatKorban(btn, uid) {
+    const on = btn.classList.toggle('bg-emerald-500');
+    btn.classList.toggle('bg-gray-300', !on);
+    const dot = btn.querySelector('.toggle-dot');
+    if (dot) dot.style.transform = on ? 'translateX(16px)' : '';
+    const card = btn.closest('.korban-item');
+    card.querySelector('.k_alamatOtomatis')?.classList.toggle('hidden', !on);
+    card.querySelector('.k_alamatManual')?.classList.toggle('hidden', on);
+    if (on) this.refreshAlamatKorban(card);
+  },
+  refreshAlamatKorban(card) {
+    const gv = id => document.getElementById(id)?.value || '';
+    const alamat = Helpers.formatAddress(gv('k_dusun'), gv('k_rtrw'), gv('k_kel'), gv('k_kec'), gv('k_kabkota'));
+    const input = card.querySelector('.k_kAlamatFull');
+    if (input) input.value = alamat;
+  },
+  refreshSemuaAlamatKorban() {
+    document.querySelectorAll('#k_korbanListContainer .korban-item').forEach(card => {
+      const btn = card.querySelector('.k_alamatSamaBtn');
+      if (btn?.classList.contains('bg-emerald-500')) this.refreshAlamatKorban(card);
     });
   },
   collectForm(id) {
     const jenis = document.getElementById('k_jenisKebakaran').value === 'Lainnya' ? document.getElementById('k_jenis_lainnya').value : document.getElementById('k_jenisKebakaran').value;
     const penyebab = document.getElementById('k_penyebab').value === 'Lainnya' ? document.getElementById('k_penyebab_lainnya').value : document.getElementById('k_penyebab').value;
     const objek = document.getElementById('k_objekTerbakar').value === 'Lainnya' ? document.getElementById('k_objek_lainnya').value : document.getElementById('k_objekTerbakar').value;
-    const korbanList = [...document.getElementById('k_korbanListContainer').children].map(c => ({
-      nama:c.querySelector('.k_kNama').value, nik:c.querySelector('.k_kNIK')?.value || '', usia:c.querySelector('.k_kUsia').value, jk:c.querySelector('.k_kJK').value,
-      jumlahKK:c.querySelector('.k_kJumlahKK')?.value || '', jumlahJiwa:c.querySelector('.k_kJumlahJiwa')?.value || '',
-      dusun:c.querySelector('.k_kDusun').value, rtrw:c.querySelector('.k_kRtrw').value, kel:c.querySelector('.k_kKel').value, kec:c.querySelector('.k_kKec').value, kabkota:c.querySelector('.k_kKabkota').value
-    }));
+    const korbanList = [...document.getElementById('k_korbanListContainer').children].map(c => {
+      const alamatSama = c.querySelector('.k_alamatSamaBtn')?.classList.contains('bg-emerald-500');
+      const alamat = alamatSama ? (c.querySelector('.k_kAlamatFull')?.value || '') : (c.querySelector('.k_kAlamatManual')?.value || '');
+      return {
+        nama:c.querySelector('.k_kNama').value, nik:c.querySelector('.k_kNIK')?.value || '', usia:c.querySelector('.k_kUsia')?.value || '', jk:c.querySelector('.k_kJK')?.value || '-',
+        jumlahKK:c.querySelector('.k_kJumlahKK')?.value || '', jumlahJiwa:c.querySelector('.k_kJumlahJiwa')?.value || '',
+        alamatFull:alamat, alamatSama
+      };
+    });
     const gv = id => document.getElementById(id).value;
     return { id, tanggal:gv('k_tanggal'), pukul:gv('k_pukul'), tglTerima:gv('k_tglTerima'), jamTerima:gv('k_jamTerima'), jamTiba:gv('k_jamTiba'), jamMulai:gv('k_jamMulai'), tglSelesai:gv('k_tglSelesai'), jamSelesai:gv('k_jamSelesai'),
       jenis, lokasiDetail:gv('k_lokasiDetail'), dusun:gv('k_dusun'), rtrw:gv('k_rtrw'), kel:gv('k_kel'), kec:gv('k_kec'), kabkota:gv('k_kabkota'), koordinat:gv('k_koordinat'),
@@ -302,7 +311,7 @@ const ModKcfg = {
     let korban = '\n  -';
     if (d.korbanList?.length) {
       korban = '\n' + d.korbanList.map((k,i) => {
-        const a = Helpers.formatAddress(k.dusun,k.rtrw,k.kel,k.kec,k.kabkota);
+        const a = k.alamatFull || Helpers.formatAddress(k.dusun,k.rtrw,k.kel,k.kec,k.kabkota);
         const kkJiwa = (k.jumlahKK || k.jumlahJiwa) ? ` [${k.jumlahKK || '-'} KK, ${k.jumlahJiwa || '-'} jiwa]` : '';
         return `${i+1}. ${k.nama || '-'}${k.nik ? ' (NIK: ' + k.nik + ')' : ''} (${k.usia || '-'} th, ${k.jk || '-'})${kkJiwa}\n   ${a}`;
       }).join('\n');
@@ -373,6 +382,14 @@ ${unsur}
  Terima kasih.
 `;
     return wa;
+  },
+  /* Konfirmasi bila korban jiwa toggle OFF saat simpan (anti underreporting) */
+  beforeSave() {
+    const toggle = document.getElementById('k_korbanJiwaToggle');
+    if (toggle && !toggle.classList.contains('bg-emerald-500')) {
+      return confirm('Yakin tidak ada korban jiwa pada kejadian ini?');
+    }
+    return true;
   }
 };
 
