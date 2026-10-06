@@ -130,23 +130,11 @@ export const Helpers = {
   });
 },
   chainTime(prefix, fromId, toId) {
-  // Demo form sederhana: isi otomatis field berikutnya jika masih kosong
+  // Demo form sederhana: isi otomatis field berikutnya jika masih kosong (nilai persis sama)
   const from = document.getElementById(fromId);
   const to = document.getElementById(toId);
   if (!from?.value || !to || to.value) return;
   to.value = from.value;
-  to.dispatchEvent(new Event('change', { bubbles: true }));
-},
-  autoFillMulai(prefix) {
-  if (prefix !== 'k') return;
-  const jamTibaEl = document.getElementById('k_jamTiba');
-  const jamMulaiEl = document.getElementById('k_jamMulai');
-  if (!jamTibaEl?.value || !jamMulaiEl) return;
-  const [h, m] = jamTibaEl.value.split(':').map(Number);
-  const total = h * 60 + m + 2.5;
-  const newH = Math.floor(total / 60) % 24;
-  const newM = Math.floor(total % 60);
-  jamMulaiEl.value = String(newH).padStart(2, '0') + ':' + String(newM).padStart(2, '0');
 },
   recordTime(fieldId) {
     const el = document.getElementById(fieldId);
