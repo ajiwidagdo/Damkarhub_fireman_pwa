@@ -37,11 +37,40 @@ export const Builders = {
   },
 
   casualtyInputs(prefix) {
-    return `<div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg grid grid-cols-3 gap-2">
-      ${this.inputNum(`${prefix}_lRingan`, 'LUKA RINGAN', 0)}
-      ${this.inputNum(`${prefix}_lBerat`, 'LUKA BERAT', 0)}
-      <div><label class="field-label text-red-500 dark:text-red-400">MENINGGAL</label><input type="number" id="${prefix}_mnggal" value="0" class="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400"></div>
+    // Toggle korban jiwa dengan label Ada/Tidak ada (demo form sederhana)
+    return `<div class="mb-3">
+      <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3 mb-3">
+        <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Ada korban jiwa? <span id="${prefix}_korbanJiwaLabel" class="text-xs font-normal text-red-500">Tidak ada</span></label>
+        <button type="button" id="${prefix}_korbanJiwaToggle" onclick="Builders.toggleKorbanJiwa('${prefix}', this)" class="w-12 h-7 rounded-full bg-red-500 relative transition-colors" aria-label="Ada korban jiwa">
+          <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform"></span>
+        </button>
+      </div>
+      <div id="${prefix}_korbanJiwaFields" class="hidden">
+        <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg grid grid-cols-3 gap-2">
+          ${this.inputNum(`${prefix}_lRingan`, 'LUKA RINGAN', 0)}
+          ${this.inputNum(`${prefix}_lBerat`, 'LUKA BERAT', 0)}
+          <div><label class="field-label text-red-500 dark:text-red-400">MENINGGAL</label><input type="number" id="${prefix}_mnggal" value="0" class="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400"></div>
+        </div>
+      </div>
     </div>`;
+  },
+  toggleKorbanJiwa(prefix, btn) {
+    const on = btn.classList.toggle('bg-emerald-500');
+    btn.classList.toggle('bg-red-500', !on);
+    const dot = btn.querySelector('.toggle-dot');
+    if (dot) dot.style.transform = on ? 'translateX(20px)' : '';
+    document.getElementById(`${prefix}_korbanJiwaFields`)?.classList.toggle('hidden', !on);
+    const label = document.getElementById(`${prefix}_korbanJiwaLabel`);
+    if (label) {
+      label.textContent = on ? 'Ada' : 'Tidak ada';
+      label.className = on ? 'text-xs font-normal text-emerald-600' : 'text-xs font-normal text-red-500';
+    }
+    if (!on) {
+      ['lRingan','lBerat','mnggal'].forEach(s => {
+        const el = document.getElementById(`${prefix}_${s === 'mnggal' ? 'mnggal' : s}`);
+        if (el) el.value = '0';
+      });
+    }
   },
   reguInputs(prefix) {
     return `<div class="grid grid-cols-2 gap-3 mb-3">

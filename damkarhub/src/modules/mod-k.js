@@ -101,28 +101,33 @@ const ModKcfg = {
         <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Pemilik Aset Terdampak</p>
       </div>
       <div class="mb-2">
-        <label class="field-label">Nama</label>
+        <label class="field-label">Nama Pemilik</label>
         <div class="flex items-center gap-2">
-          <input type="text" enterkeyhint="next" id="${uid}_nama" class="k_kNama flex-1 min-w-0" value="${data?.nama || ''}" placeholder="Nama pemilik/korban">
+          <input type="text" enterkeyhint="next" id="${uid}_nama" class="k_kNama flex-1 min-w-0" value="${data?.nama || ''}" placeholder="Nama pemilik aset">
           <button type="button" onclick="Helpers.startSpeech('${uid}_nama', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
         </div>
       </div>
-      <div class="mb-2">
-        <label class="field-label">NIK (Opsional)</label>
-        <div class="flex items-center gap-2">
-          <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
-          <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
-        </div>
-      </div>
-      <!-- Jumlah KK & Jiwa terdampak (opsional, demo form sederhana) -->
-      <div class="grid grid-cols-2 gap-3 mb-2">
-        <div>
-          <label class="field-label">Jumlah KK <span class="text-gray-400 font-normal">(opsional)</span></label>
-          <input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1">
-        </div>
-        <div>
-          <label class="field-label">Jumlah Jiwa <span class="text-gray-400 font-normal">(opsional)</span></label>
-          <input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4">
+      <!-- Field opsional di-collapse (demo form sederhana) -->
+      <div data-disclosure class="disclosure">
+        <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Data Opsional (NIK, KK, Jiwa)</button>
+        <div class="disclosure-body hidden">
+          <div class="mb-2">
+            <label class="field-label">NIK (Opsional)</label>
+            <div class="flex items-center gap-2">
+              <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
+              <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-2">
+            <div>
+              <label class="field-label">Jumlah KK</label>
+              <input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1">
+            </div>
+            <div>
+              <label class="field-label">Jumlah Jiwa</label>
+              <input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4">
+            </div>
+          </div>
         </div>
       </div>
       <div data-disclosure class="disclosure">
@@ -206,6 +211,18 @@ const ModKcfg = {
     setSelectOrOther('k_penyebab','k_penyebab_lainnya', d.penyebab);
     setSelectOrOther('k_objekTerbakar','k_objek_lainnya', d.objekTerbakar);
     sv('k_luasArea',d.luasArea); sv('k_nilaiAset',d.nilaiAset); sv('k_kerugian',d.kerugian); sv('k_asetSelamat',d.asetSelamat); sv('k_lRingan',d.lRingan); sv('k_lBerat',d.lBerat); sv('k_mnggal',d.mnggal);
+    // Restore toggle korban jiwa
+    const adaKorbanJiwa = (parseInt(d.lRingan)||0) + (parseInt(d.lBerat)||0) + (parseInt(d.mnggal)||0) > 0;
+    const kjToggle = document.getElementById('k_korbanJiwaToggle');
+    if (kjToggle) {
+      kjToggle.classList.toggle('bg-emerald-500', adaKorbanJiwa);
+      kjToggle.classList.toggle('bg-red-500', !adaKorbanJiwa);
+      const dot = kjToggle.querySelector('.toggle-dot');
+      if (dot) dot.style.transform = adaKorbanJiwa ? 'translateX(20px)' : '';
+      document.getElementById('k_korbanJiwaFields')?.classList.toggle('hidden', !adaKorbanJiwa);
+      const lbl = document.getElementById('k_korbanJiwaLabel');
+      if (lbl) { lbl.textContent = adaKorbanJiwa ? 'Ada' : 'Tidak ada'; lbl.className = adaKorbanJiwa ? 'text-xs font-normal text-emerald-600' : 'text-xs font-normal text-red-500'; }
+    }
     sv('k_armada',d.armada); sv('k_durasi',d.durasi); sv('k_jarak',d.jarak); sv('k_air',d.air);
     sv('k_kronologi',d.kronologi); sv('k_tindakan',d.tindakan); sv('k_kendala', Helpers.kendalaList(d.kendala).join('\n')); sv('k_unsur',d.unsur); sv('k_keterangan',d.keterangan);
     sv('k_regu',d.regu || ''); sv('k_personil',d.personil);
