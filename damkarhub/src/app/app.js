@@ -132,7 +132,10 @@ const App = {
       // Splash hilang segera setelah UI inti siap (lebih cepat dari timer 3.8s)
       this._hideSplash();
       // Auth wajib: guard sesi → tampilkan login screen bila belum login
-      await Auth.guard();
+      // Cek dulu: apakah ini link reset password dari email?
+      if (!Auth.checkRecovery()) {
+        await Auth.guard();
+      }
     } catch (err) {
       console.error('Boot error:', err);
       UI.toast('Gagal memuat aplikasi: ' + (err?.message || err), 'error');

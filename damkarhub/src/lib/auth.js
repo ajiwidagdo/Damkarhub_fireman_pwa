@@ -11,7 +11,7 @@
 export const Auth = {
   /* ---------- navigasi antar form ---------- */
   _show(box) {
-    ['login-form-box', 'register-form-box', 'forgot-form-box'].forEach(id => {
+    ['login-form-box', 'register-form-box', 'forgot-form-box', 'reset-form-box'].forEach(id => {
       document.getElementById(id)?.classList.toggle('hidden', id !== box);
     });
     document.getElementById('login-switch-login')?.classList.toggle('hidden', box !== 'login-form-box');
@@ -20,6 +20,30 @@ export const Auth = {
   showLogin() { this._show('login-form-box'); },
   showRegister() { this._show('register-form-box'); },
   showForgot() { this._show('forgot-form-box'); },
+  showReset() { this._show('reset-form-box'); },
+
+  /* ---------- deteksi link reset password dari email ---------- */
+  // Dipanggil saat boot. Supabase redirect ke Site URL dengan hash:
+  // #access_token=...&refresh_token=...&type=recovery
+  checkRecovery() {
+    try {
+      const hash = window.location.hash || '';
+      if (!hash.includes('type=recovery')) return false;
+      const params = new URLSearchParams(hash.substring(1));
+      const accessToken = params.get('access_token');
+      if (!accessToken) return false;
+      // Simpan token recovery sementara (tidak menimpa sesi normal)
+      this._recoveryToken = accessToken;
+      // Bersihkan hash dari URL agar tidak bocor ke history
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      // Tampilkan form reset password
+      document.body.classList.add('auth-locked');
+      document.getElementById('login-screen')?.classList.remove('hidden');
+      this.showReset();
+      UI.toast('Silakan buat password baru.', 'info');
+      return true;
+    } catch (e) { return false; }
+  },
 
   togglePw(inputId, btn) {
     const el = document.getElementById(inputId); if (!el) return;
@@ -177,6 +201,35 @@ export const Auth = {
       this.showLogin();
     } catch (e) { UI.toast('Tidak bisa terhubung ke server.', 'error'); }
     finally { this._setLoading('forgot_btn', false); }
+  },
+
+  /* ---------- RESET PASSWORD (dari link email) ---------- */
+  async resetPassword() {
+    const p1 = document.getElementById('reset_password')?.value || '';
+    const p2 = document.getElementById('reset_password2')?.value || '';
+    if (p1.length < 6) return UI.toast('Password minimal 6 karakter.', 'error');
+    if (p1 !== p2) return UI.toast('Konfirmasi password tidak sama.', 'error');
+    if (!this._recoveryToken) return UI.toast('Sesi reset kedaluwarsa. Minta tautan baru.', 'error');
+    if (!navigator.onLine) return UI.toast('Butuh koneksi internet.', 'error');
+    this._setLoading('reset_btn', true, 'Menyimpan…');
+    try {
+      const res = await fetch(`${SyncConfig.URL}/auth/v1/user`, {
+        method: 'PUT',
+        headers: { apikey: SyncConfig.ANON_KEY, Authorization: 'Bearer ' + this._recoveryToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: p1 })
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        UI.toast(j.msg || j.error_description || 'Gagal menyimpan password.', 'error');
+        return;
+      }
+      this._recoveryToken = null;
+      document.getElementById('reset_password').value = '';
+      document.getElementById('reset_password2').value = '';
+      UI.toast('Password berhasil diubah. Silakan masuk.', 'info');
+      this.showLogin();
+    } catch (e) { UI.toast('Tidak bisa terhubung ke server.', 'error'); }
+    finally { this._setLoading('reset_btn', false); }
   },
 
   /* ---------- LOGOUT (dari tab Akun) ---------- */
