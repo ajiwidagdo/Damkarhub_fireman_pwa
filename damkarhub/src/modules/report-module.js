@@ -51,7 +51,7 @@ class ReportModule {
     const s = this.cfg.computeStats(filtered, prevFiltered);
     const reguRank = {};
     filtered.forEach(d => {
-      if (d.regu) d.regu.split('\n').filter(r => r.trim()).forEach(r => {
+      if (d.regu) d.regu.split(/[,\n|]/).filter(r => r.trim()).forEach(r => {
         const nm = r.trim().toUpperCase();
         reguRank[nm] = (reguRank[nm] || 0) + 1;
       });
@@ -70,9 +70,14 @@ class ReportModule {
       actions.push({ label: 'Buka di Google Maps', icon: 'fa-solid fa-map-location-dot', onclick: `UI.closeSheet(); Helpers.openMaps('${String(data.koordinat).replace(/'/g,"\\'")}')` });
     }
     actions.push(
-      { label: 'Edit Laporan', icon: 'fa-solid fa-pen', onclick: `UI.closeSheet(); App.editLaporan('${type}','${id}')` },
-      { label: 'Hapus Laporan', icon: 'fa-solid fa-trash', danger: true, onclick: `UI.closeSheet(); Mod.${type}.delete('${id}')` }
+      { label: 'Edit Laporan', icon: 'fa-solid fa-pen', onclick: `UI.closeSheet(); App.editLaporan('${type}','${id}')` }
     );
+    // Hapus hanya untuk admin (RLS juga membatasi di server)
+    if (typeof App !== 'undefined' && App.isAdmin && App.isAdmin()) {
+      actions.push(
+        { label: 'Hapus Laporan', icon: 'fa-solid fa-trash', danger: true, onclick: `UI.closeSheet(); Mod.${type}.delete('${id}')` }
+      );
+    }
     return actions;
   }
 
@@ -131,6 +136,11 @@ class ReportModule {
   }
 
   delete(id) {
+    // Guard: hanya admin boleh hapus (RLS server juga membatasi)
+    if (typeof App !== 'undefined' && App.isAdmin && !App.isAdmin()) {
+      UI.toast('Hanya admin yang dapat menghapus laporan', 'error');
+      return;
+    }
     UI.confirm(async () => {
       this.data = this.data.filter(x => x.id !== id);
       try {

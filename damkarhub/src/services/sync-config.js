@@ -5,6 +5,10 @@ export const SyncConfig = {
   URL: 'https://wanrxqxobsgbaflfmrhe.supabase.co',
   ANON_KEY: 'sb_publishable_4EDl3A9Kuv3Q9aOzKCQHoQ_aeUAPD-Q',
   DEFAULT_TENANT_CODE: 'DAMKARHUB.BANJAR113',
+  CLOUDINARY: {
+    CLOUD_NAME: 'cyokyuio',
+    PRESET: 'satria_unsigned'
+  },
   PAGE: 100,
   CHUNK: 10,
   INTERVAL_MS: 120000
