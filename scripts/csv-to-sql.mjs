@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /* ============================================================
    csv-to-sql.mjs — Convert CSV dummy data → SQL seed Supabase
-   Cara pakai: node scripts/csv-to-sql.mjs
-   Input : docs/template-dummy-{K,NK,SOS}.csv
-   Output: docs/seed-dummy-YYYY-MM-DD.sql
+   Cara pakai:
+     node scripts/csv-to-sql.mjs --tenant <UUID> --owner-email <email>
+     node scripts/csv-to-sql.mjs --tenant <UUID> --owner-email <email> --input <dir> --output <file>
+   Input : docs/template-dummy-{K,NK,SOS}.csv (atau --input)
+   Output: docs/seed-dummy-YYYY-MM-DD.sql (atau --output)
    - Parser RFC-4180 inline (tanpa dependensi)
    - UUID v4 via crypto.randomUUID()
    - Format INSERT 9 kolom (tanpa owner_email, sesuai live DB)
@@ -16,8 +18,37 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 
-const OWNER_EMAIL = 'petugas@damkarhub.id';
-const TENANT_ID = '06622c4b-2610-427e-9ee4-cce5a80ad1f1';
+/* ---------- CLI args ---------- */
+function getArg(name, def = null) {
+  const i = process.argv.indexOf('--' + name);
+  return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : def;
+}
+const TENANT_ID = getArg('tenant');
+const OWNER_EMAIL = getArg('owner-email');
+const INPUT_DIR = getArg('input', path.join(ROOT, 'docs'));
+const OUTPUT_FILE = getArg('output');
+
+if (!TENANT_ID || !OWNER_EMAIL) {
+  console.error(`
+Penggunaan: node scripts/csv-to-sql.mjs --tenant <UUID> --owner-email <email>
+
+  --tenant <UUID>       Tenant ID tujuan (wajib)
+  --owner-email <email> Email pemilik data di auth.users (wajib)
+  --input <dir>         Folder CSV (default: docs/)
+  --output <file>       File SQL output (default: docs/seed-YYYY-MM-DD.sql)
+
+Contoh (Banjar):
+  node scripts/csv-to-sql.mjs \\
+    --tenant a499d44d-b620-4fcd-b402-7d8f4823310b \\
+    --owner-email damkarbjr@gmail.com
+`);
+  process.exit(1);
+}
+// Validasi format UUID sederhana
+if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(TENANT_ID)) {
+  console.error(`ERROR: --tenant bukan UUID valid: ${TENANT_ID}`);
+  process.exit(1);
+}
 
 /* ---------- kolom CSV per modul (urutan = urutan header) ---------- */
 const COLS = {
@@ -125,7 +156,7 @@ const values = [];
 const counts = { k: 0, nk: 0, sos: 0 };
 
 for (const module of ['k', 'nk', 'sos']) {
-  const file = path.join(ROOT, 'docs', `template-dummy-${module.toUpperCase()}.csv`);
+  const file = path.join(INPUT_DIR, `template-dummy-${module.toUpperCase()}.csv`);
   let text;
   try { text = readFileSync(file, 'utf8'); }
   catch { console.error(`SKIP: ${file} tidak ditemukan`); continue; }
@@ -206,6 +237,6 @@ COMMIT;
 -- GROUP BY module ORDER BY module;
 `;
 
-const outFile = path.join(ROOT, 'docs', `seed-dummy-${today}.sql`);
+const outFile = OUTPUT_FILE || path.join(ROOT, 'docs', `seed-dummy-${today}.sql`);
 writeFileSync(outFile, sql);
 console.log(`OK: ${values.length} row (${counts.k} k / ${counts.nk} nk / ${counts.sos} sos) → ${outFile}`);
