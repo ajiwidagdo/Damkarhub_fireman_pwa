@@ -64,6 +64,15 @@ const ModKcfg = {
     UI.renderLeaderboard('k_statReguRank', s._reguRank || {}, s.total, 'text-red-700 dark:text-red-400');
     UI.renderLeaderboard('k_statPersonilRank', s.personilRank, null, 'text-red-700 dark:text-red-400');
   },
+  /* ---------- Mode Cepat (demo form sederhana) ---------- */
+  toggleModeCepat(btn) {
+    const on = btn.classList.toggle('bg-blue-500');
+    btn.classList.toggle('bg-gray-300', !on);
+    const dot = btn.querySelector('.toggle-dot');
+    if (dot) dot.style.transform = on ? 'translateX(20px)' : '';
+    document.getElementById('k_form')?.classList.toggle('mode-cepat', on);
+    UI.toast(on ? '⚡ Mode Cepat: 10 field baku' : '📋 Mode Lengkap', 'info');
+  },
   /* ---------- Toggle korban kondisional (demo form sederhana) ---------- */
   toggleKorban(btn) {
     const on = btn.classList.toggle('bg-emerald-500');

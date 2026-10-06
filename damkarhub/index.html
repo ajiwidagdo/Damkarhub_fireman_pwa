@@ -536,6 +536,8 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 </div>
 
 <style>
+  /* Mode Cepat: sembunyikan field non-baku (demo form sederhana) */
+  .mode-cepat [data-mode="lengkap"] { display: none !important; }
   .splash-bg { background: radial-gradient(120% 70% at 50% 30%, #16294d 0%, #0a1a33 55%, #060f1f 100%); overflow:hidden; }
   .splash-glow { position:absolute; top:20%; width:20rem; height:20rem; border-radius:50%; background:radial-gradient(circle, rgba(249,115,22,.5) 0%, transparent 70%); filter:blur(30px); }
   .splash-hero { position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:min(125%, 640px); max-width:none; opacity:.92;
@@ -750,6 +752,14 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   <!-- FORM K -->
   <div id="view-k-input" class="input-panel">
     <h2 class="text-xl font-black mb-5" id="k_form-title">Input Laporan Kebakaran</h2>
+    <!-- Mode Cepat toggle (demo form sederhana) -->
+    <div class="mb-4 flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-4 py-3 border border-blue-100 dark:border-blue-800">
+      <i class="fa-solid fa-bolt text-blue-600"></i>
+      <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Mode Cepat <span class="font-normal text-xs text-gray-500">(10 field baku saja)</span></label>
+      <button type="button" id="k_modeCepatToggle" onclick="Mod.k.toggleModeCepat(this)" class="w-12 h-7 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors" aria-label="Mode cepat">
+        <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform"></span>
+      </button>
+    </div>
     <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3"><span class="chip-dot"></span>Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4"><span class="chip-dot"></span>Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5"><span class="chip-dot"></span>Operasional</button></nav>
     <form id="k_form" onsubmit="Mod.k.save(event)" class="space-y-4">
       <input type="hidden" id="k_editId">
@@ -927,7 +937,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <textarea id="k_tindakan" rows="2" required></textarea>
         </div>
         <div id="k_kendala_inputs"></div>
-<div data-disclosure class="disclosure mb-3">
+<div data-disclosure data-mode="lengkap" class="disclosure mb-3">
           <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Unsur yang Terlibat</button>
           <div class="disclosure-body hidden">
         <div class="mb-3">
