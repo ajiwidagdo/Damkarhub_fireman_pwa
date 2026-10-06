@@ -88,18 +88,6 @@ const ModKcfg = {
       ['k_lRingan','k_lBerat','k_mnggal'].forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
     }
   },
-  /* Severity picker visual untuk kartu korban (demo form sederhana) */
-  setSeverity(btn, value) {
-    const group = btn.closest('[data-severity-group]');
-    group.querySelectorAll('.sev-btn').forEach(b => {
-      b.classList.remove('border-emerald-500','border-amber-500','border-red-500','bg-emerald-50','bg-amber-50','bg-red-50','dark:bg-emerald-900/20','dark:bg-amber-900/20','dark:bg-red-900/20');
-      b.classList.add('border-gray-200','dark:border-gray-600');
-    });
-    const colors = { ringan: ['border-emerald-500','bg-emerald-50','dark:bg-emerald-900/20'], berat: ['border-amber-500','bg-amber-50','dark:bg-amber-900/20'], meninggal: ['border-red-500','bg-red-50','dark:bg-red-900/20'] };
-    btn.classList.remove('border-gray-200','dark:border-gray-600');
-    btn.classList.add(...colors[value]);
-    btn.closest('.korban-item').querySelector('.k_kSeverity').value = value;
-  },
   addKorban(data = null) {
     const c = document.getElementById('k_korbanListContainer');
     this._micSeq = (this._micSeq || 0) + 1;
@@ -110,23 +98,7 @@ const ModKcfg = {
       <button type="button" onclick="this.closest('.korban-item').remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Hapus kartu"><i class="fa-solid fa-times"></i></button>
       <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="mb-3">
-        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Korban / Pemilik</p>
-      </div>
-      <!-- Severity picker visual (demo form sederhana) -->
-      <div class="mb-3">
-        <label class="field-label">Kondisi Korban</label>
-        <div class="grid grid-cols-3 gap-2" data-severity-group>
-          <button type="button" onclick="Mod.k.setSeverity(this,'ringan')" data-sev="ringan" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
-            <i class="fa-solid fa-bandage block text-lg mb-1 text-emerald-500"></i>Luka Ringan
-          </button>
-          <button type="button" onclick="Mod.k.setSeverity(this,'berat')" data-sev="berat" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
-            <i class="fa-solid fa-truck-medical block text-lg mb-1 text-amber-500"></i>Luka Berat
-          </button>
-          <button type="button" onclick="Mod.k.setSeverity(this,'meninggal')" data-sev="meninggal" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
-            <i class="fa-solid fa-cross block text-lg mb-1 text-red-500"></i>Meninggal
-          </button>
-        </div>
-        <input type="hidden" class="k_kSeverity" value="${data?.severity || ''}">
+        <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Pemilik Aset Terdampak</p>
       </div>
       <div class="mb-2">
         <label class="field-label">Nama</label>
@@ -140,6 +112,17 @@ const ModKcfg = {
         <div class="flex items-center gap-2">
           <input type="text" enterkeyhint="next" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
           <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+        </div>
+      </div>
+      <!-- Jumlah KK & Jiwa terdampak (opsional, demo form sederhana) -->
+      <div class="grid grid-cols-2 gap-3 mb-2">
+        <div>
+          <label class="field-label">Jumlah KK <span class="text-gray-400 font-normal">(opsional)</span></label>
+          <input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1">
+        </div>
+        <div>
+          <label class="field-label">Jumlah Jiwa <span class="text-gray-400 font-normal">(opsional)</span></label>
+          <input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4">
         </div>
       </div>
       <div data-disclosure class="disclosure">
@@ -188,6 +171,7 @@ const ModKcfg = {
     const objek = document.getElementById('k_objekTerbakar').value === 'Lainnya' ? document.getElementById('k_objek_lainnya').value : document.getElementById('k_objekTerbakar').value;
     const korbanList = [...document.getElementById('k_korbanListContainer').children].map(c => ({
       nama:c.querySelector('.k_kNama').value, nik:c.querySelector('.k_kNIK')?.value || '', usia:c.querySelector('.k_kUsia').value, jk:c.querySelector('.k_kJK').value,
+      jumlahKK:c.querySelector('.k_kJumlahKK')?.value || '', jumlahJiwa:c.querySelector('.k_kJumlahJiwa')?.value || '',
       dusun:c.querySelector('.k_kDusun').value, rtrw:c.querySelector('.k_kRtrw').value, kel:c.querySelector('.k_kKel').value, kec:c.querySelector('.k_kKec').value, kabkota:c.querySelector('.k_kKabkota').value
     }));
     const gv = id => document.getElementById(id).value;
@@ -302,7 +286,8 @@ const ModKcfg = {
     if (d.korbanList?.length) {
       korban = '\n' + d.korbanList.map((k,i) => {
         const a = Helpers.formatAddress(k.dusun,k.rtrw,k.kel,k.kec,k.kabkota);
-        return `${i+1}. ${k.nama || '-'}${k.nik ? ' (NIK: ' + k.nik + ')' : ''} (${k.usia || '-'} th, ${k.jk || '-'})\n   ${a}`;
+        const kkJiwa = (k.jumlahKK || k.jumlahJiwa) ? ` [${k.jumlahKK || '-'} KK, ${k.jumlahJiwa || '-'} jiwa]` : '';
+        return `${i+1}. ${k.nama || '-'}${k.nik ? ' (NIK: ' + k.nik + ')' : ''} (${k.usia || '-'} th, ${k.jk || '-'})${kkJiwa}\n   ${a}`;
       }).join('\n');
     }
     const personil = d.personil ? d.personil.split('\n').filter(p => p.trim()).map(p => `  • ${p.trim()}`).join('\n') : '  -';
