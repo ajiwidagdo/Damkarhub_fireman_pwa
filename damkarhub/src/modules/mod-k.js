@@ -64,6 +64,21 @@ const ModKcfg = {
     UI.renderLeaderboard('k_statReguRank', s._reguRank || {}, s.total, 'text-red-700 dark:text-red-400');
     UI.renderLeaderboard('k_statPersonilRank', s.personilRank, null, 'text-red-700 dark:text-red-400');
   },
+  /* ---------- Toggle korban kondisional (demo form sederhana) ---------- */
+  toggleKorban(btn) {
+    const on = btn.classList.toggle('bg-emerald-500');
+    btn.classList.toggle('bg-gray-300', !on);
+    const dot = btn.querySelector('.toggle-dot');
+    if (dot) dot.style.transform = on ? 'translateX(20px)' : '';
+    document.getElementById('k_korbanWrapper')?.classList.toggle('hidden', !on);
+    if (on && !document.getElementById('k_korbanListContainer').children.length) {
+      this.addKorban();
+    }
+    if (!on) {
+      document.getElementById('k_korbanListContainer').innerHTML = '';
+      ['k_lRingan','k_lBerat','k_mnggal'].forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
+    }
+  },
   addKorban(data = null) {
     const c = document.getElementById('k_korbanListContainer');
     this._micSeq = (this._micSeq || 0) + 1;
@@ -156,7 +171,16 @@ const ModKcfg = {
     setSelectOrOther('k_jenisKebakaran','k_jenis_lainnya', d.jenis);
     sv('k_lokasiDetail',d.lokasiDetail); sv('k_dusun',d.dusun); sv('k_rtrw',d.rtrw); sv('k_kel',d.kel); sv('k_kec',d.kec); sv('k_kabkota',d.kabkota); sv('k_koordinat',d.koordinat);
     document.getElementById('k_korbanListContainer').innerHTML = '';
-    (d.korbanList?.length ? d.korbanList : [null]).forEach(k => Mod.k.addKorban(k));
+    const adaKorban = (d.korbanList?.length || 0) > 0;
+    const tgl = document.getElementById('k_adaKorbanToggle');
+    if (tgl) {
+      tgl.classList.toggle('bg-emerald-500', adaKorban);
+      tgl.classList.toggle('bg-gray-300', !adaKorban);
+      const dot = tgl.querySelector('.toggle-dot');
+      if (dot) dot.style.transform = adaKorban ? 'translateX(20px)' : '';
+    }
+    document.getElementById('k_korbanWrapper')?.classList.toggle('hidden', !adaKorban);
+    (d.korbanList?.length ? d.korbanList : []).forEach(k => Mod.k.addKorban(k));
     sv('k_pNama',d.pNama); sv('k_pHP',d.pHP);
     setSelectOrOther('k_penyebab','k_penyebab_lainnya', d.penyebab);
     setSelectOrOther('k_objekTerbakar','k_objek_lainnya', d.objekTerbakar);
@@ -173,7 +197,10 @@ const ModKcfg = {
   onResetForm() {
     ['k_jenis_lainnya','k_penyebab_lainnya','k_objek_lainnya'].forEach(id => document.getElementById(id).classList.add('hidden'));
     document.getElementById('k_korbanListContainer').innerHTML = '';
-    Mod.k.addKorban();
+    // Reset toggle korban ke OFF
+    const tgl = document.getElementById('k_adaKorbanToggle');
+    if (tgl) { tgl.classList.remove('bg-emerald-500'); tgl.classList.add('bg-gray-300'); const d = tgl.querySelector('.toggle-dot'); if (d) d.style.transform = ''; }
+    document.getElementById('k_korbanWrapper')?.classList.add('hidden');
     document.getElementById('k_foto1_b64').value = '';
     document.getElementById('k_foto2_b64').value = '';
     App.renderReguChips('k');

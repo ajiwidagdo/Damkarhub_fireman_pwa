@@ -866,8 +866,16 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
         </div>
         <p class="text-[10px] text-gray-500 dark:text-gray-400 -mt-2 mb-3 italic"><i class="fa-solid fa-circle-info mr-1"></i>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p>
+        <div class="mb-4 flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3">
+          <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Ada korban jiwa?</label>
+          <button type="button" id="k_adaKorbanToggle" onclick="Mod.k.toggleKorban(this)" class="w-12 h-7 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors" aria-label="Ada korban jiwa">
+            <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform"></span>
+          </button>
+        </div>
+        <div id="k_korbanWrapper" class="hidden">
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
         <button type="button" class="add-row-empty" onclick="Mod.k.addKorban()"><i class="fa-solid fa-plus mr-1"></i> Tambah Korban</button>
+        </div>
         <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700">
           <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3 text-center"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
           <div class="mb-3"><label class="field-label">Nama Pelapor</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_pNama" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_pNama', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
