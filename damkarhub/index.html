@@ -1547,6 +1547,19 @@ body.auth-locked .app-header, body.auth-locked main, body.auth-locked .bottom-na
       <button type="button" id="forgot_btn" onclick="Auth.forgot()" class="login-btn"><i class="fa-solid fa-paper-plane mr-2"></i>Kirim Tautan Reset</button>
     </div>
 
+    <div id="reset-form-box" class="login-card hidden">
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 leading-relaxed">Masukkan password baru untuk akun Anda.</p>
+      <div class="mb-3">
+        <label class="field-label" for="reset_password">Password Baru</label>
+        <input type="password" id="reset_password" class="login-input" autocomplete="new-password" placeholder="Minimal 6 karakter" onkeydown="if(event.key==='Enter')Auth.resetPassword()">
+      </div>
+      <div class="mb-4">
+        <label class="field-label" for="reset_password2">Konfirmasi Password Baru</label>
+        <input type="password" id="reset_password2" class="login-input" autocomplete="new-password" placeholder="Ulangi password baru" onkeydown="if(event.key==='Enter')Auth.resetPassword()">
+      </div>
+      <button type="button" id="reset_btn" onclick="Auth.resetPassword()" class="login-btn"><i class="fa-solid fa-key mr-2"></i>Simpan Password Baru</button>
+    </div>
+
     <p id="login-switch-login" class="login-switch">Belum punya akun? <button type="button" onclick="Auth.showRegister()">Daftar</button></p>
     <p id="login-switch-register" class="login-switch hidden">Sudah punya akun? <button type="button" onclick="Auth.showLogin()">Masuk</button></p>
 
