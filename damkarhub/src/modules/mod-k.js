@@ -88,6 +88,18 @@ const ModKcfg = {
       ['k_lRingan','k_lBerat','k_mnggal'].forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
     }
   },
+  /* Severity picker visual untuk kartu korban (demo form sederhana) */
+  setSeverity(btn, value) {
+    const group = btn.closest('[data-severity-group]');
+    group.querySelectorAll('.sev-btn').forEach(b => {
+      b.classList.remove('border-emerald-500','border-amber-500','border-red-500','bg-emerald-50','bg-amber-50','bg-red-50','dark:bg-emerald-900/20','dark:bg-amber-900/20','dark:bg-red-900/20');
+      b.classList.add('border-gray-200','dark:border-gray-600');
+    });
+    const colors = { ringan: ['border-emerald-500','bg-emerald-50','dark:bg-emerald-900/20'], berat: ['border-amber-500','bg-amber-50','dark:bg-amber-900/20'], meninggal: ['border-red-500','bg-red-50','dark:bg-red-900/20'] };
+    btn.classList.remove('border-gray-200','dark:border-gray-600');
+    btn.classList.add(...colors[value]);
+    btn.closest('.korban-item').querySelector('.k_kSeverity').value = value;
+  },
   addKorban(data = null) {
     const c = document.getElementById('k_korbanListContainer');
     this._micSeq = (this._micSeq || 0) + 1;
@@ -99,6 +111,22 @@ const ModKcfg = {
       <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
       <div class="mb-3">
         <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase text-center">Data Korban / Pemilik</p>
+      </div>
+      <!-- Severity picker visual (demo form sederhana) -->
+      <div class="mb-3">
+        <label class="field-label">Kondisi Korban</label>
+        <div class="grid grid-cols-3 gap-2" data-severity-group>
+          <button type="button" onclick="Mod.k.setSeverity(this,'ringan')" data-sev="ringan" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
+            <i class="fa-solid fa-bandage block text-lg mb-1 text-emerald-500"></i>Luka Ringan
+          </button>
+          <button type="button" onclick="Mod.k.setSeverity(this,'berat')" data-sev="berat" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
+            <i class="fa-solid fa-truck-medical block text-lg mb-1 text-amber-500"></i>Luka Berat
+          </button>
+          <button type="button" onclick="Mod.k.setSeverity(this,'meninggal')" data-sev="meninggal" class="sev-btn py-2 px-1 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-500 dark:text-gray-400 transition-all">
+            <i class="fa-solid fa-cross block text-lg mb-1 text-red-500"></i>Meninggal
+          </button>
+        </div>
+        <input type="hidden" class="k_kSeverity" value="${data?.severity || ''}">
       </div>
       <div class="mb-2">
         <label class="field-label">Nama</label>
