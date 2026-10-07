@@ -93,7 +93,7 @@ const ModKcfg = {
     this._micSeq = (this._micSeq || 0) + 1;
     const uid = 'kkm' + this._micSeq + Date.now().toString(36);
     const div = document.createElement('div');
-    div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-gray-700 relative";
+    div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border-2 border-black dark:border-gray-700 relative";
     div.innerHTML = `
       <button type="button" onclick="this.closest('.korban-item').remove()" class="absolute -top-2 -left-2 bg-red-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Hapus kartu"><i class="fa-solid fa-times"></i></button>
       <button type="button" onclick="Mod.k.addKorban()" class="absolute -top-2 -right-2 bg-emerald-500 text-white w-7 h-7 rounded-full text-xs flex items-center justify-center shadow-sm z-10 active:scale-90" aria-label="Tambah korban"><i class="fa-solid fa-plus"></i></button>
@@ -119,7 +119,10 @@ const ModKcfg = {
       </div>
       <div class="mb-2 k_alamatManual hidden">
         <label class="field-label">Alamat Pemilik</label>
-        <input type="text" class="k_kAlamatManual w-full" value="${data?.alamatManual || ''}" placeholder="Lingk/Dusun, RT/RW, Kel/Desa, Kec, Kab/Kota">
+        <div class="flex items-center gap-2">
+          <input type="text" id="${uid}_alamatmanual" class="k_kAlamatManual flex-1 min-w-0" value="${data?.alamatManual || ''}" placeholder="Lingk/Dusun, RT/RW, Kel/Desa, Kec, Kab/Kota">
+          <button type="button" onclick="Helpers.startSpeech('${uid}_alamatmanual', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+        </div>
       </div>
       <!-- Field opsional di-collapse -->
       <div data-disclosure class="disclosure">
@@ -130,15 +133,18 @@ const ModKcfg = {
               <label class="field-label">Jenis Kelamin</label>
               <select class="k_kJK"><option value="-" ${data?.jk==='-'?'selected':''}>-</option><option ${data?.jk==='Pria'?'selected':''}>Pria</option><option ${data?.jk==='Wanita'?'selected':''}>Wanita</option></select>
             </div>
-            <div><label class="field-label">Usia (Thn)</label><input type="text" inputmode="numeric" class="k_kUsia w-full" value="${data?.usia || ''}"></div>
+            <div><label class="field-label">Usia (Thn)</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="${uid}_usia" class="k_kUsia flex-1 min-w-0" value="${data?.usia || ''}"><button type="button" onclick="Helpers.startSpeech('${uid}_usia', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
           </div>
           <div class="mb-2">
             <label class="field-label">NIK</label>
-            <input type="text" class="k_kNIK w-full" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
+            <div class="flex items-center gap-2">
+              <input type="text" id="${uid}_nik" class="k_kNIK flex-1 min-w-0" value="${data?.nik || ''}" placeholder="16 digit" maxlength="16" inputmode="numeric">
+              <button type="button" onclick="Helpers.startSpeech('${uid}_nik', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
+            </div>
           </div>
           <div class="grid grid-cols-2 gap-3 mb-2">
-            <div><label class="field-label">Jumlah KK</label><input type="text" inputmode="numeric" class="k_kJumlahKK w-full" value="${data?.jumlahKK || ''}" placeholder="Cth: 1"></div>
-            <div><label class="field-label">Jumlah Jiwa</label><input type="text" inputmode="numeric" class="k_kJumlahJiwa w-full" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4"></div>
+            <div><label class="field-label">Jumlah KK</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="${uid}_kk" class="k_kJumlahKK flex-1 min-w-0" value="${data?.jumlahKK || ''}" placeholder="Cth: 1"><button type="button" onclick="Helpers.startSpeech('${uid}_kk', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+            <div><label class="field-label">Jumlah Jiwa</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="${uid}_jiwa" class="k_kJumlahJiwa flex-1 min-w-0" value="${data?.jumlahJiwa || ''}" placeholder="Cth: 4"><button type="button" onclick="Helpers.startSpeech('${uid}_jiwa', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
           </div>
         </div>
       </div>`;
