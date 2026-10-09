@@ -68,6 +68,16 @@ export const ModNkcfg = {
     sv('nk_lokasiDetail',d.lokasiDetail); sv('nk_dusun',d.dusun); sv('nk_rtrw',d.rtrw); sv('nk_kel',d.kel); sv('nk_kec',d.kec); sv('nk_kabkota',d.kabkota); sv('nk_koordinat',d.koordinat);
     sv('nk_idNama',d.idNama); sv('nk_idUsia',d.idUsia); sv('nk_idJK',d.idJK || '-'); sv('nk_pHP',d.pHP);
     sv('nk_idDusun',d.idDusun); sv('nk_idRtrw',d.idRtrw); sv('nk_idKel',d.idKel); sv('nk_idKec',d.idKec); sv('nk_idKabkota',d.idKabkota);
+    // Toggle alamat sama: ON jika alamat pelapor kosong atau sama dengan lokasi
+    const alamatSama = !d.idDusun && !d.idKel && !d.idKec;
+    const tglA = document.getElementById('nk_alamatSamaToggle');
+    if (tglA) {
+      tglA.classList.toggle('bg-emerald-500', alamatSama);
+      tglA.classList.toggle('bg-gray-300', !alamatSama);
+      const dot = tglA.querySelector('.toggle-dot');
+      if (dot) dot.style.transform = alamatSama ? 'translateX(20px)' : '';
+    }
+    document.getElementById('nk_alamatPelaporWrapper')?.classList.toggle('hidden', alamatSama);
     sv('nk_objek',d.objek); sv('nk_lokasiOp',d.lokasiOp); sv('nk_ukuran',d.ukuran);
     sv('nk_durasi',d.durasi); sv('nk_armada',d.armada); sv('nk_jarak',d.jarak); sv('nk_air',d.air);
     sv('nk_kronologi',d.kronologi); sv('nk_tindakan',d.tindakan); sv('nk_kendala', Helpers.kendalaList(d.kendala).join('\n')); sv('nk_keterangan',d.keterangan);
@@ -84,9 +94,26 @@ export const ModNkcfg = {
     document.getElementById('nk_jenis_lainnya').classList.add('hidden');
     document.getElementById('nk_foto1_b64').value = '';
     document.getElementById('nk_foto2_b64').value = '';
+    // Reset toggle alamat sama ke ON (default)
+    const tgl = document.getElementById('nk_alamatSamaToggle');
+    if (tgl) { tgl.classList.add('bg-emerald-500'); tgl.classList.remove('bg-gray-300'); const d = tgl.querySelector('.toggle-dot'); if (d) d.style.transform = 'translateX(20px)'; }
+    document.getElementById('nk_alamatPelaporWrapper')?.classList.add('hidden');
     App.renderReguChips('nk');
     App.renderPersonnelChips('nk');
     App.renderKendalaChips('nk');
+  },
+  /* Toggle alamat pelapor sama dengan lokasi (demo form sederhana) */
+  toggleAlamatSama(btn) {
+    const on = btn.classList.toggle('bg-emerald-500');
+    btn.classList.toggle('bg-gray-300', !on);
+    const dot = btn.querySelector('.toggle-dot');
+    if (dot) dot.style.transform = on ? 'translateX(20px)' : '';
+    document.getElementById('nk_alamatPelaporWrapper')?.classList.toggle('hidden', on);
+    if (on) {
+      // Copy dari lokasi kejadian
+      const map = [['nk_dusun','nk_idDusun'],['nk_rtrw','nk_idRtrw'],['nk_kel','nk_idKel'],['nk_kec','nk_idKec'],['nk_kabkota','nk_idKabkota']];
+      map.forEach(([from,to]) => { const f = document.getElementById(from); const t = document.getElementById(to); if (f && t) t.value = f.value || ''; });
+    }
   },
   buildPreviewHTML(d) {
     const P = PreviewBuilder;

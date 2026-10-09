@@ -99,6 +99,8 @@ class ReportModule {
 
   async save(e) {
     e.preventDefault();
+    // Hook konfirmasi sebelum simpan (misal: korban jiwa)
+    if (this.cfg.beforeSave && !this.cfg.beforeSave()) return;
     const personilVal = document.getElementById(`${this.id}_personil`)?.value || '';
     if (!personilVal.trim()) { UI.toast('Pilih minimal 1 personil bertugas!', 'error'); return; }
     const editId = document.getElementById(`${this.id}_editId`).value;

@@ -536,6 +536,8 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
 </div>
 
 <style>
+  /* Mode Cepat: sembunyikan field non-baku (demo form sederhana) */
+  .mode-cepat [data-mode="lengkap"] { display: none !important; }
   .splash-bg { background: radial-gradient(120% 70% at 50% 30%, #16294d 0%, #0a1a33 55%, #060f1f 100%); overflow:hidden; }
   .splash-glow { position:absolute; top:20%; width:20rem; height:20rem; border-radius:50%; background:radial-gradient(circle, rgba(249,115,22,.5) 0%, transparent 70%); filter:blur(30px); }
   .splash-hero { position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:min(125%, 640px); max-width:none; opacity:.92;
@@ -750,6 +752,14 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
   <!-- FORM K -->
   <div id="view-k-input" class="input-panel">
     <h2 class="text-xl font-black mb-5" id="k_form-title">Input Laporan Kebakaran</h2>
+    <!-- Mode Cepat toggle (demo form sederhana) -->
+    <div class="mb-4 flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 rounded-2xl px-4 py-3 border border-blue-100 dark:border-blue-800">
+      <i class="fa-solid fa-bolt text-blue-600"></i>
+      <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Mode Cepat <span class="font-normal text-xs text-gray-500">(10 field baku saja)</span></label>
+      <button type="button" id="k_modeCepatToggle" onclick="Mod.k.toggleModeCepat(this)" class="w-12 h-7 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors" aria-label="Mode cepat">
+        <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform"></span>
+      </button>
+    </div>
     <nav class="chip-nav" data-chipnav="k" aria-label="Navigasi section form"><button type="button" class="chip-nav-btn is-active" data-target="k-s1"><span class="chip-dot"></span>Waktu</button><button type="button" class="chip-nav-btn" data-target="k-s2"><span class="chip-dot"></span>Lokasi</button><button type="button" class="chip-nav-btn" data-target="k-s3"><span class="chip-dot"></span>Korban</button><button type="button" class="chip-nav-btn" data-target="k-s4"><span class="chip-dot"></span>Dampak</button><button type="button" class="chip-nav-btn" data-target="k-s5"><span class="chip-dot"></span>Operasional</button></nav>
     <form id="k_form" onsubmit="Mod.k.save(event)" class="space-y-4">
       <input type="hidden" id="k_editId">
@@ -768,77 +778,56 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           </div>
           <input type="text" enterkeyhint="next" id="k_jenis_lainnya" placeholder="Ketik jenis spesifik..." class="mt-2 hidden">
         </div>
-<div class="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label class="field-label">Tgl Kejadian</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="k_tanggal" required aria-label="Tanggal kejadian" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('k_tanggal')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
+<!-- Timeline waktu kejadian (demo form sederhana) -->
+        <div class="mb-4 bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
+          <p class="text-[10px] font-black uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3"><i class="fa-solid fa-timeline mr-1"></i> Rentetan Waktu</p>
+          <div class="relative pl-6 space-y-3 before:content-[''] before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-600">
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Kejadian</span>
+                <input type="date" id="k_tanggal" required aria-label="Tanggal kejadian" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="k_pukul" required aria-label="Pukul kejadian" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-amber-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Terima</span>
+                <input type="date" id="k_tglTerima" onchange="Helpers.chainTime('k','k_tglTerima','k_jamTerima'); Helpers.autoFillDurasi('k')" aria-label="Tanggal terima laporan" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="k_jamTerima" onchange="Helpers.chainTime('k','k_jamTerima','k_jamTiba'); Helpers.autoFillDurasi('k')" aria-label="Jam terima laporan" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Tiba</span>
+                <input type="time" id="k_jamTiba" onchange="Helpers.chainTime('k','k_jamTiba','k_jamMulai'); Helpers.autoFillDurasi('k')" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <button type="button" class="text-[10px] text-blue-600 dark:text-blue-400 font-bold px-2 py-1 shrink-0" onclick="Helpers.recordTime('k_jamTiba'); Helpers.chainTime('k','k_jamTiba','k_jamMulai')" title="Isi jam sekarang">SEKARANG</button>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Mulai</span>
+                <input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <button type="button" class="text-[10px] text-blue-600 dark:text-blue-400 font-bold px-2 py-1 shrink-0" onclick="Helpers.recordTime('k_jamMulai')" title="Isi jam sekarang">SEKARANG</button>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Selesai</span>
+                <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" aria-label="Tanggal selesai" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" aria-label="Jam selesai" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
           </div>
-          <div>
-            <label class="field-label">Jam Kejadian</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="k_pukul" required aria-label="Pukul kejadian" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('k_pukul')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Tgl Terima Laporan</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="k_tglTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Tanggal terima laporan" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('k_tglTerima')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Terima Laporan</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="k_jamTerima" onchange="Helpers.autoFillDurasi('k')" aria-label="Jam terima laporan" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('k_jamTerima')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Tiba</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="k_jamTiba" onchange="Helpers.autoFillMulai('k'); Helpers.autoFillDurasi('k')" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('k_jamTiba')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Mulai</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="k_jamMulai" onchange="Helpers.autoFillDurasi('k')" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('k_jamMulai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Tgl Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="k_tglSelesai" onchange="Helpers.autoFillDurasi('k')" aria-label="Tanggal selesai" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('k_tglSelesai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="k_jamSelesai" onchange="Helpers.autoFillDurasi('k')" aria-label="Jam selesai" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('k_jamSelesai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="field-label">Respon Time</label>
-          <div class="flex items-center gap-2">
-            <input type="text" enterkeyhint="next" id="k_responTime" readonly placeholder="Otomatis terhitung" class="flex-1 min-w-0 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold cursor-not-allowed">
-            <span class="unit-suffix text-emerald-700 dark:text-emerald-400">Mnt</span>
+          <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 flex items-center gap-2">
+            <i class="fa-solid fa-stopwatch text-emerald-600"></i>
+            <span class="text-xs font-bold text-gray-600 dark:text-gray-300">Respon Time:</span>
+            <input type="text" id="k_responTime" readonly placeholder="Otomatis" class="flex-1 min-w-0 text-sm bg-transparent text-emerald-700 dark:text-emerald-400 font-black">
+            <span class="text-xs text-emerald-700 dark:text-emerald-400 font-bold">Mnt</span>
           </div>
         </div>
         <div id="k_waktu_inputs"></div>
@@ -851,13 +840,13 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <button type="button" class="btn-help" onclick="UI.openHelp('k-s2')" aria-label="Bantuan section Lokasi Kejadian" title="Bantuan">?</button>
         </div>
         <div class="mb-3"><label class="field-label">Tempat/Patokan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_lokasiDetail" placeholder="Cth: di Kompleks Perum Pepabri" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_lokasiDetail', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        <div class="mb-3"><label class="field-label">Dusun</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_dusun" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_dusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><label class="field-label">Dusun</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_dusun" class="flex-1 min-w-0" onchange="Mod.k.refreshSemuaAlamatKorban()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_dusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
-          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09"  onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="hidden" onclick="Helpers.startSpeech('k_rtrw', this)" aria-hidden="true" tabindex="-1"></button></div>
-          <div class="col-span-2"><label class="field-label">Kel/Desa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kel" required class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kel', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+          <div><label class="field-label">RT/RW</label><input type="text" enterkeyhint="next" id="k_rtrw" placeholder="Cth: 003/09"  onchange="Mod.k.refreshSemuaAlamatKorban()"><button type="button" class="hidden" onclick="Helpers.startSpeech('k_rtrw', this)" aria-hidden="true" tabindex="-1"></button></div>
+          <div class="col-span-2"><label class="field-label">Kel/Desa</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kel" required class="flex-1 min-w-0" onchange="Mod.k.refreshSemuaAlamatKorban()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kel', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
-        <div class="mb-3"><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kec" required class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
-        <div class="mb-3"><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kabkota" class="flex-1 min-w-0" onchange="Mod.k.autofillKorbanAlamat()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><label class="field-label">Kecamatan</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kec" required class="flex-1 min-w-0" onchange="Mod.k.refreshSemuaAlamatKorban()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3"><label class="field-label">Kab/Kota</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_kabkota" class="flex-1 min-w-0" onchange="Mod.k.refreshSemuaAlamatKorban()"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_kabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
 
       </section>
       <section id="k-s3" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
@@ -865,9 +854,16 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <span class="sec-status" data-sec="k-s3"></span>
           <button type="button" class="btn-help" onclick="UI.openHelp('k-s3')" aria-label="Bantuan section Data Pemilik / Korban & Pelapor" title="Bantuan">?</button>
         </div>
-        <p class="text-[10px] text-gray-500 dark:text-gray-400 -mt-2 mb-3 italic"><i class="fa-solid fa-circle-info mr-1"></i>Semua data pemilik/korban boleh dikosongkan bila belum diketahui di lapangan. Jangan diisi rekaan.</p>
+        <div class="mb-4 flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3">
+          <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Ada pemilik aset terdampak?</label>
+          <button type="button" id="k_adaKorbanToggle" onclick="Mod.k.toggleKorban(this)" class="w-12 h-7 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors" aria-label="Ada pemilik aset terdampak">
+            <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform"></span>
+          </button>
+        </div>
+        <div id="k_korbanWrapper" class="hidden">
         <div id="k_korbanListContainer" class="space-y-4 mb-6"></div>
         <button type="button" class="add-row-empty" onclick="Mod.k.addKorban()"><i class="fa-solid fa-plus mr-1"></i> Tambah Korban</button>
+        </div>
         <div class="bg-blue-50 dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700">
           <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase mb-3 text-center"><i class="fa-solid fa-bullhorn mr-1"></i> Data Pelapor</p>
           <div class="mb-3"><label class="field-label">Nama Pelapor</label><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="k_pNama" required class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('k_pNama', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
@@ -941,7 +937,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <textarea id="k_tindakan" rows="2" required></textarea>
         </div>
         <div id="k_kendala_inputs"></div>
-<div data-disclosure class="disclosure mb-3">
+<div data-disclosure data-mode="lengkap" class="disclosure mb-3">
           <button type="button" class="disclosure-head" onclick="UI.toggleDisclosure(this)"><i class="fa-solid fa-plus disc-ic"></i> Tambah Unsur yang Terlibat</button>
           <div class="disclosure-body hidden">
         <div class="mb-3">
@@ -993,53 +989,33 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           </div>
           <input type="text" enterkeyhint="next" id="nk_jenis_lainnya" class="mt-2 hidden">
         </div>
-<div class="grid grid-cols-2 gap-3 mb-3">
-          <div>
-            <label class="field-label">Tgl Terima Laporan</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="nk_tanggal" required aria-label="Tanggal lapor diterima" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('nk_tanggal')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
+<!-- Timeline waktu NK (demo form sederhana) -->
+        <div class="mb-4 bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
+          <p class="text-[10px] font-black uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3"><i class="fa-solid fa-timeline mr-1"></i> Rentetan Waktu</p>
+          <div class="relative pl-6 space-y-3 before:content-[''] before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-600">
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-amber-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Terima</span>
+                <input type="date" id="nk_tanggal" required aria-label="Tanggal lapor diterima" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="nk_pukul" required aria-label="Jam lapor diterima" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Terima Laporan</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="nk_pukul" required aria-label="Jam lapor diterima" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('nk_pukul')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-red-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Mulai</span>
+                <input type="date" id="nk_tglMulai" onchange="Helpers.chainTime('nk','nk_tanggal','nk_tglMulai'); Helpers.autoFillDurasi('nk')" aria-label="Tanggal mulai ditangani" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="nk_jamMulai" onchange="Helpers.chainTime('nk','nk_pukul','nk_jamMulai'); Helpers.autoFillDurasi('nk')" aria-label="Jam mulai ditangani" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
-          </div>
-          <div>
-            <label class="field-label">Tgl Mulai</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="nk_tglMulai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Tanggal mulai ditangani" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('nk_tglMulai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Mulai</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="nk_jamMulai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Jam mulai ditangani" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('nk_jamMulai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Tgl Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Tanggal selesai ditangani" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('nk_tglSelesai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Jam selesai ditangani" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('nk_jamSelesai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Selesai</span>
+                <input type="date" id="nk_tglSelesai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Tanggal selesai ditangani" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="nk_jamSelesai" onchange="Helpers.autoFillDurasi('nk')" aria-label="Jam selesai ditangani" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
           </div>
         </div>
@@ -1072,6 +1048,13 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <div><label class="field-label">Usia (Thn)</label><div class="flex items-center gap-2"><input type="text" inputmode="numeric" id="nk_idUsia" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idUsia', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         </div>
         <div class="mb-3"><label class="field-label">No HP Pelapor</label><div class="flex items-center gap-2"><input type="tel" id="nk_pHP" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_pHP', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        <div class="mb-3 flex items-center gap-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-3">
+          <label class="text-sm font-bold text-gray-700 dark:text-gray-300 flex-1">Alamat pelapor sama dengan lokasi kejadian</label>
+          <button type="button" id="nk_alamatSamaToggle" onclick="Mod.nk.toggleAlamatSama(this)" class="w-12 h-7 rounded-full bg-emerald-500 relative transition-colors" aria-label="Alamat sama dengan lokasi">
+            <span class="toggle-dot absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform" style="transform: translateX(20px)"></span>
+          </button>
+        </div>
+        <div id="nk_alamatPelaporWrapper" class="hidden">
         <label class="field-label mt-3">Alamat Lengkap</label>
         <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idDusun" placeholder="Lingk/Dusun" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idDusun', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="grid grid-cols-3 gap-3 mb-2 keep-3col">
@@ -1080,6 +1063,7 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
         </div>
         <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idKec" placeholder="Kecamatan" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idKec', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
         <div class="mb-3"><div class="flex items-center gap-2"><input type="text" enterkeyhint="next" id="nk_idKabkota" placeholder="Kab/Kota" class="flex-1 min-w-0"><button type="button" class="btn-mic" onclick="Helpers.startSpeech('nk_idKabkota', this)" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button></div></div>
+        </div><!-- /nk_alamatPelaporWrapper -->
       </section>
       <section id="nk-s4" class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
         <div class="section-head">
@@ -1138,41 +1122,28 @@ html.dark .fire-hint::before { border-bottom-color:#f3f4f6; }
           <span class="sec-status" data-sec="sos-s1"></span>
           <button type="button" class="btn-help" onclick="UI.openHelp('sos-s1')" aria-label="Bantuan section Waktu & Rangkaian" title="Bantuan">?</button>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-          <div>
-            <label class="field-label">Tgl Pelaksanaan</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="sos_tanggal" required onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('sos_tanggal')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
+        <!-- Timeline waktu SOS (demo form sederhana) -->
+        <div class="mb-4 bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
+          <p class="text-[10px] font-black uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3"><i class="fa-solid fa-timeline mr-1"></i> Rentetan Waktu</p>
+          <div class="relative pl-6 space-y-3 before:content-[''] before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-600">
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Mulai</span>
+                <input type="date" id="sos_tanggal" required class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="sos_pukul" required onchange="Helpers.chainTime('sos','sos_tanggal','sos_tglSelesai'); Helpers.autoFillDurasi('sos')" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
-          </div>
-          <div>
-            <label class="field-label">Pukul</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="sos_pukul" required onchange="Helpers.autoFillDurasi('sos')" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('sos_pukul')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Tgl Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="date" id="sos_tglSelesai" onchange="Helpers.autoFillDurasi('sos')" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordDate('sos_tglSelesai')" title="Rekam tanggal hari ini" aria-label="Rekam tanggal hari ini"><i class="fa-solid fa-calendar-day"></i></button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label">Jam Selesai</label>
-            <div class="dt-wrap is-empty">
-              <input type="time" id="sos_jamSelesai" onchange="Helpers.autoFillDurasi('sos')" onclick="if(this.showPicker)this.showPicker()">
-              <span class="dt-ph" aria-hidden="true">Tekan di sini</span>
-              <button type="button" class="dt-record" onclick="Helpers.recordTime('sos_jamSelesai')" title="Rekam jam sekarang" aria-label="Rekam jam sekarang"><i class="fa-solid fa-clock"></i></button>
+            <div class="relative">
+              <span class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-800 shadow"></span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-gray-600 dark:text-gray-300 w-20 shrink-0">Selesai</span>
+                <input type="date" id="sos_tglSelesai" onchange="Helpers.autoFillDurasi('sos')" class="flex-1 min-w-0 text-sm" onclick="if(this.showPicker)this.showPicker()">
+                <input type="time" id="sos_jamSelesai" onchange="Helpers.autoFillDurasi('sos')" class="w-24 text-sm" onclick="if(this.showPicker)this.showPicker()">
+              </div>
             </div>
           </div>
         </div>
-        <!-- Reposisi: Durasi saja -->
         <div id="sos_waktu_inputs" class="mt-3"></div>
         <div class="mb-3"><label class="field-label">Tempat Kegiatan</label><input type="text" enterkeyhint="next" id="sos_tempat" required></div>
         <div class="mb-3">
