@@ -92,6 +92,17 @@ const ModKcfg = {
     const c = document.getElementById('k_korbanListContainer');
     this._micSeq = (this._micSeq || 0) + 1;
     const uid = 'kkm' + this._micSeq + Date.now().toString(36);
+    // Backward compat: data lama memakai dusun/rtrw/kel/kec/kabkota per korban.
+    // Jika tidak ada alamatFull/alamatManual tapi ada field lama, tampilkan
+    // alamat lama di input manual dan matikan toggle "alamat sama".
+    const hasLegacyAddr = data && !data.alamatFull && !data.alamatManual &&
+      (data.dusun || data.rtrw || data.kel || data.kec || data.kabkota);
+    let alamatManualVal = data?.alamatManual || '';
+    if (hasLegacyAddr) {
+      const fmt = Helpers.formatAddress(data.dusun, data.rtrw, data.kel, data.kec, data.kabkota);
+      if (fmt && fmt !== '-') alamatManualVal = fmt;
+    }
+    const alamatSamaOn = hasLegacyAddr ? false : (data?.alamatSama !== false);
     const div = document.createElement('div');
     div.className = "korban-item bg-red-50/50 dark:bg-gray-800 p-4 rounded-xl border-2 border-black dark:border-gray-700 relative";
     div.innerHTML = `
@@ -120,7 +131,7 @@ const ModKcfg = {
       <div class="mb-2 k_alamatManual hidden">
         <label class="field-label">Alamat Pemilik</label>
         <div class="flex items-center gap-2">
-          <input type="text" id="${uid}_alamatmanual" class="k_kAlamatManual flex-1 min-w-0" value="${data?.alamatManual || ''}" placeholder="Lingk/Dusun, RT/RW, Kel/Desa, Kec, Kab/Kota">
+          <input type="text" id="${uid}_alamatmanual" class="k_kAlamatManual flex-1 min-w-0" value="${alamatManualVal}" placeholder="Lingk/Dusun, RT/RW, Kel/Desa, Kec, Kab/Kota">
           <button type="button" onclick="Helpers.startSpeech('${uid}_alamatmanual', this)" class="btn-mic" aria-label="Isi dengan suara" title="Isi dengan suara"><i class="fa-solid fa-microphone"></i></button>
         </div>
       </div>
@@ -149,6 +160,22 @@ const ModKcfg = {
         </div>
       </div>`;
     c.appendChild(div);
+    // Simpan field alamat lama di elemen agar tidak hilang saat disimpan ulang
+    if (hasLegacyAddr) {
+      div._legacyAddr = { dusun: data.dusun || '', rtrw: data.rtrw || '', kel: data.kel || '', kec: data.kec || '', kabkota: data.kabkota || '' };
+    }
+    // Sinkronkan toggle alamat dengan data (default ON untuk kartu baru)
+    if (!alamatSamaOn) {
+      const btn = div.querySelector('.k_alamatSamaBtn');
+      if (btn) {
+        btn.classList.remove('bg-emerald-500');
+        btn.classList.add('bg-gray-300');
+        const dot = btn.querySelector('.toggle-dot');
+        if (dot) dot.style.transform = '';
+      }
+      div.querySelector('.k_alamatOtomatis')?.classList.add('hidden');
+      div.querySelector('.k_alamatManual')?.classList.remove('hidden');
+    }
     this.refreshSemuaAlamatKorban();
   },
   calcAsetTerselamatkan() {
@@ -188,11 +215,14 @@ const ModKcfg = {
     const korbanList = [...document.getElementById('k_korbanListContainer').children].map(c => {
       const alamatSama = c.querySelector('.k_alamatSamaBtn')?.classList.contains('bg-emerald-500');
       const alamat = alamatSama ? (c.querySelector('.k_kAlamatFull')?.value || '') : (c.querySelector('.k_kAlamatManual')?.value || '');
-      return {
+      const out = {
         nama:c.querySelector('.k_kNama').value, nik:c.querySelector('.k_kNIK')?.value || '', usia:c.querySelector('.k_kUsia')?.value || '', jk:c.querySelector('.k_kJK')?.value || '-',
         jumlahKK:c.querySelector('.k_kJumlahKK')?.value || '', jumlahJiwa:c.querySelector('.k_kJumlahJiwa')?.value || '',
         alamatFull:alamat, alamatSama
       };
+      // Pertahankan field alamat lama agar data laporan lama tidak hilang saat disimpan ulang
+      if (c._legacyAddr) Object.assign(out, c._legacyAddr);
+      return out;
     });
     const gv = id => document.getElementById(id).value;
     return { id, tanggal:gv('k_tanggal'), pukul:gv('k_pukul'), tglTerima:gv('k_tglTerima'), jamTerima:gv('k_jamTerima'), jamTiba:gv('k_jamTiba'), jamMulai:gv('k_jamMulai'), tglSelesai:gv('k_tglSelesai'), jamSelesai:gv('k_jamSelesai'),
@@ -317,9 +347,8 @@ const ModKcfg = {
     let korban = '\n  -';
     if (d.korbanList?.length) {
       korban = '\n' + d.korbanList.map((k,i) => {
-        const a = k.alamatFull || Helpers.formatAddress(k.dusun,k.rtrw,k.kel,k.kec,k.kabkota);
-        const kkJiwa = (k.jumlahKK || k.jumlahJiwa) ? ` [${k.jumlahKK || '-'} KK, ${k.jumlahJiwa || '-'} jiwa]` : '';
-        return `${i+1}. ${k.nama || '-'}${k.nik ? ' (NIK: ' + k.nik + ')' : ''} (${k.usia || '-'} th, ${k.jk || '-'})${kkJiwa}\n   ${a}`;
+        const a = Helpers.formatAddress(k.dusun,k.rtrw,k.kel,k.kec,k.kabkota);
+        return `${i+1}. ${k.nama || '-'}${k.nik ? ' (NIK: ' + k.nik + ')' : ''} (${k.usia || '-'} th, ${k.jk || '-'})\n   ${a}`;
       }).join('\n');
     }
     const personil = d.personil ? d.personil.split('\n').filter(p => p.trim()).map(p => `  • ${p.trim()}`).join('\n') : '  -';
